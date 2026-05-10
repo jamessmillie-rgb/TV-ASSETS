@@ -234,7 +234,7 @@ const data = REPORT_DATA;
 const bms = data.biomarkers || [];
 
 // Stats
-const totalTested = bms.filter(b => b.result && b.result !== 'Negative' && b.result !== 'Normal' && b.result !== 'To follow').length;
+const totalTested = bms.length;
 const abnormal = bms.filter(b => b.within_normal === 'FALSE').length;
 const optimal = bms.filter(b => b.within_optimal === 'TRUE').length;
 const inRange = bms.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
