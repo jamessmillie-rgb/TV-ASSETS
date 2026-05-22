@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueVitals Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#09090b;--surface:#141416;--surface2:#1c1c1f;--surface3:#242428;
+--border:#27272a;--border2:#3f3f46;
+--text:#fafafa;--text2:#a1a1aa;--text3:#71717a;
+--green:#2ce4ad;--green-dim:rgba(44,228,173,0.12);--green-mid:rgba(44,228,173,0.25);
+--red:#ef4444;--red-dim:rgba(239,68,68,0.12);
+--yellow:#a3d250;--yellow-dim:rgba(163,210,80,0.12);
+--blue:#818cf8;--blue-dim:rgba(129,140,248,0.12);
+--radius:12px;--radius-sm:8px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.nav-logo span{color:var(--green)}
+.nav-patient{font-size:13px;color:var(--text3);padding-left:12px;border-left:1px solid var(--border)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:13px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--surface2)}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 4px;padding-bottom:env(safe-area-inset-bottom,8px)}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mobile-nav a{color:var(--text3);text-decoration:none;font-size:10px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:var(--radius-sm)}
+.mobile-nav a.active{color:var(--green)}
+.mobile-nav svg{width:20px;height:20px}
+
+/* MAIN */
+main{max-width:960px;margin:0 auto;padding:88px 24px 120px}
+section{margin-bottom:48px}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:16px}
+.section-title{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-0.5px}
+.section-sub{color:var(--text2);font-size:15px;margin-bottom:24px}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.stat-num{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.stat-num.green{color:var(--green)}
+.stat-num.red{color:var(--red)}
+.stat-num.yellow{color:#a3d250}
+
+/* UPGRADE BANNER */
+.upgrade-banner{background:var(--green-dim);border:1px solid rgba(44,228,173,0.2);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;font-size:14px;color:var(--green);line-height:1.6}
+
+/* ANALYSIS CARDS */
+.analysis-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px}
+.analysis-card h3{font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.analysis-card .content{font-size:14px;color:var(--text2);line-height:1.8;white-space:pre-line}
+.flag-card{border-left:3px solid var(--red)}
+.rec-card{border-left:3px solid var(--blue)}
+.supp-card{border-left:3px solid var(--green)}
+.summary-card{border-left:3px solid var(--green)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.red{background:var(--red)}.dot.green{background:var(--green)}.dot.blue{background:var(--blue)}.dot.yellow{background:var(--yellow)}
+
+/* BIOMARKER CONTROLS */
+.bio-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.bio-search{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text);font-family:inherit;font-size:14px;width:260px;outline:none;transition:border-color 0.2s}
+.bio-search:focus{border-color:var(--green)}
+.bio-search::placeholder{color:var(--text3)}
+.filter-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;color:var(--text3);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{border-color:var(--border2);color:var(--text)}
+.filter-btn.active{background:var(--green-dim);border-color:rgba(44,228,173,0.3);color:var(--green)}
+
+/* BIOMARKER GROUP */
+.bio-group{margin-bottom:16px}
+.bio-group-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;user-select:none}
+.bio-group-header:hover{border-color:var(--border2);background:var(--surface2)}
+.bio-group-header h3{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px}
+.bio-group-header .count{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.bio-group-header .chevron{transition:transform 0.3s;color:var(--text3)}
+.bio-group.open .chevron{transform:rotate(180deg)}
+.bio-group-body{display:none;padding:8px 0 0}
+.bio-group.open .bio-group-body{display:block}
+
+/* BIOMARKER CARD */
+.bio-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden;transition:all 0.2s}
+.bio-card:hover{border-color:var(--border2)}
+.bio-card-main{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:16px}
+.bio-card-info{flex:1;min-width:0}
+.bio-card-name{font-size:14px;font-weight:500;margin-bottom:2px}
+.bio-card-result{font-size:13px;color:var(--text2)}
+.bio-card-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.5px}
+.badge-red{background:var(--red-dim);color:var(--red)}
+.badge-green{background:var(--green-dim);color:var(--green)}
+.badge-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.badge-blue{background:var(--blue-dim);color:var(--blue)}
+
+/* RANGE BAR */
+.range-bar-container{flex:1;max-width:280px;min-width:160px}
+.range-bar{height:6px;background:rgba(239,68,68,0.25);border-radius:3px;position:relative;overflow:visible}
+.range-normal{position:absolute;height:100%;background:rgba(163,210,80,0.35);border-radius:3px;z-index:1}
+.range-optimal{position:absolute;height:100%;background:rgba(44,228,173,0.5);border-radius:3px;z-index:2}
+.range-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--bg);z-index:2}
+.range-dot.dot-red{background:var(--red)}
+.range-dot.dot-green{background:var(--green)}
+.range-dot.dot-yellow{background:#a3d250}
+
+/* EXPANDED DETAIL */
+.bio-detail{display:none;padding:0 20px 16px;border-top:1px solid var(--border)}
+.bio-card.expanded .bio-detail{display:block}
+.bio-detail-desc{font-size:13px;color:var(--text2);line-height:1.7;padding-top:12px;margin-bottom:12px}
+.bio-detail-ranges{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px}
+.bio-detail-range{font-size:12px;color:var(--text3)}
+.bio-detail-range strong{color:var(--text2)}
+.bio-detail-causes{font-size:12px;color:var(--text3);line-height:1.6}
+.bio-detail-causes strong{color:var(--text2);font-weight:500}
+
+/* FOOTER */
+.footer{text-align:center;padding:40px 24px;border-top:1px solid var(--border);margin-top:48px}
+.footer p{font-size:12px;color:var(--text3);margin-bottom:4px}
+.footer a{color:var(--green);text-decoration:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .mobile-nav{display:block}
+  .nav-patient{display:none}
+  main{padding:76px 16px 100px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-num{font-size:28px}
+  .section-title{font-size:22px}
+  .bio-card-main{flex-wrap:wrap;gap:10px}
+  .range-bar-container{max-width:100%;order:3;width:100%}
+  .bio-search{width:100%}
+  .bio-controls{gap:6px}
+  .analysis-card{padding:20px}
+}
+
+/* SCROLL ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* DOB GATE */
+.gate{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.gate-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;max-width:400px;width:90%;text-align:center}
+.gate-logo{font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px}
+.gate-logo span{color:var(--green)}
+.gate-sub{color:var(--text3);font-size:14px;margin-bottom:32px;line-height:1.5}
+.gate-label{display:block;text-align:left;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.gate-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;color:var(--text);font-family:inherit;font-size:16px;outline:none;transition:border-color 0.2s;text-align:center;letter-spacing:1px}
+.gate-input:focus{border-color:var(--green)}
+.gate-btn{width:100%;margin-top:16px;padding:14px;background:var(--green);color:#000;font-family:inherit;font-size:15px;font-weight:600;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity 0.2s}
+.gate-btn:hover{opacity:0.85}
+.gate-error{color:var(--red);font-size:13px;margin-top:12px;display:none}
+.gate-footer{color:var(--text3);font-size:11px;margin-top:24px;line-height:1.5}
+.gate-hidden{display:none}
+.app-hidden{display:none}
+</style>
+</head>
+<body>
+
+<!-- DOB GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals" style="width:180px;height:auto;margin:0 auto 8px;display:block">
+    <div class="gate-sub">Please verify your identity to access your report. Enter your date of birth below.</div>
+    <label class="gate-label">Date of Birth</label>
+    <input type="text" class="gate-input" id="gate-dob" placeholder="DD / MM / YYYY" maxlength="14" autocomplete="off">
+    <button class="gate-btn" id="gate-btn" onclick="verifyDob()">View My Results</button>
+    <div class="gate-error" id="gate-error">Incorrect date of birth. Please try again.</div>
+    <div class="gate-footer">Your results are protected. If you are having trouble accessing your report, please contact support@truevitals.co.uk</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav app-hidden" id="app-nav">
+  <div class="nav-brand">
+    <img src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals" style="height:28px;width:auto">
+    <div class="nav-patient" id="nav-patient"></div>
+  </div>
+  <div class="nav-links">
+    <a href="#overview" class="active" onclick="setActive(this)">Overview</a>
+    <a href="#flags" onclick="setActive(this)">Key Flags</a>
+    <a href="#recommendations" onclick="setActive(this)">Clinical</a>
+    <a href="#supplements" onclick="setActive(this)">Supplements</a>
+    <a href="#results" onclick="setActive(this)">Results</a>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav app-hidden" id="app-mobile-nav">
+  <div class="mobile-nav-inner">
+    <a href="#overview" class="active" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </a>
+    <a href="#flags" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      Flags
+    </a>
+    <a href="#recommendations" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Clinical
+    </a>
+    <a href="#supplements" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      Supps
+    </a>
+    <a href="#results" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Results
+    </a>
+  </div>
+</div>
+
+<main id="main" class="app-hidden"></main>
+
+<script>
+// ============================================================
+// PASTE YOUR PDFMONKEY JSON BELOW THIS LINE
+// ============================================================
+const REPORT_DATA = {"patient_name":"Jamie Griffiths","dob":"05/03/1989","report_date":"2026-05-15","summary":"IMPORTANT: This report contains findings that we recommend discussing with your GP. Please bring this report with you to your appointment. The specific items are detailed in the Clinical Recommendations section below.\n\nJamie presents as a 37-year-old male with a BMI of 26.6, training very intensely with 5+ resistance sessions and 3 cardio sessions per week alongside 10,000 to 15,000 daily steps. His diet quality is rated 7 out of 10 with a food volume of 6 out of 10. He reports no alcohol consumption, no smoking, and no other lifestyle habits. His symptoms are low energy, low sex drive, and hair thinning.\n\nThere is a lot working well in this profile. His cardiovascular risk picture is excellent, with HDL at 1.7 (strong protective cholesterol), triglycerides at 0.47 (outstanding), ApoB at 0.78 (well within optimal), and an ApoB/A-I ratio of 0.582 (favourable). His liver function is clean with a GGT of 15 (confirming no toxic burden), his thyroid is functioning optimally across all three markers (TSH 1.69, FT4 16.8, FT3 5.2), his inflammatory markers are excellent (hs-CRP 0.4), his insulin sensitivity is healthy (HbA1c 36), his iron stores are good (ferritin 189), and his calcium, magnesium, and other electrolytes are within optimal ranges.\n\nHowever, two connected findings stand out and are worth investigating, though there are reasons they may not be as serious as they first appear.\n\nHis hemoglobin at 124 is below the normal range of 130 to 170 for a male, which on paper indicates anemia. His red blood cell count at 4.04 is below the normal range (4.5 to 5.5), and his hematocrit at 0.37 is below range (0.40 to 0.50). Together, these confirm his blood is not carrying as much oxygen as it should to his muscles, brain, and other tissues. If confirmed on a repeat test, this would be a significant contributor to his fatigue and low energy. However, in athletes training at very high volumes, a phenomenon called \"sports anemia\" can occur where the increased plasma volume from regular intense exercise dilutes the hemoglobin reading, making it appear lower than it truly is. A repeat test on a rest day would help clarify whether this is genuine anemia or a dilutional effect. His RDW at 15.9 (above the normal range of 11.5 to 15) indicates his bone marrow is producing red blood cells of inconsistent sizes, which is a sign that the raw materials needed to make properly-formed cells are not all available in sufficient quantities.\n\nThe important detail is that his iron is NOT the problem. His ferritin at 189 and serum iron at 17.3 are both healthy, so this is not iron deficiency anemia. Instead, his Active B12 at 58 is below the optimal range (80 to 140), sitting in the lower portion of the lab reference range, and his folate at 9 is below optimal (10 to 14). Both B12 and folate are essential raw materials for the bone marrow to produce healthy red blood cells. When either or both are insufficient, the bone marrow struggles to produce cells efficiently, leading to anemia and the elevated RDW seen here. His MCV (red blood cell size) at 91.7 is normal, which may seem contradictory, but mixed-nutrient deficiency or early B12 depletion commonly presents with normal-sized cells before classic large-cell changes appear.\n\nHis white blood cell count at 3.87 is also below the normal range (4 to 10), and his neutrophil count at 1.63 is below the clinically significant threshold of 2. Neutrophils are the body's main infection-fighting cells, the first responders when bacteria or injury are encountered. A count below 2 is called neutropenia and means the body's ability to fight bacterial infections is reduced. In a healthy 37-year-old with no medications and no known conditions, the most likely explanations are exercise-induced neutropenia (where neutrophils temporarily leave the bloodstream and migrate into muscle tissue as part of the repair response after training), the low B12 and folate impairing white blood cell production, or a viral illness around the time of the blood draw. It is also worth noting that neutrophils are the most fragile white blood cell type and degrade faster than others if the blood sample is not processed quickly, so sample handling could be a factor. A repeat test on a rest day (no exercise for 48 hours prior) with a fresh sample would clarify whether this is a persistent finding or a transient effect of training and sample timing.\n\nIf these findings are confirmed on a repeat test, there is a common thread. His Active B12 at 58 is below optimal (80 to 140), and his folate at 9 is below optimal (10 to 14). Both are essential raw materials for the bone marrow to produce healthy blood cells. At 8+ training sessions per week, his body's demand for these nutrients is significantly higher than average, and his food volume of 6 out of 10 may not be providing enough. His food volume of 6 out of 10 may not be sufficient to meet the nutritional demands of 8+ weekly sessions.\n\nHis testosterone at 14.4 is within the lab reference range but below the optimal range of 18 to 30 for a 37-year-old. More importantly, his free androgen index at 31.24 is sitting right at the floor of the normal range (optimal is 70 to 120), and his free testosterone at 0.237 is near the lower boundary. His SHBG at 46.1 is in the upper half of the range, meaning a large proportion of his testosterone is being bound and is unavailable to his tissues. This directly explains his low libido and may be contributing to his hair thinning and fatigue. His LH at 2.54 is below optimal, suggesting the brain is not sending strong enough signals to push testosterone production higher, which can be associated with overtraining. The anemia itself may also be suppressing testosterone production, as the body deprioritises reproductive hormones when it is in a state of physiological stress.\n\nHis creatinine at 114 is above the normal range, with eGFR at 70. In someone training at this intensity at 89kg, elevated creatinine is likely reflecting high muscle turnover rather than true kidney impairment. A Cystatin C test (which is not affected by muscle mass) would help clarify this, and we recommend requesting one from his GP.\n\nHis CK at 354 and myoglobin at 75.26 are both mildly above their respective ranges but are expected findings at 5+ resistance sessions per week and are not concerning. His CK-MB at 4.43 is within range.\n\nHis vitamin D at 72 is within the normal range but below the optimal level of 100. This may be contributing to fatigue and low mood.\n\nHis cortisol at 213 is within the normal range but below the optimal threshold of 250. If this blood was drawn in the morning, it may suggest below-optimal adrenal output, potentially related to the extreme training volume.","links":"Your training volume of 8+ sessions per week is exceptionally high and is clearly a core part of your life. The strength of your cardiovascular markers, thyroid function, and metabolic health reflects the benefits of that commitment. However, the combination of anemia, neutropenia, below-optimal B12, below-optimal folate, below-optimal testosterone, and fatigue may be telling you that your body's recovery infrastructure is not keeping pace with the demand you are placing on it.\n\nYour food volume of 6 out of 10 is the most actionable factor. At 8+ sessions per week with 10,000 to 15,000 daily steps, you have a very high caloric and nutritional demand. If your food intake is not matching that demand, the body prioritises immediate survival functions over blood cell production and reproductive hormones, which is exactly the pattern your results are showing. Increasing food volume to at least 8 out of 10, with particular emphasis on B12-rich foods (red meat, eggs, fish, dairy) and folate-rich foods (leafy greens, lentils, asparagus, fortified cereals), would directly address the bone marrow underperformance.\n\nConsider whether your current training volume is sustainable. This is not about training less for the sake of it, but about whether 8+ sessions per week with a food volume of 6 out of 10 is creating a chronic recovery deficit. Reducing to 6 or 7 sessions and using the freed-up time for recovery (sleep, nutrition, stretching) may actually produce better results than continuing to push the volume while your blood markers show the cost.\n\nSleep quality and duration matter enormously for blood cell production, testosterone, and recovery. If your sleep is below 7 to 8 hours consistently, this could be compounding every finding in this report.","flags":"\u2022 Hemoglobin at 124 (below normal of 130), RBC at 4.04 (below normal), hematocrit at 0.37 (below normal), and RDW at 15.9 (above normal). Anemia in a 37-year-old male that is NOT caused by iron deficiency (ferritin 189 is healthy). May be driven by low Active B12 (58) and below-optimal folate (9). Requires GP assessment.\n\n\u2022 Neutrophil count at 1.63 (below the clinically significant threshold of 2) with total WBC at 3.87 (below normal). Reduced infection-fighting capacity. May be related to B12/folate deficiency and/or overtraining. Requires GP assessment and repeat testing.\n\n\u2022 Testosterone at 14.4 (below optimal 18 to 30) with free androgen index at 31.24 (floor of normal, optimal 70 to 120) and free testosterone at 0.237 (near lower boundary). Directly connected to low libido and hair thinning. May be partly driven by overtraining and the anemia picture.\n\n\u2022 Active B12 at 58 is below the optimal range (80 to 140). B12 is essential for red blood cell production, white blood cell production, nerve function, and brain function. This is very likely a contributing factor to both the anemia and the neutropenia.\n\n\u2022 Creatinine at 114 (above range) with eGFR at 70. Most likely reflects high muscle mass from intense training rather than true kidney impairment. A Cystatin C test would help clarify. Worth discussing with GP.\n\n\u2022 Transferrin at 2.02 (below range). May reflect adequate iron stores reducing the body's need for transport capacity.\n\n\u2022 Vitamin D at 72 is below the optimal level of 100. May be contributing to fatigue and low mood.","recommendations":"We recommend discussing two findings with your GP:\n\n1. Your hemoglobin (124) and neutrophil count (1.63) are both below their respective normal ranges. These may reflect exercise-related effects (sports anemia and exercise-induced neutropenia), sample handling, or a genuine nutritional deficiency from the low Active B12 (58) and borderline folate (9). We recommend your GP repeats a full blood count on a rest day (ideally no intense exercise for 48 hours prior) with a fresh sample to confirm whether these findings persist. If confirmed, your GP may wish to check serum B12 and methylmalonic acid to assess B12 status more thoroughly, and consider further investigation if the findings persist after B12 and folate correction. Your iron stores are healthy, so iron supplementation is not needed.\n\n2. Your creatinine at 114 with eGFR at 70 should be discussed with your GP, who may wish to request a Cystatin C test. Cystatin C measures kidney function independently of muscle mass, so it would clarify whether the reduced eGFR reflects genuine kidney function or simply your high muscle mass from intense training.\n\nYour testosterone at 14.4 with an FAI of 31.24 is worth flagging with your GP if your libido and energy do not improve after B12/folate correction, increased food intake, and a potential reduction in training volume. The low testosterone is most likely a downstream consequence of the overtraining and nutritional picture, but if it persists after those factors are addressed, your GP may wish to investigate further.\n\nA follow-up blood test in 12 weeks focusing on full blood count (hemoglobin, RBC, WBC, neutrophils, RDW), Active B12, folate, Cystatin C, testosterone, FAI, cortisol (morning fasting), and vitamin D is strongly recommended.","supplementation":"Methylcobalamin B12 at 1,000 to 2,000 mcg daily is the top priority. Your Active B12 at 58 is below optimal and may be contributing to the blood cell findings in this report. B12 is notoriously poorly absorbed through the digestive system, particularly if stomach acid levels are not optimal (which is more common than people realise). For this reason, we recommend taking B12 as a sublingual supplement, which means placing it under the tongue or against the gums and letting it dissolve. This allows the B12 to absorb directly through the lining of the mouth into the bloodstream, bypassing the stomach entirely. This method is significantly more effective than swallowing a standard B12 tablet. Choose methylcobalamin rather than cyanocobalamin as it is the active form the body can use directly.\n\nMethylfolate at 400 to 800 mcg daily to bring your folate from 9 into the optimal range above 10. Folate works alongside B12 in blood cell production, and addressing both together will give the bone marrow the raw materials it needs. Increase dietary folate through leafy greens, lentils, asparagus, and fortified cereals.\n\nVitamin D3 at 3,000 to 4,000 IU daily, taken with food that contains fat. At 72 you are below the optimal threshold of 100, and vitamin D supports energy, mood, immune function, and recovery. Pair with vitamin K2 MK-7 at 100 mcg daily.\n\nMagnesium glycinate at 400mg before bed may support sleep quality, recovery, and testosterone production. Your serum magnesium at 1.0 is within range but intracellular stores may be depleted given your training volume.\n\nA high-quality omega-3 fish oil providing 2g of combined EPA and DHA daily would support recovery and overall health.\n\nZinc at 15 to 25mg daily as zinc picolinate may support testosterone production and immune function. Zinc and vitamin C require specialised testing not available in our current offering.\n\nIncrease your food intake. At 8+ sessions per week, a food volume of 6 out of 10 is unlikely to provide sufficient calories, protein, and micronutrients to support both your training and your body's basic blood cell and hormone production. Prioritise B12-rich foods (red meat, eggs, fish, dairy) and ensure protein intake is at least 1.6 to 2g per kilogram bodyweight.\n\nAvoid iron supplements. Your iron stores are healthy at ferritin 189 and additional iron is not needed.","biomarkers":[{"key":"albumin","name":"Albumin","group":"LIVER & METABOLIC","result":"43","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5208","lower_normal":"34","upper_normal":"50","lower_optimal":"40","upper_optimal":"48","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4583","upper_optimal_position":"0.625","units":"g/L","description":"Primary protein made by liver. Within the optimal range","low_causes":"Liver disease, kidney disease, inflammation","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alt","name":"ALT","group":"LIVER & METABOLIC","result":"27","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4565","lower_normal":"10","upper_normal":"56","lower_optimal":"10","upper_optimal":"25","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.442","units":"U/L","description":"Liver enzyme released when liver cells are damaged. Within range","low_causes":"Rarely clinically significant","high_causes":"Hepatitis, fatty liver, medications","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alkalinephosphatase","name":"Alkaline Phosphatase","group":"LIVER & METABOLIC","result":"46","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3333","lower_normal":"46","upper_normal":"116","lower_optimal":"60","upper_optimal":"100","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4","upper_optimal_position":"0.5905","units":"IU/L","description":"Enzyme in bones, liver, and intestines. Sitting right at the lower boundary of the normal range","low_causes":"Malnutrition, zinc deficiency","high_causes":"Bone disease, liver obstruction","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ast","name":"AST","group":"LIVER & METABOLIC","result":"33","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5417","lower_normal":"13","upper_normal":"45","lower_optimal":"13","upper_optimal":"25","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.4583","units":"U/L","description":"Enzyme in liver, heart, and muscle. Within range but above optimal. AST is found in both liver and muscle tissue, and the mildly elevated CK from training may be contributing to this reading","low_causes":"Rarely clinically significant","high_causes":"Liver disease, muscle damage, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"gammagt","name":"Gamma GT","group":"LIVER & METABOLIC","result":"15","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3865","lower_normal":"4","upper_normal":"73","lower_optimal":"10","upper_optimal":"30","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3623","upper_optimal_position":"0.4589","units":"IU/L","description":"Liver enzyme sensitive to alcohol and toxic burden. Excellent at 15, confirming a clean liver picture with no alcohol or substance-related burden","low_causes":"Rarely clinically significant","high_causes":"Alcohol, fatty liver, medications","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bilirubin","name":"Bilirubin","group":"LIVER & METABOLIC","result":"18","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6042","lower_normal":"5","upper_normal":"21","lower_optimal":"5","upper_optimal":"15","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5417","units":"\u00b5mol/L","description":"Waste product from red blood cell breakdown. Within the normal range but above optimal. Mildly elevated bilirubin can be associated with Gilbert's syndrome (a harmless genetic variation affecting approximately 5 to 10% of the population) or increased red blood cell turnover from intense training","low_causes":"Rarely clinically significant","high_causes":"Liver disease, hemolysis, Gilbert's syndrome, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"protein","name":"Total Protein","group":"LIVER & METABOLIC","result":"65","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.44","lower_normal":"57","upper_normal":"82","lower_optimal":"65","upper_optimal":"75","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.44","upper_optimal_position":"0.5733","units":"g/L","description":"Sum of albumin and globulin proteins in blood. Within range","low_causes":"Liver disease, kidney disease, malnutrition","high_causes":"Dehydration, chronic inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"globulin","name":"Globulin","group":"LIVER & METABOLIC","result":"22","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4074","lower_normal":"18","upper_normal":"36","lower_optimal":"24","upper_optimal":"32","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4444","upper_optimal_position":"0.5926","units":"g/L","description":"Group of proteins including antibodies. Within range but below optimal, which is worth noting alongside the low white blood cell count","low_causes":"Immune deficiency, liver disease","high_causes":"Chronic inflammation, autoimmune disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"totalcholesterol","name":"Total Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"4.8","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4615","lower_normal":"","upper_normal":"5.2","lower_optimal":"","upper_optimal":"4.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4327","units":"mmol/L","description":"All cholesterol in blood. Within range","low_causes":"Very low cholesterol rare","high_causes":"Genetics, diet","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ldlcholesterol","name":"LDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2.88","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.48","lower_normal":"","upper_normal":"3","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3333","units":"mmol/L","description":"The type of cholesterol that can build up in artery walls. Within the normal range","low_causes":"Very low LDL rare","high_causes":"Genetics, saturated fat","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdlcholesterol","name":"HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"1.7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.85","lower_normal":"1.0","upper_normal":"","lower_optimal":"1.2","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.6","upper_optimal_position":"","units":"mmol/L","description":"Protective cholesterol that removes harmful cholesterol from the bloodstream. Excellent at 1.7, providing strong cardiovascular protection","low_causes":"Sedentary lifestyle, smoking, obesity","high_causes":"Rarely problematic; genetics, exercise","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"triglycerides","name":"Triglycerides","group":"LIPIDS & CARDIOVASCULAR","result":"0.47","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1382","lower_normal":"","upper_normal":"1.7","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2941","units":"mmol/L","description":"Blood fats. Excellent at 0.47, well within the optimal range","low_causes":"Very low rare","high_causes":"Excess carbohydrates, alcohol, obesity","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cholesterolratio","name":"TC:HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"2.82","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3133","lower_normal":"","upper_normal":"4.5","lower_optimal":"","upper_optimal":"3.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3889","units":"Ratio","description":"Total cholesterol divided by HDL. Excellent at 2.82","low_causes":"Low TC or very high HDL","high_causes":"Low HDL, elevated TC","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdloftotal","name":"HDL % of total","group":"LIPIDS & CARDIOVASCULAR","result":"35.42","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"%","description":"HDL as percentage of total cholesterol. Very good","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vldl","name":"VLDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.21","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1346","lower_normal":"","upper_normal":"0.78","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3205","units":"mmol/L","description":"Very low-density lipoprotein. Well within range","low_causes":"Rarely significant","high_causes":"Excess carbohydrates, alcohol, obesity","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apolipoproteina1","name":"Apolipoprotein A-1","group":"LIPIDS & CARDIOVASCULAR","result":"1.34","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3773","lower_normal":"1.22","upper_normal":"2.13","lower_optimal":"1.6","upper_optimal":"2","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4725","upper_optimal_position":"0.619","units":"g/L","description":"The main protein inside HDL particles. Within the normal range","low_causes":"Similar causes to low HDL","high_causes":"Genetics, exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"apolipoproteinb","name":"Apolipoprotein B","group":"LIPIDS & CARDIOVASCULAR","result":"0.78","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4333","lower_normal":"","upper_normal":"0.9","lower_optimal":"","upper_optimal":"0.7","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3889","units":"g/L","description":"A protein found on each harmful cholesterol particle, the best single measure of how many harmful particles are circulating. Within the optimal range at 0.78","low_causes":"Very low rare","high_causes":"Genetics, saturated fat","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apoba1ratio","name":"ApoB/A-I Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.582","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4157","lower_normal":"","upper_normal":"0.7","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3571","units":"Ratio","description":"The balance between harmful and protective cholesterol particles. Within the optimal range at 0.582, indicating a favourable cardiovascular risk profile","low_causes":"High ApoA-1 with low ApoB","high_causes":"Elevated ApoB, low ApoA-1","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"glucose","name":"Glucose","group":"GLUCOSE & INSULIN","result":"3.6","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3467","lower_normal":"3.5","upper_normal":"6","lower_optimal":"4.2","upper_optimal":"5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4267","upper_optimal_position":"0.5333","units":"mmol/L","description":"Fasting blood sugar level. Within the normal range but sitting near the lower boundary at 3.6. In someone training at this volume with a food volume of 6 out of 10, this may reflect the body being in a fasted or energy-depleted state at the time of the blood draw","low_causes":"Excessive insulin, fasting, intense exercise, caloric restriction","high_causes":"Prediabetes, diabetes, stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hba1c","name":"HbA1c","group":"GLUCOSE & INSULIN","result":"36","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4286","lower_normal":"","upper_normal":"42","lower_optimal":"","upper_optimal":"35","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4167","units":"mmol/mol","description":"A measure of average blood sugar over the past 2 to 3 months. Within the normal range at 36 (5.4%)","low_causes":"Iron deficiency anemia (can affect accuracy)","high_causes":"Prediabetes, diabetes","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hscrp","name":"High Sensitivity CRP","group":"INFLAMMATION","result":"0.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.04","lower_normal":"","upper_normal":"5","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.1","units":"mg/L","description":"A marker of inflammation in the body. Excellent at 0.4, indicating minimal systemic inflammation despite the very high training volume","low_causes":"Rarely significant","high_causes":"Infection, obesity, chronic inflammation","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"sodium","name":"Sodium","group":"ELECTROLYTES & MINERALS","result":"140","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5128","lower_normal":"133","upper_normal":"146","lower_optimal":"138","upper_optimal":"142","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4615","upper_optimal_position":"0.5641","units":"mmol/L","description":"Primary electrolyte for fluid balance. Within the optimal range","low_causes":"Overhydration, diuretics","high_causes":"Dehydration, excess salt","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"potassium","name":"Potassium","group":"ELECTROLYTES & MINERALS","result":"4.7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5556","lower_normal":"3.5","upper_normal":"5.3","lower_optimal":"4","upper_optimal":"4.8","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4259","upper_optimal_position":"0.5741","units":"mmol/L","description":"Essential for heart rhythm and muscle contraction. Within the optimal range","low_causes":"Diuretics, diarrhea, vomiting","high_causes":"Kidney disease, medications","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"chloride","name":"Chloride","group":"ELECTROLYTES & MINERALS","result":"103","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5385","lower_normal":"95","upper_normal":"108","lower_optimal":"98","upper_optimal":"104","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4103","upper_optimal_position":"0.5641","units":"mmol/L","description":"Fluid balance electrolyte. Within range","low_causes":"Vomiting, diuretics","high_causes":"Dehydration, kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"calcium","name":"Calcium","group":"ELECTROLYTES & MINERALS","result":"2.35","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4912","lower_normal":"2.08","upper_normal":"2.65","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.462","upper_optimal_position":"0.5789","units":"mmol/L","description":"Essential for bones, nerve function, and blood clotting. Within the optimal range","low_causes":"Vitamin D deficiency, low PTH","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"correctedcalcium","name":"Corrected Calcium","group":"ELECTROLYTES & MINERALS","result":"2.33","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4417","lower_normal":"2.2","upper_normal":"2.6","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4167","upper_optimal_position":"0.5833","units":"mmol/L","description":"Calcium adjusted for protein levels. Within the optimal range","low_causes":"Vitamin D deficiency","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"phosphate","name":"Phosphate","group":"ELECTROLYTES & MINERALS","result":"1.2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4943","lower_normal":"0.78","upper_normal":"1.65","lower_optimal":"1","upper_optimal":"1.3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4176","upper_optimal_position":"0.5326","units":"mmol/L","description":"Essential for bone health and energy production. Within the optimal range","low_causes":"Hyperparathyroidism, poor diet","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"magnesium","name":"Magnesium","group":"ELECTROLYTES & MINERALS","result":"1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.6034","lower_normal":"0.53","upper_normal":"1.11","lower_optimal":"0.85","upper_optimal":"1","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.5172","upper_optimal_position":"0.6034","units":"mmol/L","description":"A mineral involved in over 300 body processes including sleep, energy production, muscle recovery, and testosterone production. Within the optimal range","low_causes":"Poor diet, stress, intense exercise","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinine","name":"Creatinine","group":"KIDNEY FUNCTION","result":"114","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7521","lower_normal":"65","upper_normal":"104","lower_optimal":"70","upper_optimal":"90","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3761","upper_optimal_position":"0.547","units":"\u00b5mol/L","description":"A waste product from muscles filtered by the kidneys. Above the normal range at 114. However, creatinine is directly proportional to muscle mass, and in someone training 5+ resistance sessions per week at 89kg, an elevated creatinine may simply reflect higher muscle turnover rather than kidney impairment. The eGFR of 70 should be interpreted with this in mind","low_causes":"Low muscle mass","high_causes":"Kidney disease, dehydration, high muscle mass, creatine supplementation, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"egfr","name":"eGFR","group":"KIDNEY FUNCTION","result":"70","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5833","lower_normal":"60","upper_normal":"","lower_optimal":"90","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.75","upper_optimal_position":"","units":"mL/min/1.73m\u00b2","description":"A measure of how well the kidneys are filtering blood. At 70 this is below the optimal threshold of 90 but above the clinically significant threshold of 60. Because eGFR is calculated from creatinine, and creatinine is elevated likely from high muscle mass and intense training, the true kidney function may be better than this number suggests. A Cystatin C test (which is not affected by muscle mass) would help clarify this, and we recommend requesting one from your GP","low_causes":"Chronic kidney disease, age-related decline","high_causes":"Not applicable, higher is better","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"urea","name":"Urea","group":"KIDNEY FUNCTION","result":"6.2","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5333","lower_normal":"3.2","upper_normal":"8.2","lower_optimal":"3.5","upper_optimal":"6","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3533","upper_optimal_position":"0.52","units":"mmol/L","description":"A waste product from protein digestion filtered by the kidneys. Within range","low_causes":"Liver disease, low protein diet","high_causes":"Kidney disease, dehydration, high protein diet","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"uricacid","name":"Uric Acid","group":"KIDNEY FUNCTION","result":"254","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.368","lower_normal":"220","upper_normal":"547","lower_optimal":"280","upper_optimal":"400","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3945","upper_optimal_position":"0.5168","units":"\u00b5mol/L","description":"A waste product from protein breakdown. Within range","low_causes":"Low purine diet","high_causes":"Genetics, purine-rich foods, alcohol","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hemoglobin","name":"Hemoglobin","group":"HEMATOLOGY","result":"124","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2833","lower_normal":"130","upper_normal":"170","lower_optimal":"145","upper_optimal":"160","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4583","upper_optimal_position":"0.5833","units":"g/L","description":"The protein in red blood cells that carries oxygen. Below the normal range at 124. In a 37-year-old male, hemoglobin below 130 indicates anemia. This means the blood is not carrying as much oxygen as it should to muscles, the brain, and other tissues, which directly explains fatigue and low energy. Notably, his iron stores are healthy (ferritin 189), so this is not caused by iron deficiency. The low Active B12 (58) and below-optimal folate (9) may be contributing, as both are essential raw materials for producing healthy red blood cells. This finding warrants GP assessment","low_causes":"Iron deficiency, B12/folate deficiency, chronic disease, overtraining, bone marrow disorders","high_causes":"Dehydration, smoking","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hematocrit","name":"Hematocrit","group":"HEMATOLOGY","result":"0.37","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2333","lower_normal":"0.4","upper_normal":"0.5","lower_optimal":"0.43","upper_optimal":"0.48","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4333","upper_optimal_position":"0.6","units":"L/L","description":"The proportion of blood that is red blood cells. Below the normal range at 0.37, consistent with the anemia picture","low_causes":"Anemia, blood loss","high_causes":"Dehydration, smoking","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rbc","name":"RBC","group":"HEMATOLOGY","result":"4.04","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.18","lower_normal":"4.5","upper_normal":"5.5","lower_optimal":"4.7","upper_optimal":"5.3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"x 10\u00b9\u00b2/L","description":"Number of red blood cells. Below the normal range at 4.04, confirming the body is not producing enough red blood cells","low_causes":"Anemia, B12/folate deficiency, bone marrow suppression, overtraining","high_causes":"Dehydration, smoking","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mcv","name":"MCV","group":"HEMATOLOGY","result":"91.7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4944","lower_normal":"83","upper_normal":"101","lower_optimal":"85","upper_optimal":"95","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3704","upper_optimal_position":"0.5556","units":"fL","description":"The average size of red blood cells. Within the optimal range. The fact that MCV is normal despite anemia suggests the red blood cells being produced are the correct size, ruling out classic iron deficiency anemia (small cells) and classic B12 deficiency anemia (large cells). However, mixed deficiency or early-stage B12 depletion can present with normal-sized cells","low_causes":"Iron deficiency, thalassemia","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mch","name":"MCH","group":"HEMATOLOGY","result":"30.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5867","lower_normal":"27","upper_normal":"32","lower_optimal":"28","upper_optimal":"31","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"pg","description":"The average amount of haemoglobin in each red blood cell. Within range","low_causes":"Iron deficiency","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mchc","name":"MCHC","group":"HEMATOLOGY","result":"336","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5667","lower_normal":"315","upper_normal":"345","lower_optimal":"320","upper_optimal":"340","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.6111","units":"g/L","description":"The concentration of haemoglobin in red blood cells. Within range","low_causes":"Iron deficiency","high_causes":"Spherocytosis, dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rdw","name":"RDW","group":"HEMATOLOGY","result":"15.9","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7524","lower_normal":"11.5","upper_normal":"15","lower_optimal":"12","upper_optimal":"13.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.381","upper_optimal_position":"0.5238","units":"%","description":"A measure of how consistent the size of red blood cells is. Above the normal range at 15.9, indicating the bone marrow is producing red blood cells of inconsistent sizes. This commonly occurs with nutritional deficiency (B12, folate, or iron) or when the bone marrow is under stress. Combined with the anemia and low Active B12, this supports a picture of the bone marrow not having optimal raw materials to produce properly-formed red blood cells","low_causes":"Rarely significant","high_causes":"Iron deficiency, B12/folate deficiency, nutritional deficiency, bone marrow stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"plateletcount","name":"Platelet Count","group":"HEMATOLOGY","result":"264","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4795","lower_normal":"150","upper_normal":"410","lower_optimal":"200","upper_optimal":"350","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3974","upper_optimal_position":"0.5897","units":"x 10\u2079/L","description":"Blood clotting cells. Within the optimal range","low_causes":"Bone marrow disorders, viral infections","high_causes":"Inflammation, infection","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mpv","name":"MPV","group":"HEMATOLOGY","result":"8.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4444","lower_normal":"7.1","upper_normal":"10.1","lower_optimal":"8","upper_optimal":"10","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4333","upper_optimal_position":"0.6556","units":"fL","description":"Average platelet size. Within range","low_causes":"Bone marrow suppression","high_causes":"Platelet destruction","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"wbc","name":"WBC","group":"HEMATOLOGY","result":"3.87","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3261","lower_normal":"4","upper_normal":"10","lower_optimal":"5","upper_optimal":"8","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.5556","units":"x 10\u2079/L","description":"Total white blood cells. Below the normal range at 3.87. A low total white blood cell count means the immune system has fewer cells available to fight infections. This finding, combined with the low neutrophil count, warrants GP assessment","low_causes":"Viral infections, bone marrow suppression, B12/folate deficiency, overtraining","high_causes":"Bacterial infections, stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"neutrophilcount","name":"Neutrophil Count","group":"HEMATOLOGY","result":"1.63","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3087","lower_normal":"2","upper_normal":"7","lower_optimal":"3","upper_optimal":"6","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"x 10\u2079/L","description":"The main infection-fighting white blood cells, the first responders when the body encounters bacteria or injury. Below the normal range at 1.63. A neutrophil count below 2 is considered clinically significant and is called neutropenia. This means the body has reduced capacity to fight bacterial infections. In a healthy 37-year-old male with no medications, no alcohol, and no known conditions, this can be caused by very intense exercise suppressing bone marrow output, viral illness around the time of the blood draw, or B12/folate deficiency impairing white blood cell production. Rarely, it can indicate a bone marrow issue. This finding requires GP assessment and should be rechecked","low_causes":"Viral infections, bone marrow suppression, B12/folate deficiency, overtraining, medications","high_causes":"Bacterial infections, stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lymphocytecount","name":"Lymphocyte Count","group":"HEMATOLOGY","result":"1.61","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.435","lower_normal":"1","upper_normal":"3","lower_optimal":"1.5","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4167","upper_optimal_position":"0.5833","units":"x 10\u2079/L","description":"Immune cells responsible for long-term immunity and fighting viruses. Within the optimal range","low_causes":"Immunodeficiency, stress","high_causes":"Viral infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"monocytecount","name":"Monocyte Count","group":"HEMATOLOGY","result":"0.43","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4292","lower_normal":"0.2","upper_normal":"1","lower_optimal":"0.3","upper_optimal":"0.7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.375","upper_optimal_position":"0.5417","units":"x 10\u2079/L","description":"Immune cells that fight infection and clean up damaged tissue. Within range","low_causes":"Bone marrow disorders","high_causes":"Chronic infections, inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"eosinophilcount","name":"Eosinophil Count","group":"HEMATOLOGY","result":"0.15","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4236","lower_normal":"0.02","upper_normal":"0.5","lower_optimal":"0.1","upper_optimal":"0.3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.5278","units":"x 10\u2079/L","description":"Cells involved in allergic responses. Within range","low_causes":"Stress","high_causes":"Allergies, asthma, parasites","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"basophilcount","name":"Basophil Count","group":"HEMATOLOGY","result":"0.04","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4444","lower_normal":"0.01","upper_normal":"0.1","lower_optimal":"0.02","upper_optimal":"0.08","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3704","upper_optimal_position":"0.5926","units":"x 10\u2079/L","description":"Least common white blood cells. Within range","low_causes":"Stress","high_causes":"Allergic reactions","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iron","name":"Iron","group":"IRON STUDIES","result":"17.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4298","lower_normal":"11.6","upper_normal":"31.3","lower_optimal":"15","upper_optimal":"22","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3909","upper_optimal_position":"0.5093","units":"\u00b5mol/L","description":"Circulating iron. Within the optimal range","low_causes":"Iron deficiency, chronic disease","high_causes":"Hemochromatosis, iron supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ferritin","name":"Ferritin","group":"IRON STUDIES","result":"189","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5189","lower_normal":"22","upper_normal":"322","lower_optimal":"80","upper_optimal":"200","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3978","upper_optimal_position":"0.5311","units":"ng/mL","description":"Iron storage protein. Within the optimal range at 189. This confirms the anemia is not caused by iron deficiency, as iron stores are healthy","low_causes":"Iron deficiency, blood loss","high_causes":"Iron overload, inflammation, liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tibc","name":"TIBC","group":"IRON STUDIES","result":"45.1","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3448","lower_normal":"44","upper_normal":"76.1","lower_optimal":"50","upper_optimal":"65","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3956","upper_optimal_position":"0.5514","units":"\u00b5mol/L","description":"The blood's capacity to carry iron. Within range but near the lower boundary","low_causes":"Iron overload, chronic disease","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrinsaturation","name":"Transferrin Saturation","group":"IRON STUDIES","result":"34.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4784","lower_normal":"18","upper_normal":"55","lower_optimal":"25","upper_optimal":"40","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3964","upper_optimal_position":"0.5315","units":"%","description":"The percentage of iron transport proteins that are carrying iron. Within the optimal range","low_causes":"Iron deficiency","high_causes":"Iron overload","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrin","name":"Transferrin","group":"IRON STUDIES","result":"2.02","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3044","lower_normal":"2.15","upper_normal":"3.65","lower_optimal":"2.3","upper_optimal":"3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3667","upper_optimal_position":"0.5222","units":"g/L","description":"The main iron transport protein. Below the normal range at 2.02. Low transferrin can occur when the liver reduces production because there is already adequate iron in circulation (ferritin 189). It can also be seen with chronic inflammation or liver disease, though his other liver and inflammatory markers are clean","low_causes":"Iron overload, liver disease, chronic inflammation","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"testosterone","name":"Testosterone","group":"HORMONES","result":"14.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4319","lower_normal":"8.4","upper_normal":"28.7","lower_optimal":"18","upper_optimal":"30","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.491","upper_optimal_position":"0.688","units":"nmol/L","description":"The primary male hormone. Within the lab reference range at 14.4 but below the optimal range of 18 to 30 for a 37-year-old. Low testosterone may be contributing to his low energy, low libido, and hair thinning. At his training volume (8+ sessions per week), overtraining can suppress testosterone production. Additionally, his low Active B12 and the anemia picture may be impairing hormonal production. His LH at 2.54 is within range, suggesting the brain is not sending strong enough signals to increase testosterone production","low_causes":"Hypogonadism, overtraining, chronic illness, B12/folate deficiency","high_causes":"Steroid use, tumors","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freetestosterone","name":"Free Testosterone","group":"HORMONES","result":"0.237","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3642","lower_normal":"0.2","upper_normal":"0.6","lower_optimal":"0.3","upper_optimal":"0.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4167","upper_optimal_position":"0.5833","units":"nmol/L","description":"The amount of testosterone that is unbound and available for the body to use. Below the optimal range at 0.237, sitting near the lower boundary of normal","low_causes":"Low total testosterone, high SHBG","high_causes":"Low SHBG, high total testosterone","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freeandrogenindex","name":"Free Androgen Index","group":"HORMONES","result":"31.24","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3368","lower_normal":"30","upper_normal":"150","lower_optimal":"70","upper_optimal":"120","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4444","upper_optimal_position":"0.5833","units":"Ratio","description":"A measure of how much testosterone is actually available for the body to use. Sitting right at the lower boundary of the normal range at 31.24, well below the optimal of 70 to 120. His SHBG at 46.1 (upper half of range) is binding a significant proportion of his testosterone, leaving very little available to tissues. This directly connects to his low libido, low energy, and hair thinning","low_causes":"Low testosterone, high SHBG","high_causes":"Low SHBG, high testosterone","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"shbg","name":"SHBG","group":"HORMONES","result":"46.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5313","lower_normal":"17.3","upper_normal":"65.8","lower_optimal":"20","upper_optimal":"50","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3519","upper_optimal_position":"0.5581","units":"nmol/L","description":"A protein that binds to testosterone and controls how much is available. Within range but sitting in the upper portion, meaning it is binding more testosterone than ideal and reducing the amount available to tissues","low_causes":"Obesity, insulin resistance","high_causes":"Aging, hyperthyroidism, liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lh","name":"LH","group":"HORMONES","result":"2.54","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3778","lower_normal":"1.5","upper_normal":"9.3","lower_optimal":"3","upper_optimal":"7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3974","upper_optimal_position":"0.5684","units":"IU/L","description":"A brain hormone that tells the testes to produce testosterone. Within range but below optimal. The brain does not appear to be sending strong enough signals to push testosterone production higher, which may be related to the overtraining and nutritional picture","low_causes":"Pituitary disorders, steroid use, overtraining","high_causes":"Primary hypogonadism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cortisol","name":"Cortisol","group":"HORMONES","result":"213","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3754","lower_normal":"172","upper_normal":"497","lower_optimal":"250","upper_optimal":"400","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4133","upper_optimal_position":"0.5672","units":"nmol/L","description":"The body's main stress and energy-mobilising hormone. Within the normal range but below the optimal threshold of 250. Cortisol follows a natural daily rhythm, peaking in the morning and dropping throughout the day. If this blood was drawn later in the day, a reading of 213 may be expected. If drawn in the morning, it may suggest the adrenal glands are not producing quite enough cortisol to support optimal energy levels, which would directly connect to his fatigue","low_causes":"Adrenal insufficiency, overtraining, chronic stress","high_causes":"Chronic stress, Cushing's syndrome","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"dheas","name":"DHEA-S","group":"HORMONES","result":"1585.0","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2509","lower_normal":"2500","upper_normal":"6200","lower_optimal":"3500","upper_optimal":"5500","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4234","upper_optimal_position":"0.6036","units":"\u00b5g/L","description":"A hormone produced by the adrenal glands that supports energy, immune function, and overall vitality. Within the normal range","low_causes":"Adrenal insufficiency, aging, chronic stress","high_causes":"Adrenal tumors","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tsh","name":"TSH","group":"THYROID","result":"1.69","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4232","lower_normal":"0.55","upper_normal":"4.78","lower_optimal":"1","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3688","upper_optimal_position":"0.487","units":"mIU/L","description":"A brain hormone that controls the thyroid. Within the optimal range","low_causes":"Hyperthyroidism","high_causes":"Hypothyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft4","name":"FT4","group":"THYROID","result":"16.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4911","lower_normal":"11.5","upper_normal":"22.7","lower_optimal":"14","upper_optimal":"18","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4077","upper_optimal_position":"0.5268","units":"pmol/L","description":"Active thyroid hormone. Within the optimal range","low_causes":"Hypothyroidism","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft3","name":"FT3","group":"THYROID","result":"5.2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5259","lower_normal":"2.6","upper_normal":"7.1","lower_optimal":"4.5","upper_optimal":"5.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4741","upper_optimal_position":"0.5481","units":"pmol/L","description":"The most active form of thyroid hormone. Within the optimal range","low_causes":"Hypothyroidism, calorie restriction","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"vitamind","name":"Vitamin D","group":"VITAMINS & NUTRIENTS","result":"72","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3822","lower_normal":"50","upper_normal":"200","lower_optimal":"100","upper_optimal":"150","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4444","upper_optimal_position":"0.5556","units":"nmol/L","description":"A hormone that regulates calcium, bone health, immune function, mood, and energy. Within the normal range at 72 but below the optimal level of 100. Suboptimal vitamin D may be contributing to fatigue, low mood, and impaired recovery from training","low_causes":"Limited sun exposure, poor diet, UK climate","high_causes":"Excessive supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"activeb12","name":"Active B12","group":"VITAMINS & NUTRIENTS","result":"58","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4117","lower_normal":"25.1","upper_normal":"165","lower_optimal":"80","upper_optimal":"140","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4641","upper_optimal_position":"0.6071","units":"pmol/L","description":"The metabolically active form of vitamin B12, the form the body can actually use. Below the optimal range at 58. B12 is essential for producing healthy red blood cells, maintaining nerve function, and supporting brain function. At 58, this is low enough to be contributing to the anemia (hemoglobin 124), the elevated RDW (15.9), the fatigue, the brain fog, and potentially the hair thinning. B12 deficiency impairs the bone marrow's ability to produce both red blood cells and white blood cells efficiently, which may also be a factor in the low neutrophil count","low_causes":"B12 deficiency, poor absorption, intense exercise increasing demand","high_causes":"Supplementation, liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"folate","name":"Folate","group":"VITAMINS & NUTRIENTS","result":"9","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4762","lower_normal":"3","upper_normal":"17","lower_optimal":"8","upper_optimal":"14","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4524","upper_optimal_position":"0.5952","units":"\u00b5g/L","description":"Essential for making new blood cells, DNA repair, and brain function. Within the normal range at 9 but below the optimal level of 10 to 14. Folate works alongside B12 in red blood cell production, and with both below optimal the bone marrow is being asked to produce cells without adequate raw materials. Increasing folate through diet (leafy greens, lentils, asparagus) and supplementation would support red blood cell recovery","low_causes":"Poor diet, medications, increased demand from intense exercise","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinekinase","name":"Creatine Kinase","group":"CARDIAC MARKERS","result":"354","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7071","lower_normal":"40","upper_normal":"320","lower_optimal":"80","upper_optimal":"200","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.381","upper_optimal_position":"0.5238","units":"U/L","description":"A muscle enzyme released when muscle tissue is damaged or under stress. Above the normal range at 354. At 5+ resistance sessions per week, this is an expected finding and reflects the normal muscle breakdown and repair cycle from training. This is not concerning in this context","low_causes":"Low muscle mass","high_causes":"Intense exercise, creatine supplementation, muscle injury","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinekinasemb","name":"Creatine Kinase-MB","group":"CARDIAC MARKERS","result":"4.43","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6347","lower_normal":"0","upper_normal":"4.9","lower_optimal":"0","upper_optimal":"3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5374","units":"\u00b5g/L","description":"The heart-specific fraction of creatine kinase. Within the normal range at 4.43 but above optimal. With the overall CK elevated from training, a proportional rise in CK-MB is expected through normal assay cross-reactivity with skeletal muscle. The ratio of CK-MB to total CK is within the expected range for exercise-related elevation","low_causes":"Rarely significant","high_causes":"Heart muscle stress, myocarditis, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"myoglobin","name":"Myoglobin","group":"CARDIAC MARKERS","result":"75.26","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6898","lower_normal":"25","upper_normal":"72","lower_optimal":"30","upper_optimal":"60","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3688","upper_optimal_position":"0.5816","units":"ng/mL","description":"Oxygen-binding protein in muscle. Mildly above the normal range at 75.26. Like CK, myoglobin rises after intense exercise and is an expected finding at this training volume","low_causes":"Low muscle mass, malnutrition","high_causes":"Intense exercise, muscle injury","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ph","name":"pH","group":"URINALYSIS","result":"5","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.381","lower_normal":"4.5","upper_normal":"8","lower_optimal":"6","upper_optimal":"7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4762","upper_optimal_position":"0.5714","units":"pH units","description":"Measure of urine acidity/alkalinity. Within range. Slightly acidic, which can reflect a high-protein diet","low_causes":"Acidic diet, high protein, exercise","high_causes":"UTI, alkaline diet","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineprotein","name":"Protein (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Urine protein screen. Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineglucose","name":"Glucose (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Urine glucose screen. Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ketones","name":"Ketones","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Urine ketone screen. Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"casts","name":"Casts","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Urine cast screen. Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"culturesensitvities","name":"Culture & Sensitivities","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Urine culture. No growth detected.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"}]};
+// ============================================================
+// DO NOT EDIT BELOW THIS LINE
+// ============================================================
+
+const data = REPORT_DATA;
+const bms = data.biomarkers || [];
+
+// Stats
+const totalTested = bms.length;
+const abnormal = bms.filter(b => b.within_normal === 'FALSE').length;
+const optimal = bms.filter(b => b.within_optimal === 'TRUE').length;
+const inRange = bms.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+
+// Group biomarkers
+const groupOrder = ['LIVER & METABOLIC','LIPIDS & CARDIOVASCULAR','GLUCOSE & INSULIN','INFLAMMATION','ELECTROLYTES & MINERALS','KIDNEY FUNCTION','HEMATOLOGY','IRON STUDIES','HORMONES','THYROID','VITAMINS & NUTRIENTS','CARDIAC MARKERS','DIGESTIVE','IMMUNOLOGY','PROSTATE','TUMOR MARKERS','SPECIALIZED TESTS','AUTOIMMUNE & CELIAC','URINALYSIS'];
+const groups = {};
+bms.forEach(b => {
+  if (!groups[b.group]) groups[b.group] = [];
+  groups[b.group].push(b);
+});
+
+// Parse flags/recs/supps into individual items
+function parseItems(text) {
+  if (!text) return [];
+  return text.split('\n').map(s => s.trim()).filter(s => s.length > 2).map(s => s.replace(/^[•\-]\s*/, ''));
+}
+
+const flags = parseItems(data.flags);
+const recs = parseItems(data.recommendations);
+const supps = parseItems(data.supplementation);
+
+// Build page
+const main = document.getElementById('main');
+document.getElementById('nav-patient').textContent = data.patient_name + ' · ' + data.report_date;
+
+let html = '';
+
+// Upgrade banner if present in summary
+let summaryText = data.summary || '';
+let bannerHTML = '';
+if (summaryText.toLowerCase().includes('upgraded') || summaryText.toLowerCase().includes('upgrade')) {
+  const firstPara = summaryText.split('\n\n')[0];
+  if (firstPara.toLowerCase().includes('upgrade')) {
+    bannerHTML = `<div class="upgrade-banner">${firstPara}</div>`;
+    summaryText = summaryText.substring(firstPara.length).trim();
+  }
+}
+
+// OVERVIEW
+html += `<section id="overview" class="fade-in">`;
+html += `<div class="section-label">Overview</div>`;
+html += `<div class="section-title">${data.patient_name}'s Health Report</div>`;
+html += `<div class="section-sub">Report generated ${data.report_date} · ${bms.length} biomarkers analysed</div>`;
+html += bannerHTML;
+
+html += `<div class="stats">
+  <div class="stat-card"><div class="stat-num">${totalTested}</div><div class="stat-label">Tested</div></div>
+  <div class="stat-card"><div class="stat-num red">${abnormal}</div><div class="stat-label">Outside Range</div></div>
+  <div class="stat-card"><div class="stat-num yellow">${inRange}</div><div class="stat-label">In Range</div></div>
+  <div class="stat-card"><div class="stat-num green">${optimal}</div><div class="stat-label">Optimal</div></div>
+</div>`;
+
+html += `<div class="analysis-card summary-card"><h3><span class="dot green"></span> Executive Summary</h3><div class="content">${summaryText}</div></div>`;
+
+// Lifestyle
+if (data.links) {
+  html += `<div class="analysis-card summary-card"><h3><span class="dot green"></span> Lifestyle Recommendations</h3><div class="content">${data.links}</div></div>`;
+}
+html += `</section>`;
+
+// FLAGS
+html += `<section id="flags" class="fade-in">`;
+html += `<div class="section-label">Key Flags</div>`;
+html += `<div class="section-title">Findings Requiring Attention</div>`;
+html += `<div class="section-sub">${flags.length} key flag${flags.length !== 1 ? 's' : ''} identified in your results</div>`;
+flags.forEach((f, i) => {
+  html += `<div class="analysis-card flag-card"><h3><span class="dot red"></span> Flag ${i+1}</h3><div class="content">${f}</div></div>`;
+});
+html += `</section>`;
+
+// RECOMMENDATIONS
+html += `<section id="recommendations" class="fade-in">`;
+html += `<div class="section-label">Clinical Recommendations</div>`;
+html += `<div class="section-title">For Discussion With Your GP</div>`;
+html += `<div class="section-sub">Items to raise with your healthcare provider</div>`;
+recs.forEach((r, i) => {
+  html += `<div class="analysis-card rec-card"><h3><span class="dot blue"></span> Recommendation ${i+1}</h3><div class="content">${r}</div></div>`;
+});
+html += `</section>`;
+
+// SUPPLEMENTS
+html += `<section id="supplements" class="fade-in">`;
+html += `<div class="section-label">Supplementation</div>`;
+html += `<div class="section-title">Suggested Supplements</div>`;
+html += `<div class="section-sub">Supplements that may support your specific findings</div>`;
+supps.forEach((s, i) => {
+  html += `<div class="analysis-card supp-card"><h3><span class="dot green"></span></h3><div class="content">${s}</div></div>`;
+});
+html += `</section>`;
+
+// BIOMARKER RESULTS
+html += `<section id="results" class="fade-in">`;
+html += `<div class="section-label">Full Results</div>`;
+html += `<div class="section-title">Biomarker Breakdown</div>`;
+html += `<div class="section-sub">Click any biomarker to expand for more detail</div>`;
+
+html += `<div class="bio-controls">
+  <input type="text" class="bio-search" placeholder="Search biomarkers..." oninput="filterBiomarkers()">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">All</button>
+  <button class="filter-btn" data-filter="abnormal" onclick="setFilter(this)">Outside Range</button>
+  <button class="filter-btn" data-filter="optimal" onclick="setFilter(this)">Optimal</button>
+</div>`;
+
+groupOrder.forEach(gName => {
+  const gBms = groups[gName];
+  if (!gBms) return;
+  const gAbn = gBms.filter(b => b.within_normal === 'FALSE').length;
+  const abnLabel = gAbn > 0 ? `<span style="color:var(--red)">${gAbn} flagged</span>` : '';
+
+  html += `<div class="bio-group" data-group="${gName}">`;
+  html += `<div class="bio-group-header" onclick="toggleGroup(this.parentElement)">
+    <h3>${gName}</h3>
+    <div class="count">${gBms.length} markers ${abnLabel} <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </div>`;
+  html += `<div class="bio-group-body">`;
+
+  gBms.forEach(b => {
+    const isAbn = b.within_normal === 'FALSE';
+    const isOpt = b.within_optimal === 'TRUE';
+    const isQual = b.within_normal === '';
+    let badgeClass = 'badge-yellow';
+    let badgeText = 'In Range';
+    let dotClass = 'dot-yellow';
+    if (isAbn) { badgeClass = 'badge-red'; badgeText = 'Outside Range'; dotClass = 'dot-red'; }
+    else if (isOpt) { badgeClass = 'badge-green'; badgeText = 'Optimal'; dotClass = 'dot-green'; }
+    else if (isQual) { badgeClass = 'badge-blue'; badgeText = b.result || 'N/A'; dotClass = 'dot-green'; }
+
+    let barHTML = '';
+    if (b.result_position !== '' && b.lower_normal_position !== '') {
+      const rp = parseFloat(b.result_position) * 100;
+      const lnp = parseFloat(b.lower_normal_position) * 100;
+      const unp = parseFloat(b.upper_normal_position) * 100;
+      const lop = b.lower_optimal_position !== '' ? parseFloat(b.lower_optimal_position) * 100 : '';
+      const uop = b.upper_optimal_position !== '' ? parseFloat(b.upper_optimal_position) * 100 : '';
+
+      barHTML = `<div class="range-bar-container"><div class="range-bar">`;
+      barHTML += `<div class="range-normal" style="left:${lnp}%;width:${unp-lnp}%"></div>`;
+      if (lop !== '' || uop !== '') {
+        const optLeft = lop !== '' ? lop : lnp;
+        const optRight = uop !== '' ? uop : unp;
+        barHTML += `<div class="range-optimal" style="left:${optLeft}%;width:${optRight-optLeft}%"></div>`;
+      }
+      barHTML += `<div class="range-dot ${dotClass}" style="left:${Math.max(0,Math.min(100,rp))}%"></div>`;
+      barHTML += `</div></div>`;
+    }
+
+    let detailHTML = '';
+    if (b.description) {
+      detailHTML += `<div class="bio-detail-desc">${b.description}</div>`;
+    }
+    if (b.lower_normal !== '' || b.upper_normal !== '') {
+      detailHTML += `<div class="bio-detail-ranges">`;
+      if (b.lower_normal !== '') detailHTML += `<div class="bio-detail-range"><strong>Normal low:</strong> ${b.lower_normal}</div>`;
+      if (b.upper_normal !== '') detailHTML += `<div class="bio-detail-range"><strong>Normal high:</strong> ${b.upper_normal}</div>`;
+      if (b.lower_optimal !== '') detailHTML += `<div class="bio-detail-range"><strong>Optimal low:</strong> ${b.lower_optimal}</div>`;
+      if (b.upper_optimal !== '') detailHTML += `<div class="bio-detail-range"><strong>Optimal high:</strong> ${b.upper_optimal}</div>`;
+      detailHTML += `</div>`;
+    }
+    if (b.low_causes || b.high_causes) {
+      detailHTML += `<div class="bio-detail-causes">`;
+      if (b.low_causes) detailHTML += `<p><strong>Common causes if low:</strong> ${b.low_causes}</p>`;
+      if (b.high_causes) detailHTML += `<p><strong>Common causes if high:</strong> ${b.high_causes}</p>`;
+      detailHTML += `</div>`;
+    }
+
+    html += `<div class="bio-card" data-status="${isAbn ? 'abnormal' : isOpt ? 'optimal' : isQual ? 'qual' : 'range'}" data-name="${b.name.toLowerCase()}">
+      <div class="bio-card-main" onclick="toggleCard(this.parentElement)">
+        <div class="bio-card-info">
+          <div class="bio-card-name">${b.name}</div>
+          <div class="bio-card-result">${b.result} ${b.units || ''}</div>
+        </div>
+        ${barHTML}
+        <span class="bio-card-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="bio-detail">${detailHTML}</div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+html += `</section>`;
+
+// FOOTER
+html += `<div class="footer">
+  <p>TrueVitals Group Ltd · Company No. 16449605</p>
+  <p>This report is for informational purposes only and does not constitute medical advice.</p>
+  <p><a href="https://www.truevitals.co.uk">truevitals.co.uk</a></p>
+</div>`;
+
+main.innerHTML = html;
+
+// Interactions
+function toggleGroup(el) { el.classList.toggle('open'); }
+function toggleCard(el) { el.classList.toggle('expanded'); }
+
+function setActive(a) {
+  document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+  a.classList.add('active');
+}
+function setActiveMob(a) {
+  document.querySelectorAll('.mobile-nav a').forEach(l => l.classList.remove('active'));
+  a.classList.add('active');
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterBiomarkers();
+}
+
+function filterBiomarkers() {
+  const search = document.querySelector('.bio-search').value.toLowerCase();
+  const filter = document.querySelector('.filter-btn.active').dataset.filter;
+
+  document.querySelectorAll('.bio-card').forEach(card => {
+    const name = card.dataset.name;
+    const status = card.dataset.status;
+    let show = true;
+    if (search && !name.includes(search)) show = false;
+    if (filter === 'abnormal' && status !== 'abnormal') show = false;
+    if (filter === 'optimal' && status !== 'optimal') show = false;
+    card.style.display = show ? '' : 'none';
+  });
+
+  // Hide empty groups
+  document.querySelectorAll('.bio-group').forEach(g => {
+    const visible = g.querySelectorAll('.bio-card[style=""], .bio-card:not([style])').length;
+    g.style.display = visible > 0 ? '' : 'none';
+  });
+}
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Update active nav on scroll
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+  document.querySelectorAll('.mobile-nav a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// DOB GATE
+const dobInput = document.getElementById('gate-dob');
+const gateError = document.getElementById('gate-error');
+
+dobInput.addEventListener('input', function(e) {
+  let v = this.value.replace(/[^\d]/g, '');
+  if (v.length > 8) v = v.substring(0, 8);
+  let formatted = '';
+  if (v.length > 0) formatted = v.substring(0, Math.min(2, v.length));
+  if (v.length > 2) formatted += ' / ' + v.substring(2, Math.min(4, v.length));
+  if (v.length > 4) formatted += ' / ' + v.substring(4);
+  this.value = formatted;
+});
+
+dobInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') verifyDob();
+});
+
+function verifyDob() {
+  const entered = dobInput.value.replace(/\s/g, '').replace(/\//g, '/');
+  const stored = data.dob;
+  const normalize = (d) => {
+    let clean = d.replace(/\s/g, '');
+    if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
+      const parts = clean.split(/[-T]/);
+      return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    return clean;
+  };
+  if (normalize(entered) === normalize(stored)) {
+    document.getElementById('gate').classList.add('gate-hidden');
+    document.getElementById('app-nav').classList.remove('app-hidden');
+    document.getElementById('app-mobile-nav').classList.remove('app-hidden');
+    document.getElementById('main').classList.remove('app-hidden');
+    gateError.style.display = 'none';
+  } else {
+    gateError.style.display = 'block';
+    dobInput.style.borderColor = 'var(--red)';
+    setTimeout(() => { dobInput.style.borderColor = ''; }, 2000);
+  }
+}
+
+dobInput.focus();
+</script>
+</body>
+</html>
