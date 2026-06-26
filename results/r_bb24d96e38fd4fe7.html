@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueVitals Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#09090b;--surface:#141416;--surface2:#1c1c1f;--surface3:#242428;
+--border:#27272a;--border2:#3f3f46;
+--text:#fafafa;--text2:#a1a1aa;--text3:#71717a;
+--green:#2ce4ad;--green-dim:rgba(44,228,173,0.12);--green-mid:rgba(44,228,173,0.25);
+--red:#ef4444;--red-dim:rgba(239,68,68,0.12);
+--yellow:#a3d250;--yellow-dim:rgba(163,210,80,0.12);
+--blue:#818cf8;--blue-dim:rgba(129,140,248,0.12);
+--radius:12px;--radius-sm:8px;
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.nav-logo span{color:var(--green)}
+.nav-patient{font-size:13px;color:var(--text3);padding-left:12px;border-left:1px solid var(--border)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:13px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--surface2)}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 4px;padding-bottom:env(safe-area-inset-bottom,8px)}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mobile-nav a{color:var(--text3);text-decoration:none;font-size:10px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:var(--radius-sm)}
+.mobile-nav a.active{color:var(--green)}
+.mobile-nav svg{width:20px;height:20px}
+
+/* MAIN */
+main{max-width:960px;margin:0 auto;padding:88px 24px 120px}
+section{margin-bottom:48px}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:16px}
+.section-title{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-0.5px}
+.section-sub{color:var(--text2);font-size:15px;margin-bottom:24px}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.stat-num{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.stat-num.green{color:var(--green)}
+.stat-num.red{color:var(--red)}
+.stat-num.yellow{color:#a3d250}
+
+/* UPGRADE BANNER */
+.upgrade-banner{background:var(--green-dim);border:1px solid rgba(44,228,173,0.2);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;font-size:14px;color:var(--green);line-height:1.6}
+
+/* ANALYSIS CARDS */
+.analysis-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px}
+.analysis-card h3{font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.analysis-card .content{font-size:14px;color:var(--text2);line-height:1.8;white-space:pre-line}
+.flag-card{border-left:3px solid var(--red)}
+.rec-card{border-left:3px solid var(--blue)}
+.supp-card{border-left:3px solid var(--green)}
+.summary-card{border-left:3px solid var(--green)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.red{background:var(--red)}.dot.green{background:var(--green)}.dot.blue{background:var(--blue)}.dot.yellow{background:var(--yellow)}
+
+/* BIOMARKER CONTROLS */
+.bio-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.bio-search{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text);font-family:inherit;font-size:14px;width:260px;outline:none;transition:border-color 0.2s}
+.bio-search:focus{border-color:var(--green)}
+.bio-search::placeholder{color:var(--text3)}
+.filter-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 16px;color:var(--text3);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{border-color:var(--border2);color:var(--text)}
+.filter-btn.active{background:var(--green-dim);border-color:rgba(44,228,173,0.3);color:var(--green)}
+
+/* BIOMARKER GROUP */
+.bio-group{margin-bottom:16px}
+.bio-group-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;user-select:none}
+.bio-group-header:hover{border-color:var(--border2);background:var(--surface2)}
+.bio-group-header h3{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px}
+.bio-group-header .count{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.bio-group-header .chevron{transition:transform 0.3s;color:var(--text3)}
+.bio-group.open .chevron{transform:rotate(180deg)}
+.bio-group-body{display:none;padding:8px 0 0}
+.bio-group.open .bio-group-body{display:block}
+
+/* BIOMARKER CARD */
+.bio-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden;transition:all 0.2s}
+.bio-card:hover{border-color:var(--border2)}
+.bio-card-main{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:16px}
+.bio-card-info{flex:1;min-width:0}
+.bio-card-name{font-size:14px;font-weight:500;margin-bottom:2px}
+.bio-card-result{font-size:13px;color:var(--text2)}
+.bio-card-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.5px}
+.badge-red{background:var(--red-dim);color:var(--red)}
+.badge-green{background:var(--green-dim);color:var(--green)}
+.badge-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.badge-blue{background:var(--blue-dim);color:var(--blue)}
+
+/* RANGE BAR */
+.range-bar-container{flex:1;max-width:280px;min-width:160px}
+.range-bar{height:6px;background:rgba(239,68,68,0.25);border-radius:3px;position:relative;overflow:visible}
+.range-normal{position:absolute;height:100%;background:rgba(163,210,80,0.35);border-radius:3px;z-index:1}
+.range-optimal{position:absolute;height:100%;background:rgba(44,228,173,0.5);border-radius:3px;z-index:2}
+.range-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--bg);z-index:2}
+.range-dot.dot-red{background:var(--red)}
+.range-dot.dot-green{background:var(--green)}
+.range-dot.dot-yellow{background:#a3d250}
+
+/* EXPANDED DETAIL */
+.bio-detail{display:none;padding:0 20px 16px;border-top:1px solid var(--border)}
+.bio-card.expanded .bio-detail{display:block}
+.bio-detail-desc{font-size:13px;color:var(--text2);line-height:1.7;padding-top:12px;margin-bottom:12px}
+.bio-detail-ranges{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px}
+.bio-detail-range{font-size:12px;color:var(--text3)}
+.bio-detail-range strong{color:var(--text2)}
+.bio-detail-causes{font-size:12px;color:var(--text3);line-height:1.6}
+.bio-detail-causes strong{color:var(--text2);font-weight:500}
+
+/* FOOTER */
+.footer{text-align:center;padding:40px 24px;border-top:1px solid var(--border);margin-top:48px}
+.footer p{font-size:12px;color:var(--text3);margin-bottom:4px}
+.footer a{color:var(--green);text-decoration:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .mobile-nav{display:block}
+  .nav-patient{display:none}
+  main{padding:76px 16px 100px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-num{font-size:28px}
+  .section-title{font-size:22px}
+  .bio-card-main{flex-wrap:wrap;gap:10px}
+  .range-bar-container{max-width:100%;order:3;width:100%}
+  .bio-search{width:100%}
+  .bio-controls{gap:6px}
+  .analysis-card{padding:20px}
+}
+
+/* SCROLL ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* DOB GATE */
+.gate{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.gate-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;max-width:400px;width:90%;text-align:center}
+.gate-logo{font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px}
+.gate-logo span{color:var(--green)}
+.gate-sub{color:var(--text3);font-size:14px;margin-bottom:32px;line-height:1.5}
+.gate-label{display:block;text-align:left;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.gate-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;color:var(--text);font-family:inherit;font-size:16px;outline:none;transition:border-color 0.2s;text-align:center;letter-spacing:1px}
+.gate-input:focus{border-color:var(--green)}
+.gate-btn{width:100%;margin-top:16px;padding:14px;background:var(--green);color:#000;font-family:inherit;font-size:15px;font-weight:600;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity 0.2s}
+.gate-btn:hover{opacity:0.85}
+.gate-error{color:var(--red);font-size:13px;margin-top:12px;display:none}
+.gate-footer{color:var(--text3);font-size:11px;margin-top:24px;line-height:1.5}
+.gate-hidden{display:none}
+.app-hidden{display:none}
+</style>
+</head>
+<body>
+
+<!-- DOB GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals" style="width:180px;height:auto;margin:0 auto 8px;display:block">
+    <div class="gate-sub">Please verify your identity to access your report. Enter your date of birth below.</div>
+    <label class="gate-label">Date of Birth</label>
+    <input type="text" class="gate-input" id="gate-dob" placeholder="DD / MM / YYYY" maxlength="14" autocomplete="off">
+    <button class="gate-btn" id="gate-btn" onclick="verifyDob()">View My Results</button>
+    <div class="gate-error" id="gate-error">Incorrect date of birth. Please try again.</div>
+    <div class="gate-footer">Your results are protected. If you are having trouble accessing your report, please contact support@truevitals.co.uk</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav app-hidden" id="app-nav">
+  <div class="nav-brand">
+    <img src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals" style="height:28px;width:auto">
+    <div class="nav-patient" id="nav-patient"></div>
+  </div>
+  <div class="nav-links">
+    <a href="#overview" class="active" onclick="setActive(this)">Overview</a>
+    <a href="#flags" onclick="setActive(this)">Key Flags</a>
+    <a href="#recommendations" onclick="setActive(this)">Clinical</a>
+    <a href="#supplements" onclick="setActive(this)">Supplements</a>
+    <a href="#results" onclick="setActive(this)">Results</a>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav app-hidden" id="app-mobile-nav">
+  <div class="mobile-nav-inner">
+    <a href="#overview" class="active" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </a>
+    <a href="#flags" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      Flags
+    </a>
+    <a href="#recommendations" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Clinical
+    </a>
+    <a href="#supplements" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      Supps
+    </a>
+    <a href="#results" onclick="setActiveMob(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Results
+    </a>
+  </div>
+</div>
+
+<main id="main" class="app-hidden"></main>
+
+<script>
+// ============================================================
+// PASTE YOUR PDFMONKEY JSON BELOW THIS LINE
+// ============================================================
+const REPORT_DATA = {"patient_name":"Sally Heyes","dob":"01/10/1955","report_date":"2026-06-24","summary":"Sally presents as a 70-year-old female with a BMI of 25.7, performing 1 cardio session per week with 5,000 to 7,500 daily steps and no resistance training. Her diet quality is rated 8 out of 10 (Mediterranean diet) with a volume of 5 out of 10. She has a history of Graves' disease now treated with Levothyroxine, diagnosed hypertension, and takes a proton pump inhibitor (Omeprazole). Her symptoms are weight gain, bloating, and hair thinning. She has expressed concern about her LDL cholesterol, a reluctance to take statins, and an interest in a coronary artery calcium (CAC) scan.\n\nStarting with the positives. Her thyroid is well-controlled on Levothyroxine. TSH at 1.02 is within the optimal range, FT4 at 18.2 is optimal, and FT3 at 4.7 is within the optimal range. Both thyroid antibodies are negative. This confirms her Levothyroxine dose is appropriately calibrated. Her liver function is clean across every marker (GGT 26, ALT 23, AST 30, bilirubin 10). Her full blood count is largely healthy. Her inflammation markers are excellent (hs-CRP 0.8, ESR 2, NLR 2.13, all measures of inflammation in the body). Her celiac screen is negative. Her vitamin D at 121 is within the optimal range. Her parathyroid hormone at 1.3 is well balanced. Her calcium is within range. Her insulin sensitivity is healthy (HOMA-IR 0.85, triglyceride/HDL ratio 0.30). Her triglycerides at 0.7 are excellent. Her HDL (protective cholesterol) at 2.3 is outstanding. Her ApoA-1 (the protective cholesterol protein) was above the measurable range. Her TC:HDL ratio at 3.04 is excellent. Her tumour markers are all within range. Her digestive enzymes are healthy.\n\nThe cholesterol picture is the finding Sally is most concerned about, so it deserves detailed discussion. Her total cholesterol at 7, LDL (the harmful type of cholesterol that can build up in artery walls) at 4.45, ApoB (a measure of how many harmful cholesterol particles are circulating in the blood) at 1.42, Non-HDL at 4.7, and ApoB/A-I ratio at 0.71 are all above their respective normal ranges. Her Lipoprotein(a) at 55.68 is approximately 1.7 times the upper limit of 32. Lp(a) is genetically inherited and cannot be changed by diet, exercise, or lifestyle. It is an independent cardiovascular risk factor, and some of the elevated LDL and ApoB readings include Lp(a) particles.\n\nHowever, the protective side of her lipid profile is among the strongest we see. Her HDL at 2.3, triglycerides at 0.7, TC:HDL ratio at 3.04, ApoA-1 above the measurable range, triglyceride/HDL ratio at 0.30, and remnant cholesterol at 0.25 all indicate excellent cardiovascular protection. These markers reflect the benefits of her Mediterranean diet and healthy lifestyle.\n\nThe question of whether statins are needed is a clinical decision for her GP, and we are not in a position to make that recommendation either way. What we can say is that her overall cardiovascular risk is more nuanced than the LDL number alone suggests. Her interest in a coronary artery calcium (CAC) scan is a reasonable and well-informed approach. A CAC score directly measures the amount of calcium deposited in the coronary arteries, which reflects actual plaque buildup rather than predicted risk from blood markers alone. A low CAC score would suggest the cholesterol has not yet caused significant arterial damage, which could support a watch-and-wait approach. A high CAC score would indicate existing plaque and strengthen the case for intervention. We would encourage her to discuss this with her GP.\n\nHer kidney function warrants attention. Her eGFR (a measure of how well the kidneys filter blood) at 67 and Cystatin C eGFR at 63 both place kidney filtration below the optimal threshold of 90. At 70, some age-related decline is expected, but the Cystatin C (an alternative kidney measure not affected by muscle mass) at 1.22 (above the normal range of 1.1) provides independent confirmation that filtration is reduced. Long-term hypertension damages the small blood vessels in the kidneys over time, and long-term PPI (Omeprazole) use has been associated with kidney function decline in some research. This should be discussed with her GP and monitored.\n\nHer proton pump inhibitor (Omeprazole) is likely contributing to several findings. PPIs work by reducing stomach acid production, which is effective for acid reflux and stomach protection, but stomach acid is essential for absorbing several key nutrients. Her B12 at 357 is within the lab range but below optimal (optimal is above 400). B12 requires stomach acid for absorption, and long-term PPI use is one of the most common causes of gradual B12 decline in older adults. Her ferritin (iron stores) at 25 is below optimal for a post-menopausal woman with no menstrual iron losses. Iron also requires stomach acid for absorption. Her MCV (the average size of red blood cells) at 82.9 is marginally below the normal range (83), confirming the red blood cells are beginning to shrink from insufficient iron. Her folate at 8 is within range but could be higher on a Mediterranean diet. The bloating she describes may also be PPI-related: by reducing stomach acid, PPIs can allow bacteria to overgrow in the small intestine (a condition called small intestinal bacterial overgrowth, or SIBO), which produces gas and bloating.\n\nHer hair thinning has multiple potential contributing factors. Suboptimal ferritin (25) is one of the most common causes of hair thinning in women. Suboptimal B12 (357) can also affect hair growth. While her thyroid is well-controlled, even small fluctuations in thyroid hormone levels can affect hair cycles. Age-related changes in oestrogen also contribute. Addressing the iron and B12 would be the most actionable steps.\n\nHer HbA1c (a measure of average blood sugar over 2 to 3 months) at 40 mmol/mol (5.8%) is within the normal range but approaching the prediabetes threshold of 42. Her C-Peptide (a marker of insulin production) at 206.9 pmol/L is below the normal range, and her HOMA-B (a measure of how hard the pancreas is working) at 76 is below the normal range of 80 to 200. Her fasting glucose at 4.6 is healthy and her insulin sensitivity is excellent (HOMA-IR 0.85). The slightly elevated HbA1c with below-range pancreatic output suggests the pancreas may be producing marginally less insulin than ideal, which is a natural age-related change. This warrants monitoring.\n\nHer FIB-4 fibrosis score at 1.47 is marginally above the 1.45 threshold. At 70, age is the primary driver. All liver enzymes are clean, so this is most likely an age-driven false positive.","links":"Your Mediterranean diet at 8 out of 10 quality is one of the best dietary patterns available for cardiovascular health, and your blood results confirm this. Your triglycerides at 0.7, HDL at 2.3, and triglyceride/HDL ratio at 0.30 are all outstanding. The elevated LDL and ApoB are frustrating given how well you eat, and the Lipoprotein(a) at 55.68 confirms a genetic component is contributing regardless of diet.\n\nYour interest in a CAC (coronary artery calcium) scan is well-informed and we would encourage you to pursue it through your GP or privately. A CAC score directly measures whether the elevated cholesterol has translated into actual arterial plaque, which is the key question. It would provide much more useful information for the statin decision than blood markers alone.\n\nYour PPI (Omeprazole) is likely the single biggest contributor to the nutrient absorption issues in this report (B12 357 below optimal, ferritin 25 below optimal, MCV 82.9 below range). It may also be driving the bloating through bacterial overgrowth in the small intestine. If you have been on Omeprazole for a long period, it is worth discussing with your GP whether you still need it at the current dose, or whether a lower dose or alternative approach might be appropriate. Some people can gradually step down PPI therapy with GP guidance. This is not a recommendation to stop your medication.\n\nFor hair thinning, correcting the iron (ferritin 25) and B12 (357) is the most actionable step. Both are well-established contributors to hair loss in women, and both are likely being impaired by the PPI. Sublingual B12 (which absorbs through the mouth, bypassing the stomach acid issue) is particularly relevant.\n\nAdding resistance training (even one session per week of bodyweight exercises or light weights) would support bone density (critical at 70), muscle mass preservation, metabolic health (HbA1c approaching prediabetes threshold), and body composition. Your cardiovascular fitness from cardio is excellent, but resistance training provides benefits that cardio alone cannot.\n\nAt 65kg and 159cm with your activity level, caloric maintenance is approximately 1,500 to 1,700 calories per day. Protein should be at least 65 to 80g per day to support muscle maintenance, bone health, and hair growth.","flags":"\u2022 ApoB (a measure of harmful cholesterol particle count) at 1.42 (significantly above 0.9), LDL at 4.45 (above 3), total cholesterol 7, Non-HDL at 4.7 (above 4), and ApoB/A-I ratio at 0.71 (above 0.6). However, protective markers are outstanding: HDL 2.3, triglycerides 0.7, TC:HDL 3.04, ApoA-1 above measurable range, TG/HDL ratio 0.30, remnant cholesterol 0.25. A CAC scan would help determine whether harmful markers have translated into actual plaque. Combined with hypertension, warrants GP discussion.\n\n\u2022 Lipoprotein(a) at 55.68 (above 32). Genetically inherited cardiovascular risk factor. Should be permanently recorded on medical notes. The possible familial hypercholesterolaemia is worth discussing with GP.\n\n\u2022 eGFR at 67 and Cystatin C eGFR at 63, with Cystatin C at 1.22 (above range). Kidney filtration is reduced (Stage 2 CKD, mild). Long-term hypertension and PPI use may be contributing. Should be monitored.\n\n\u2022 MCV at 82.9 (below 83) with ferritin at 25 (below optimal). Early iron deficiency. PPI (Omeprazole) likely impairing iron absorption. Contributing to hair thinning.\n\n\u2022 B12 at 357 (below optimal 400). PPI likely impairing absorption. May contribute to hair thinning and fatigue. Sublingual B12 recommended.\n\n\u2022 HbA1c at 40 (5.8%), approaching prediabetes threshold of 42. C-Peptide at 206.9 (below range), HOMA-B at 76 (below range). Pancreatic output declining with age. Worth monitoring.\n\n\u2022 FIB-4 at 1.47 (marginally above 1.45). Age-driven. All liver enzymes clean.\n\n\u2022 Bloating may be PPI-related through small intestinal bacterial overgrowth (SIBO). Worth discussing with GP.","recommendations":"Your cholesterol picture (ApoB 1.42, LDL 4.45, Lp(a) 55.68) combined with hypertension warrants a thorough conversation with your GP about cardiovascular risk. Your interest in a CAC scan is a reasonable and well-informed approach that we encourage. A CAC score measures actual plaque and can inform the statin decision more precisely than blood markers alone. Your Lipoprotein(a) at 55.68 should be permanently recorded on your medical notes. The possible familial hypercholesterolaemia you have mentioned is worth discussing with your GP, who can arrange genetic testing if appropriate.\n\nYour kidney function (eGFR 67, Cystatin C 1.22, Cystatin C eGFR 63) should be discussed with your GP and monitored. Long-term hypertension and PPI use can both affect kidney function. Your GP may wish to review whether the PPI is still needed.\n\nYour PPI (Omeprazole) and its contribution to nutrient absorption issues (B12, iron, bloating) is worth discussing with your GP. If the original indication has resolved, a gradual step-down may be possible under GP supervision.\n\nYour HbA1c at 40 (5.8%) should be monitored at follow-up.\n\nA follow-up blood test in 12 weeks focusing on full lipid panel with ApoB, B12, ferritin, MCV, eGFR, Cystatin C, HbA1c, C-Peptide, and CEA is recommended.","supplementation":"Sublingual methylcobalamin B12 at 1,000 to 2,000 mcg daily is the top priority. Your B12 at 357 is below optimal, and the PPI is likely the reason. Sublingual delivery bypasses the stomach entirely, which is essential when stomach acid is being suppressed. Choose methylcobalamin rather than cyanocobalamin.\n\nIron bisglycinate at 25mg every other day, taken on an empty stomach with vitamin C. Your ferritin at 25 and MCV at 82.9 confirm early iron depletion from PPI-impaired absorption. Take at a different time of day from your Omeprazole. Avoid tea, coffee, and calcium with iron.\n\nContinue your current vitamin D intake. At 121 your level is excellent.\n\nMagnesium glycinate at 300mg before bed for sleep quality, bone health, and blood pressure support.\n\nA high-quality omega-3 fish oil providing 2g of combined EPA and DHA daily for cardiovascular health and joint support.\n\nCollagen peptides at 10g daily may support hair health and bone density.\n\nDo not take high-dose calcium supplements without GP guidance.","biomarkers":[{"key":"albumin","name":"Albumin","group":"LIVER & METABOLIC","result":"44","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5417","lower_normal":"34","upper_normal":"50","lower_optimal":"40","upper_optimal":"48","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4583333333","upper_optimal_position":"0.625","units":"g/L","description":"Primary protein made by liver. Within the optimal range","low_causes":"Liver disease","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alt","name":"ALT","group":"LIVER & METABOLIC","result":"23","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4422","lower_normal":"7","upper_normal":"56","lower_optimal":"7","upper_optimal":"20","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.4217687075","units":"U/L","description":"Liver enzyme. Within the optimal range","low_causes":"Rarely significant","high_causes":"Hepatitis, fatty liver","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alkalinephosphatase","name":"Alkaline Phosphatase","group":"LIVER & METABOLIC","result":"82","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5048","lower_normal":"46","upper_normal":"116","lower_optimal":"60","upper_optimal":"100","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.5904761905","units":"IU/L","description":"Enzyme in bones, liver, intestines. Within the optimal range","low_causes":"Malnutrition","high_causes":"Bone disease, liver obstruction","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ast","name":"AST","group":"LIVER & METABOLIC","result":"30","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5104","lower_normal":"13","upper_normal":"45","lower_optimal":"13","upper_optimal":"25","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.4583333333","units":"U/L","description":"Liver/muscle enzyme. Within range","low_causes":"Rarely significant","high_causes":"Liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"gammagt","name":"Gamma GT","group":"LIVER & METABOLIC","result":"26","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.549","lower_normal":"4","upper_normal":"38","lower_optimal":"10","upper_optimal":"25","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3921568627","upper_optimal_position":"0.5392156863","units":"IU/L","description":"Liver enzyme. Within optimal, confirming clean liver","low_causes":"Rarely significant","high_causes":"Alcohol, fatty liver","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bilirubin","name":"Bilirubin","group":"LIVER & METABOLIC","result":"10","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4375","lower_normal":"5","upper_normal":"21","lower_optimal":"5","upper_optimal":"15","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5416666667","units":"umol/L","description":"Waste product. Within range","low_causes":"Rarely significant","high_causes":"Liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"protein","name":"Total Protein","group":"LIVER & METABOLIC","result":"72","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5333","lower_normal":"57","upper_normal":"82","lower_optimal":"65","upper_optimal":"75","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.44","upper_optimal_position":"0.5733333333","units":"g/L","description":"Sum of proteins. Within range","low_causes":"Liver disease","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"globulin","name":"Globulin","group":"LIVER & METABOLIC","result":"28","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5185","lower_normal":"18","upper_normal":"36","lower_optimal":"24","upper_optimal":"32","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.5925925926","units":"g/L","description":"Antibody proteins. Within range","low_causes":"Immune deficiency","high_causes":"Chronic inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"agratio","name":"Albumin/Globulin Ratio","group":"LIVER & METABOLIC","result":"1.57","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4452","lower_normal":"1.1","upper_normal":"2.5","lower_optimal":"1.1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"Ratio","description":"Calculated ratio confirming healthy liver and immune balance. Within optimal","low_causes":"Liver disease","high_causes":"Not significant","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fib4","name":"FIB-4 Score","group":"LIVER & METABOLIC","result":"1.47","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.5069","lower_normal":"","upper_normal":"1.45","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3448275862","units":"","description":"Liver fibrosis score. Marginally above 1.45. At 70, age is the primary driver. All liver enzymes clean","low_causes":"Not applicable","high_causes":"Liver fibrosis, age","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"totalcholesterol","name":"Total Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"7","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6731","lower_normal":"","upper_normal":"5.2","lower_optimal":"","upper_optimal":"4.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4326923077","units":"mmol/L","description":"Above range at 7. Significant proportion is excellent protective HDL (2.3). TC:HDL ratio 3.04 is outstanding","low_causes":"Very low rare","high_causes":"Genetics, age, Lp(a)","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ldlcholesterol","name":"LDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"4.45","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7417","lower_normal":"","upper_normal":"3","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3333333333","units":"mmol/L","description":"Above range at 4.45. Includes Lp(a) particles (genetic). CAC scan would determine if this has caused actual plaque","low_causes":"Very low rare","high_causes":"Genetics, Lp(a), age","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdlcholesterol","name":"HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.9583","lower_normal":"1.2","upper_normal":"","lower_optimal":"1.4","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5833333333","upper_optimal_position":"","units":"mmol/L","description":"Outstanding at 2.3. One of the strongest protective readings possible. Reflects Mediterranean diet benefits","low_causes":"Sedentary lifestyle","high_causes":"Genetics, Mediterranean diet","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"triglycerides","name":"Triglycerides","group":"LIPIDS & CARDIOVASCULAR","result":"0.7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2059","lower_normal":"","upper_normal":"1.7","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2941176471","units":"mmol/L","description":"Excellent at 0.7. Confirms excellent metabolic health","low_causes":"Very low rare","high_causes":"Excess carbohydrates","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cholesterolratio","name":"TC:HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"3.04","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3378","lower_normal":"","upper_normal":"4.5","lower_optimal":"","upper_optimal":"3.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3888888889","units":"Ratio","description":"Excellent at 3.04. More predictive of CV risk than total cholesterol alone","low_causes":"Low TC or high HDL","high_causes":"Low HDL, elevated TC","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdloftotal","name":"HDL % of total","group":"LIPIDS & CARDIOVASCULAR","result":"32.86","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"%","description":"Very good","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"nonhdlcholesterol","name":"Non-HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"4.7","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.5875","lower_normal":"","upper_normal":"4","lower_optimal":"","upper_optimal":"3","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.375","units":"mmol/L","description":"Above range at 4.7","low_causes":"Very low rare","high_causes":"Genetics, Lp(a)","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vldl","name":"VLDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.32","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2051","lower_normal":"","upper_normal":"0.78","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3205128205","units":"mmol/L","description":"Within optimal","low_causes":"Rarely significant","high_causes":"Excess carbohydrates","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apolipoproteina1","name":"Apolipoprotein A-1","group":"LIPIDS & CARDIOVASCULAR","result":"2.2","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6923","lower_normal":"1.22","upper_normal":"2.13","lower_optimal":"1.6","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4725274725","upper_optimal_position":"0.619047619","units":"g/L","description":"Above measurable range. Exceptional protective cholesterol protein","low_causes":"Similar to low HDL","high_causes":"Genetics, Mediterranean diet","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"apolipoproteinb","name":"Apolipoprotein B","group":"LIPIDS & CARDIOVASCULAR","result":"1.42","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7889","lower_normal":"","upper_normal":"0.9","lower_optimal":"","upper_optimal":"0.7","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3888888889","units":"g/L","description":"A measure of harmful cholesterol particle count. Significantly above threshold at 1.42. Some attributable to Lp(a). A CAC scan would help determine if this has caused actual arterial plaque","low_causes":"Very low rare","high_causes":"Genetics, Lp(a), age","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apoba1ratio","name":"ApoB/A-I Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.71","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.5071","lower_normal":"","upper_normal":"0.7","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3571428571","units":"Ratio","description":"Balance between harmful and protective particles. Marginally above threshold at 0.71","low_causes":"High ApoA-1","high_causes":"Elevated ApoB","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"tghdlratio","name":"Triglyceride/HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1","lower_normal":"","upper_normal":"1.5","lower_optimal":"","upper_optimal":"0.9","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3","units":"Ratio","description":"Outstanding at 0.30. Confirms excellent insulin sensitivity and metabolic health","low_causes":"Very low TG, high HDL","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"remnantcholesterol","name":"Remnant Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.25","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1562","lower_normal":"","upper_normal":"0.8","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3125","units":"mmol/L","description":"Excellent at 0.25","low_causes":"Very low TG","high_causes":"Metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"lipoproteina","name":"Lipoprotein(a)","group":"LIPIDS & CARDIOVASCULAR","result":"55.68","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.87","lower_normal":"","upper_normal":"32","lower_optimal":"","upper_optimal":"14","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.21875","units":"nmol/L","description":"Genetically determined CV risk factor. Above range at 55.68 (~1.7x limit). Inherited, cannot be changed by lifestyle. Some LDL and ApoB readings include Lp(a) particles. Should be permanently recorded on medical notes. The familial hypercholesterolaemia Sally has mentioned is worth discussing with GP","low_causes":"Genetics (favourable)","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"glucose","name":"Glucose","group":"GLUCOSE & INSULIN","result":"4.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.48","lower_normal":"3.5","upper_normal":"6","lower_optimal":"4.2","upper_optimal":"5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4266666667","upper_optimal_position":"0.5333333333","units":"mmol/L","description":"Within optimal","low_causes":"Excessive insulin","high_causes":"Prediabetes","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hba1c","name":"HbA1c","group":"GLUCOSE & INSULIN","result":"40","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4762","lower_normal":"","upper_normal":"42","lower_optimal":"","upper_optimal":"35","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4166666667","units":"mmol/mol","description":"Average blood sugar over 2-3 months. At 40 (5.8%), approaching prediabetes threshold of 42. Worth monitoring","low_causes":"Iron deficiency anemia","high_causes":"Prediabetes, age","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"insulin","name":"Insulin","group":"GLUCOSE & INSULIN","result":"4.18","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.357","lower_normal":"2.6","upper_normal":"24.9","lower_optimal":"3","upper_optimal":"10","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3393124066","upper_optimal_position":"0.4439461883","units":"mIU/L","description":"Within optimal","low_causes":"Fasting","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cpeptide","name":"C-Peptide","group":"GLUCOSE & INSULIN","result":"206.9","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3246","lower_normal":"240","upper_normal":"1500","lower_optimal":"400","upper_optimal":"800","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3756613757","upper_optimal_position":"0.4814814815","units":"pmol/L","description":"A marker of insulin production. Below range at 206.9. Pancreas producing less insulin than typical. Blood sugar currently healthy but warrants monitoring with HbA1c at 40","low_causes":"Low output, aging","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homair","name":"HOMA-IR","group":"GLUCOSE & INSULIN","result":"0.85","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.45","lower_normal":"0.5","upper_normal":"1.5","lower_optimal":"0.5","upper_optimal":"1","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5","units":"Ratio","description":"Insulin sensitivity measure. Within range at 0.85","low_causes":"High sensitivity","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homab","name":"HOMA-B","group":"GLUCOSE & INSULIN","result":"76","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3222","lower_normal":"80","upper_normal":"200","lower_optimal":"80","upper_optimal":"200","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"","description":"Pancreatic effort measure. Below range at 76. Combined with HbA1c approaching threshold, warrants monitoring","low_causes":"Exceptional sensitivity, aging","high_causes":"Overcompensating","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hscrp","name":"High Sensitivity CRP","group":"INFLAMMATION","result":"0.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.08","lower_normal":"","upper_normal":"5","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.1","units":"mg/L","description":"Within optimal at 0.8","low_causes":"Rarely significant","high_causes":"Infection, inflammation","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"esr","name":"ESR","group":"INFLAMMATION","result":"2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0833","lower_normal":"","upper_normal":"12","lower_optimal":"","upper_optimal":"5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2083333333","units":"mm/hour","description":"Excellent at 2","low_causes":"Rarely significant","high_causes":"Infection, autoimmune","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"nlr","name":"Neutrophil-to-Lymphocyte Ratio","group":"INFLAMMATION","result":"2.13","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5217","lower_normal":"1","upper_normal":"3","lower_optimal":"1","upper_optimal":"3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"Ratio","description":"Within optimal. No systemic inflammation","low_causes":"Viral infection","high_causes":"Systemic inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"sodium","name":"Sodium","group":"ELECTROLYTES & MINERALS","result":"145","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.641","lower_normal":"133","upper_normal":"146","lower_optimal":"138","upper_optimal":"142","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4615384615","upper_optimal_position":"0.5641025641","units":"mmol/L","description":"Within range","low_causes":"Overhydration","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"potassium","name":"Potassium","group":"ELECTROLYTES & MINERALS","result":"4.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4815","lower_normal":"3.5","upper_normal":"5.3","lower_optimal":"4","upper_optimal":"4.8","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4259259259","upper_optimal_position":"0.5740740741","units":"mmol/L","description":"Within optimal","low_causes":"Diuretics","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"chloride","name":"Chloride","group":"ELECTROLYTES & MINERALS","result":"99","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4359","lower_normal":"95","upper_normal":"108","lower_optimal":"98","upper_optimal":"104","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4102564103","upper_optimal_position":"0.5641025641","units":"mmol/L","description":"Within range","low_causes":"Vomiting","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bicarbonate","name":"Bicarbonate","group":"ELECTROLYTES & MINERALS","result":"23","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4242","lower_normal":"20","upper_normal":"31","lower_optimal":"22","upper_optimal":"28","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3939393939","upper_optimal_position":"0.5757575758","units":"mmol/L","description":"Within range","low_causes":"Metabolic acidosis","high_causes":"Metabolic alkalosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"calcium","name":"Calcium","group":"ELECTROLYTES & MINERALS","result":"2.37","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5029","lower_normal":"2.08","upper_normal":"2.65","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4619883041","upper_optimal_position":"0.5789473684","units":"mmol/L","description":"Within optimal","low_causes":"Vitamin D deficiency","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"correctedcalcium","name":"Corrected Calcium","group":"ELECTROLYTES & MINERALS","result":"2.32","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4333","lower_normal":"2.2","upper_normal":"2.6","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"mmol/L","description":"Within optimal","low_causes":"Vitamin D deficiency","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"phosphate","name":"Phosphate","group":"ELECTROLYTES & MINERALS","result":"1.0","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4176","lower_normal":"0.78","upper_normal":"1.65","lower_optimal":"1","upper_optimal":"1.3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4176245211","upper_optimal_position":"0.5325670498","units":"mmol/L","description":"Within optimal","low_causes":"Hyperparathyroidism","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"magnesium","name":"Magnesium","group":"ELECTROLYTES & MINERALS","result":"1.04","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6264","lower_normal":"0.53","upper_normal":"1.11","lower_optimal":"0.85","upper_optimal":"1","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.5172413793","upper_optimal_position":"0.6034482759","units":"mmol/L","description":"Within optimal. PPIs can impair magnesium absorption, so this positive finding is worth sustaining","low_causes":"Poor diet, PPI use","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinine","name":"Creatinine","group":"KIDNEY FUNCTION","result":"77","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.561","lower_normal":"49","upper_normal":"90","lower_optimal":"55","upper_optimal":"75","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3821138211","upper_optimal_position":"0.5447154472","units":"umol/L","description":"Within range","low_causes":"Low muscle mass","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"egfr","name":"eGFR","group":"KIDNEY FUNCTION","result":"67","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5583","lower_normal":"60","upper_normal":"","lower_optimal":"90","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.75","upper_optimal_position":"","units":"mL/min/1.73m2","description":"Below optimal at 67. Cystatin C eGFR at 63 confirms. Stage 2 CKD (mild reduction). Hypertension and long-term PPI use may be contributing. Needs monitoring","low_causes":"CKD, hypertension, age, PPI","high_causes":"Higher is better","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"urea","name":"Urea","group":"KIDNEY FUNCTION","result":"7.1","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5933","lower_normal":"3.2","upper_normal":"8.2","lower_optimal":"3.5","upper_optimal":"6","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3533333333","upper_optimal_position":"0.52","units":"mmol/L","description":"Within range","low_causes":"Liver disease","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cystatinc","name":"Cystatin C","group":"KIDNEY FUNCTION","result":"1.22","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.5545","lower_normal":"","upper_normal":"1.1","lower_optimal":"","upper_optimal":"0.85","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3863636364","units":"mg/L","description":"Above range at 1.22. Confirms reduced kidney filtration independently of muscle mass","low_causes":"Rarely significant","high_causes":"Kidney disease, hypertension, PPI","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"uricacid","name":"Uric Acid","group":"KIDNEY FUNCTION","result":"237","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3964","lower_normal":"184","upper_normal":"464","lower_optimal":"200","upper_optimal":"350","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3523809524","upper_optimal_position":"0.530952381","units":"umol/L","description":"Within range","low_causes":"Low purine diet","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hemoglobin","name":"Hemoglobin","group":"HEMATOLOGY","result":"129","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4333","lower_normal":"120","upper_normal":"150","lower_optimal":"130","upper_optimal":"145","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.6111111111","units":"g/L","description":"Within range but below optimal. Combined with low MCV and ferritin, confirms early iron deficiency","low_causes":"Iron deficiency, PPI","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hematocrit","name":"Hematocrit","group":"HEMATOLOGY","result":"0.374","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.38","lower_normal":"0.36","upper_normal":"0.46","lower_optimal":"0.38","upper_optimal":"0.44","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"L/L","description":"Within range","low_causes":"Anemia","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rbc","name":"RBC","group":"HEMATOLOGY","result":"4.51","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.57","lower_normal":"3.8","upper_normal":"4.8","lower_optimal":"4","upper_optimal":"4.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.5666666667","units":"x 10^12/L","description":"Within optimal","low_causes":"Anemia","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mcv","name":"MCV","group":"HEMATOLOGY","result":"82.9","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3315","lower_normal":"83","upper_normal":"101","lower_optimal":"85","upper_optimal":"95","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3703703704","upper_optimal_position":"0.5555555556","units":"fL","description":"Below range at 82.9. Small red blood cells are the earliest sign of iron depletion. PPI (Omeprazole) likely impairing iron absorption by reducing stomach acid","low_causes":"Iron deficiency, PPI","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mch","name":"MCH","group":"HEMATOLOGY","result":"28.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.44","lower_normal":"27","upper_normal":"32","lower_optimal":"28","upper_optimal":"31","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"pg","description":"Within range","low_causes":"Iron deficiency","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mchc","name":"MCHC","group":"HEMATOLOGY","result":"345","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6667","lower_normal":"315","upper_normal":"345","lower_optimal":"320","upper_optimal":"340","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.6111111111","units":"g/L","description":"At upper boundary","low_causes":"Iron deficiency","high_causes":"Spherocytosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rdw","name":"RDW","group":"HEMATOLOGY","result":"13.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5694","lower_normal":"11.6","upper_normal":"14","lower_optimal":"12","upper_optimal":"13.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5972222222","units":"%","description":"Within range","low_causes":"Rarely significant","high_causes":"Iron/B12 deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"plateletcount","name":"Platelet Count","group":"HEMATOLOGY","result":"297","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5218","lower_normal":"150","upper_normal":"410","lower_optimal":"200","upper_optimal":"350","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3974358974","upper_optimal_position":"0.5897435897","units":"x 10^9/L","description":"Within optimal","low_causes":"Bone marrow disorders","high_causes":"Inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mpv","name":"MPV","group":"HEMATOLOGY","result":"8.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5222","lower_normal":"7.1","upper_normal":"10.1","lower_optimal":"8","upper_optimal":"10","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4333333333","upper_optimal_position":"0.6555555556","units":"fL","description":"Within range","low_causes":"Bone marrow suppression","high_causes":"Platelet destruction","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"wbc","name":"WBC","group":"HEMATOLOGY","result":"7.01","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5006","lower_normal":"4","upper_normal":"10","lower_optimal":"5","upper_optimal":"8","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5555555556","units":"x 10^9/L","description":"Within optimal","low_causes":"Viral infections","high_causes":"Bacterial infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"neutrophilcount","name":"Neutrophil Count","group":"HEMATOLOGY","result":"4.55","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5033","lower_normal":"2","upper_normal":"7","lower_optimal":"3","upper_optimal":"6","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"x 10^9/L","description":"Within optimal","low_causes":"Viral infections","high_causes":"Bacterial infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lymphocytecount","name":"Lymphocyte Count","group":"HEMATOLOGY","result":"2.14","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5233","lower_normal":"1","upper_normal":"3","lower_optimal":"1.5","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"x 10^9/L","description":"Within optimal","low_causes":"Immunodeficiency","high_causes":"Viral infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"monocytecount","name":"Monocyte Count","group":"HEMATOLOGY","result":"0.24","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.35","lower_normal":"0.2","upper_normal":"1","lower_optimal":"0.3","upper_optimal":"0.7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.375","upper_optimal_position":"0.5416666667","units":"x 10^9/L","description":"Within range","low_causes":"Bone marrow disorders","high_causes":"Chronic infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"eosinophilcount","name":"Eosinophil Count","group":"HEMATOLOGY","result":"0.06","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3611","lower_normal":"0.02","upper_normal":"0.5","lower_optimal":"0.1","upper_optimal":"0.3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5277777778","units":"x 10^9/L","description":"Within range","low_causes":"Stress","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"basophilcount","name":"Basophil Count","group":"HEMATOLOGY","result":"0.02","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3333","lower_normal":"0.02","upper_normal":"0.1","lower_optimal":"0.02","upper_optimal":"0.08","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5833333333","units":"x 10^9/L","description":"Within range","low_causes":"Stress","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocytecount","name":"Reticulocyte Count","group":"HEMATOLOGY","result":"1.25","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4583","lower_normal":"0.5","upper_normal":"2.5","lower_optimal":"1","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"%","description":"Within optimal","low_causes":"Bone marrow suppression","high_causes":"Blood loss","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocyteabsolute","name":"Reticulocyte Absolute","group":"HEMATOLOGY","result":"56.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.376","lower_normal":"50","upper_normal":"100","lower_optimal":"55","upper_optimal":"80","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3666666667","upper_optimal_position":"0.5333333333","units":"x 10^9/L","description":"Within optimal","low_causes":"Bone marrow suppression","high_causes":"Increased production","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iron","name":"Iron","group":"IRON STUDIES","result":"18.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4751","lower_normal":"9","upper_normal":"30.4","lower_optimal":"15","upper_optimal":"22","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4267912773","upper_optimal_position":"0.5358255452","units":"umol/L","description":"Within optimal","low_causes":"Iron deficiency, PPI","high_causes":"Hemochromatosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ferritin","name":"Ferritin","group":"IRON STUDIES","result":"25","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3511","lower_normal":"10","upper_normal":"291","lower_optimal":"50","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3807829181","upper_optimal_position":"0.4994068802","units":"ng/mL","description":"Below optimal at 25. Post-menopausal with no menstrual losses, stores should be higher. Long-term PPI likely impairing absorption. Low ferritin is a common cause of hair thinning","low_causes":"Iron deficiency, PPI","high_causes":"Iron overload","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tibc","name":"TIBC","group":"IRON STUDIES","result":"69.6","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5992","lower_normal":"44","upper_normal":"76.1","lower_optimal":"50","upper_optimal":"65","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3956386293","upper_optimal_position":"0.5514018692","units":"umol/L","description":"Within range","low_causes":"Iron overload","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrinsaturation","name":"Transferrin Saturation","group":"IRON STUDIES","result":"23.71","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3848","lower_normal":"18","upper_normal":"55","lower_optimal":"25","upper_optimal":"40","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3963963964","upper_optimal_position":"0.5315315315","units":"%","description":"Within range but below optimal at 23.71%","low_causes":"Iron deficiency","high_causes":"Iron overload","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrin","name":"Transferrin","group":"IRON STUDIES","result":"3.04","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4718","lower_normal":"2.5","upper_normal":"3.8","lower_optimal":"2.6","upper_optimal":"3.2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.358974359","upper_optimal_position":"0.5128205128","units":"g/L","description":"Within optimal","low_causes":"Iron overload","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"testosterone","name":"Testosterone","group":"HORMONES","result":"1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4127","lower_normal":"0.5","upper_normal":"2.6","lower_optimal":"0.8","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.380952381","upper_optimal_position":"0.5714285714","units":"nmol/L","description":"Within optimal at 1. Expected for 70","low_causes":"Menopause, aging","high_causes":"PCOS","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freetestosterone","name":"Free Testosterone","group":"HORMONES","result":"0.009","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"nmol/L","description":"Very low. Expected at 70 with high SHBG","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freeandrogenindex","name":"Free Androgen Index","group":"HORMONES","result":"1.15","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3694","lower_normal":"0.5","upper_normal":"6.5","lower_optimal":"1","upper_optimal":"5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3611111111","upper_optimal_position":"0.5833333333","units":"Ratio","description":"Within range","low_causes":"Low androgens, high SHBG","high_causes":"PCOS","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"shbg","name":"SHBG","group":"HORMONES","result":"87.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5006","lower_normal":"27.8","upper_normal":"146","lower_optimal":"40","upper_optimal":"100","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3677382967","upper_optimal_position":"0.5369430344","units":"nmol/L","description":"Within optimal but upper end. Expected post-menopausal with Levothyroxine","low_causes":"Obesity","high_causes":"Aging, Levothyroxine","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lh","name":"LH","group":"HORMONES","result":"20.65","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3734","lower_normal":"15","upper_normal":"62","lower_optimal":"20","upper_optimal":"55","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3687943262","upper_optimal_position":"0.6170212766","units":"IU/L","description":"Within post-menopausal range","low_causes":"Pituitary disorders","high_causes":"Menopause","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fsh","name":"FSH","group":"HORMONES","result":"86.07","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5184","lower_normal":"25","upper_normal":"135","lower_optimal":"30","upper_optimal":"120","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3484848485","upper_optimal_position":"0.6212121212","units":"IU/L","description":"Within post-menopausal range at 86.07, confirming menopause","low_causes":"Pituitary disorders","high_causes":"Menopause","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"prolactin","name":"Prolactin","group":"HORMONES","result":"173","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4626","lower_normal":"45","upper_normal":"375","lower_optimal":"100","upper_optimal":"300","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5909090909","units":"mIU/L","description":"Within optimal","low_causes":"Rarely significant","high_causes":"Stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"estradiol","name":"Estradiol","group":"HORMONES","result":"116","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3973","lower_normal":"","upper_normal":"146","lower_optimal":"","upper_optimal":"80","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2739726027","units":"pmol/L","description":"Within range at 116","low_causes":"Menopause","high_causes":"HRT, adrenal production","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"progesterone","name":"Progesterone","group":"HORMONES","result":"0.64","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5467","lower_normal":"0","upper_normal":"1","lower_optimal":"0","upper_optimal":"0.8","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6","units":"nmol/L","description":"Within post-menopausal range","low_causes":"Menopause","high_causes":"HRT","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cortisol","name":"Cortisol","group":"HORMONES","result":"221","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3836","lower_normal":"172","upper_normal":"497","lower_optimal":"250","upper_optimal":"400","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4133333333","upper_optimal_position":"0.5671794872","units":"nmol/L","description":"Within range but below optimal 250. May contribute to fatigue if drawn in morning","low_causes":"Adrenal insufficiency, age","high_causes":"Chronic stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"dheas","name":"DHEA-S","group":"HORMONES","result":"700.0","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3629","lower_normal":"350","upper_normal":"4300","lower_optimal":"1000","upper_optimal":"3000","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.388185654","upper_optimal_position":"0.5569620253","units":"ug/L","description":"Within range for 70. DHEA-S naturally declines with age","low_causes":"Adrenal insufficiency, aging","high_causes":"Adrenal tumors","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"leptin","name":"Leptin","group":"HORMONES","result":"15","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4881","lower_normal":"2","upper_normal":"30","lower_optimal":"5","upper_optimal":"20","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.369047619","upper_optimal_position":"0.5476190476","units":"ug/L","description":"Within optimal at BMI 25.7","low_causes":"Very low body fat","high_causes":"Obesity","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tsh","name":"TSH","group":"THYROID","result":"1.02","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3704","lower_normal":"0.55","upper_normal":"4.78","lower_optimal":"1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3687943262","upper_optimal_position":"0.4869976359","units":"mIU/L","description":"Optimal at 1.02 on Levothyroxine. Dose well calibrated","low_causes":"Excessive dose","high_causes":"Insufficient dose","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft4","name":"FT4","group":"THYROID","result":"18.2","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5327","lower_normal":"11.5","upper_normal":"22.7","lower_optimal":"14","upper_optimal":"18","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4077380952","upper_optimal_position":"0.5267857143","units":"pmol/L","description":"Within optimal at 18.2 on Levothyroxine","low_causes":"Hypothyroidism","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft3","name":"FT3","group":"THYROID","result":"4.7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4889","lower_normal":"2.6","upper_normal":"7.1","lower_optimal":"4.5","upper_optimal":"5.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4740740741","upper_optimal_position":"0.5481481481","units":"pmol/L","description":"Within optimal at 4.7","low_causes":"Hypothyroidism","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tpoantibodies","name":"TPO Antibodies","group":"THYROID","result":"6.6","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.2391","lower_normal":"","upper_normal":"13.8","lower_optimal":"","upper_optimal":"6","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2173913043","units":"IU/mL","description":"Negative","low_causes":"Not applicable","high_causes":"Hashimoto's, Graves'","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"thyroglobulinantibody","name":"Thyroglobulin Antibody","group":"THYROID","result":"1.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1477","lower_normal":"","upper_normal":"4.4","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2272727273","units":"IU/mL","description":"Negative","low_causes":"Not applicable","high_causes":"Autoimmune thyroid","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vitamind","name":"Vitamin D","group":"VITAMINS & NUTRIENTS","result":"121","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4911","lower_normal":"50","upper_normal":"200","lower_optimal":"100","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.5555555556","units":"nmol/L","description":"Optimal at 121. Excellent for bone health at 70","low_causes":"Limited sun exposure","high_causes":"Excessive supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"vitaminb12","name":"Vitamin B12","group":"VITAMINS & NUTRIENTS","result":"357","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4026","lower_normal":"193","upper_normal":"982","lower_optimal":"300","upper_optimal":"600","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3785382341","upper_optimal_position":"0.5052809463","units":"pg/mL","description":"Within range but below optimal 400. Long-term PPI reduces stomach acid needed for B12 absorption. May contribute to hair thinning and fatigue. Sublingual B12 recommended","low_causes":"Poor diet, PPI, aging","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"folate","name":"Folate","group":"VITAMINS & NUTRIENTS","result":"8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4524","lower_normal":"3","upper_normal":"17","lower_optimal":"8","upper_optimal":"14","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4523809524","upper_optimal_position":"0.5952380952","units":"ug/L","description":"Within range at 8 but could be higher on Mediterranean diet. PPI may affect absorption","low_causes":"Poor diet, PPI","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinekinase","name":"Creatine Kinase","group":"CARDIAC MARKERS","result":"97","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4705","lower_normal":"25","upper_normal":"200","lower_optimal":"50","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.380952381","upper_optimal_position":"0.5714285714","units":"U/L","description":"Within optimal","low_causes":"Low muscle mass","high_causes":"Exercise, muscle damage","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"amylase","name":"Amylase","group":"DIGESTIVE","result":"85","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5417","lower_normal":"30","upper_normal":"118","lower_optimal":"40","upper_optimal":"80","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3712121212","upper_optimal_position":"0.5227272727","units":"IU/L","description":"Within range","low_causes":"Pancreatic insufficiency","high_causes":"Pancreatitis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lipase","name":"Lipase","group":"DIGESTIVE","result":"40","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5248","lower_normal":"13","upper_normal":"60","lower_optimal":"20","upper_optimal":"45","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3829787234","upper_optimal_position":"0.5602836879","units":"U/L","description":"Within range","low_causes":"Pancreatic insufficiency","high_causes":"Pancreatitis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igg","name":"IgG","group":"IMMUNOLOGY","result":"8.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.407","lower_normal":"6.5","upper_normal":"16","lower_optimal":"8","upper_optimal":"14","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3859649123","upper_optimal_position":"0.5964912281","units":"g/L","description":"Within range","low_causes":"Immunodeficiency","high_causes":"Chronic infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igm","name":"IgM","group":"IMMUNOLOGY","result":"1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4","lower_normal":"0.5","upper_normal":"3","lower_optimal":"0.6","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3466666667","upper_optimal_position":"0.5333333333","units":"g/L","description":"Within range","low_causes":"Immunodeficiency","high_causes":"Acute infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iga","name":"IgA","group":"IMMUNOLOGY","result":"1.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4839","lower_normal":"0.4","upper_normal":"3.5","lower_optimal":"1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3978494624","upper_optimal_position":"0.5591397849","units":"g/L","description":"Within range","low_causes":"Immunodeficiency","high_causes":"Liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ige","name":"IgE","group":"IMMUNOLOGY","result":"4.93","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0246","lower_normal":"","upper_normal":"100","lower_optimal":"","upper_optimal":"50","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.25","units":"IU/mL","description":"Well within range. Minimal allergic burden","low_causes":"Not applicable","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"rheumatoidfactor","name":"Rheumatoid Factor","group":"IMMUNOLOGY","result":"10","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3571","lower_normal":"","upper_normal":"14","lower_optimal":"","upper_optimal":"8","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2857142857","units":"IU/mL","description":"Within range","low_causes":"Not applicable","high_causes":"RA","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca125","name":"CA-125","group":"TUMOR MARKERS","result":"7.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.148","lower_normal":"","upper_normal":"25","lower_optimal":"","upper_optimal":"15","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3","units":"U/mL","description":"Within range","low_causes":"Not applicable","high_causes":"Ovarian cancer","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca153","name":"CA 15-3","group":"TUMOR MARKERS","result":"21.73","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3622","lower_normal":"","upper_normal":"30","lower_optimal":"","upper_optimal":"15","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.25","units":"U/mL","description":"Within range","low_causes":"Not applicable","high_causes":"Breast cancer","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca199","name":"CA 19-9","group":"TUMOR MARKERS","result":"15.43","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2085","lower_normal":"","upper_normal":"37","lower_optimal":"","upper_optimal":"20","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2702702703","units":"kIU/L","description":"Within range","low_causes":"Not applicable","high_causes":"Pancreatic cancer","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cea","name":"CEA","group":"TUMOR MARKERS","result":"3.09","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4066","lower_normal":"","upper_normal":"3.8","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2631578947","units":"ng/mL","description":"Within range at 3.09 but above optimal 2. Can be mildly elevated with age or PPI use. Worth monitoring","low_causes":"Not applicable","high_causes":"Colorectal cancer, age, PPI","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"totalantioxidantstatus","name":"Total Antioxidant Status","group":"SPECIALIZED TESTS","result":"1.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4752","lower_normal":"1.3","upper_normal":"1.77","lower_optimal":"1.5","upper_optimal":"1.7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.475177305","upper_optimal_position":"0.6170212766","units":"mmol/L","description":"Within optimal. Reflects Mediterranean diet benefits","low_causes":"Poor diet","high_causes":"Good diet, supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"parathyroidhormone","name":"Parathyroid Hormone","group":"SPECIALIZED TESTS","result":"1.3","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3618","lower_normal":"0.98","upper_normal":"4.73","lower_optimal":"1.5","upper_optimal":"3.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3795555556","upper_optimal_position":"0.5573333333","units":"pmol/L","description":"Within range. Well balanced with vitamin D 121 and calcium 2.32","low_causes":"Hypoparathyroidism","high_causes":"Vitamin D deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"antittg","name":"Anti-tTG IgA","group":"AUTOIMMUNE & CELIAC","result":"0.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0348","lower_normal":"","upper_normal":"7.19","lower_optimal":"","upper_optimal":"4","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2781641168","units":"CU","description":"Negative (provided gluten is in the current diet)","low_causes":"Not applicable","high_causes":"Celiac disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ph","name":"pH","group":"URINALYSIS","result":"6.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5238","lower_normal":"4.5","upper_normal":"8","lower_optimal":"6","upper_optimal":"7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4761904762","upper_optimal_position":"0.5714285714","units":"pH units","description":"Within range","low_causes":"Acidic diet","high_causes":"UTI","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"specificgravity","name":"Specific Gravity","group":"URINALYSIS","result":"1.01","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4","lower_normal":"1.005","upper_normal":"1.03","lower_optimal":"1.01","upper_optimal":"1.025","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"-","description":"Within range","low_causes":"Overhydration","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineprotein","name":"Protein (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ketones","name":"Ketones","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineglucose","name":"Glucose (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urobilinogen","name":"Urobilinogen","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"nitrite","name":"Nitrite","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"casts","name":"Casts","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bacterialcount","name":"Bacterial Count","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"culturesensitvities","name":"Culture & Sensitivities","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"}]};
+// ============================================================
+// DO NOT EDIT BELOW THIS LINE
+// ============================================================
+
+const data = REPORT_DATA;
+const bms = data.biomarkers || [];
+
+// Stats
+const totalTested = bms.length;
+const abnormal = bms.filter(b => b.within_normal === 'FALSE').length;
+const optimal = bms.filter(b => b.within_optimal === 'TRUE').length;
+const inRange = bms.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+
+// Group biomarkers
+const groupOrder = ['LIVER & METABOLIC','LIPIDS & CARDIOVASCULAR','GLUCOSE & INSULIN','INFLAMMATION','ELECTROLYTES & MINERALS','KIDNEY FUNCTION','HEMATOLOGY','IRON STUDIES','HORMONES','THYROID','VITAMINS & NUTRIENTS','CARDIAC MARKERS','DIGESTIVE','IMMUNOLOGY','PROSTATE','TUMOR MARKERS','SPECIALIZED TESTS','AUTOIMMUNE & CELIAC','URINALYSIS'];
+const groups = {};
+bms.forEach(b => {
+  if (!groups[b.group]) groups[b.group] = [];
+  groups[b.group].push(b);
+});
+
+// Parse flags/recs/supps into individual items
+function parseItems(text) {
+  if (!text) return [];
+  return text.split('\n').map(s => s.trim()).filter(s => s.length > 2).map(s => s.replace(/^[•\-]\s*/, ''));
+}
+
+const flags = parseItems(data.flags);
+const recs = parseItems(data.recommendations);
+const supps = parseItems(data.supplementation);
+
+// Build page
+const main = document.getElementById('main');
+document.getElementById('nav-patient').textContent = data.patient_name + ' · ' + data.report_date;
+
+let html = '';
+
+// Upgrade banner if present in summary
+let summaryText = data.summary || '';
+let bannerHTML = '';
+if (summaryText.toLowerCase().includes('upgraded') || summaryText.toLowerCase().includes('upgrade')) {
+  const firstPara = summaryText.split('\n\n')[0];
+  if (firstPara.toLowerCase().includes('upgrade')) {
+    bannerHTML = `<div class="upgrade-banner">${firstPara}</div>`;
+    summaryText = summaryText.substring(firstPara.length).trim();
+  }
+}
+
+// OVERVIEW
+html += `<section id="overview" class="fade-in">`;
+html += `<div class="section-label">Overview</div>`;
+html += `<div class="section-title">${data.patient_name}'s Health Report</div>`;
+html += `<div class="section-sub">Report generated ${data.report_date} · ${bms.length} biomarkers analysed</div>`;
+html += bannerHTML;
+
+html += `<div class="stats">
+  <div class="stat-card"><div class="stat-num">${totalTested}</div><div class="stat-label">Tested</div></div>
+  <div class="stat-card"><div class="stat-num red">${abnormal}</div><div class="stat-label">Outside Range</div></div>
+  <div class="stat-card"><div class="stat-num yellow">${inRange}</div><div class="stat-label">In Range</div></div>
+  <div class="stat-card"><div class="stat-num green">${optimal}</div><div class="stat-label">Optimal</div></div>
+</div>`;
+
+html += `<div class="analysis-card summary-card"><h3><span class="dot green"></span> Executive Summary</h3><div class="content">${summaryText}</div></div>`;
+
+// Lifestyle
+if (data.links) {
+  html += `<div class="analysis-card summary-card"><h3><span class="dot green"></span> Lifestyle Recommendations</h3><div class="content">${data.links}</div></div>`;
+}
+html += `</section>`;
+
+// FLAGS
+html += `<section id="flags" class="fade-in">`;
+html += `<div class="section-label">Key Flags</div>`;
+html += `<div class="section-title">Findings Requiring Attention</div>`;
+html += `<div class="section-sub">${flags.length} key flag${flags.length !== 1 ? 's' : ''} identified in your results</div>`;
+flags.forEach((f, i) => {
+  html += `<div class="analysis-card flag-card"><h3><span class="dot red"></span> Flag ${i+1}</h3><div class="content">${f}</div></div>`;
+});
+html += `</section>`;
+
+// RECOMMENDATIONS
+html += `<section id="recommendations" class="fade-in">`;
+html += `<div class="section-label">Clinical Recommendations</div>`;
+html += `<div class="section-title">For Discussion With Your GP</div>`;
+html += `<div class="section-sub">Items to raise with your healthcare provider</div>`;
+recs.forEach((r, i) => {
+  html += `<div class="analysis-card rec-card"><h3><span class="dot blue"></span> Recommendation ${i+1}</h3><div class="content">${r}</div></div>`;
+});
+html += `</section>`;
+
+// SUPPLEMENTS
+html += `<section id="supplements" class="fade-in">`;
+html += `<div class="section-label">Supplementation</div>`;
+html += `<div class="section-title">Suggested Supplements</div>`;
+html += `<div class="section-sub">Supplements that may support your specific findings</div>`;
+supps.forEach((s, i) => {
+  html += `<div class="analysis-card supp-card"><h3><span class="dot green"></span></h3><div class="content">${s}</div></div>`;
+});
+html += `</section>`;
+
+// BIOMARKER RESULTS
+html += `<section id="results" class="fade-in">`;
+html += `<div class="section-label">Full Results</div>`;
+html += `<div class="section-title">Biomarker Breakdown</div>`;
+html += `<div class="section-sub">Click any biomarker to expand for more detail</div>`;
+
+html += `<div class="bio-controls">
+  <input type="text" class="bio-search" placeholder="Search biomarkers..." oninput="filterBiomarkers()">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">All</button>
+  <button class="filter-btn" data-filter="abnormal" onclick="setFilter(this)">Outside Range</button>
+  <button class="filter-btn" data-filter="optimal" onclick="setFilter(this)">Optimal</button>
+</div>`;
+
+groupOrder.forEach(gName => {
+  const gBms = groups[gName];
+  if (!gBms) return;
+  const gAbn = gBms.filter(b => b.within_normal === 'FALSE').length;
+  const abnLabel = gAbn > 0 ? `<span style="color:var(--red)">${gAbn} flagged</span>` : '';
+
+  html += `<div class="bio-group" data-group="${gName}">`;
+  html += `<div class="bio-group-header" onclick="toggleGroup(this.parentElement)">
+    <h3>${gName}</h3>
+    <div class="count">${gBms.length} markers ${abnLabel} <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+  </div>`;
+  html += `<div class="bio-group-body">`;
+
+  gBms.forEach(b => {
+    const isAbn = b.within_normal === 'FALSE';
+    const isOpt = b.within_optimal === 'TRUE';
+    const isQual = b.within_normal === '';
+    let badgeClass = 'badge-yellow';
+    let badgeText = 'In Range';
+    let dotClass = 'dot-yellow';
+    if (isAbn) { badgeClass = 'badge-red'; badgeText = 'Outside Range'; dotClass = 'dot-red'; }
+    else if (isOpt) { badgeClass = 'badge-green'; badgeText = 'Optimal'; dotClass = 'dot-green'; }
+    else if (isQual) { badgeClass = 'badge-blue'; badgeText = b.result || 'N/A'; dotClass = 'dot-green'; }
+
+    let barHTML = '';
+    if (b.result_position !== '' && b.lower_normal_position !== '') {
+      const rp = parseFloat(b.result_position) * 100;
+      const lnp = parseFloat(b.lower_normal_position) * 100;
+      const unp = parseFloat(b.upper_normal_position) * 100;
+      const lop = b.lower_optimal_position !== '' ? parseFloat(b.lower_optimal_position) * 100 : '';
+      const uop = b.upper_optimal_position !== '' ? parseFloat(b.upper_optimal_position) * 100 : '';
+
+      barHTML = `<div class="range-bar-container"><div class="range-bar">`;
+      barHTML += `<div class="range-normal" style="left:${lnp}%;width:${unp-lnp}%"></div>`;
+      if (lop !== '' || uop !== '') {
+        const optLeft = lop !== '' ? lop : lnp;
+        const optRight = uop !== '' ? uop : unp;
+        barHTML += `<div class="range-optimal" style="left:${optLeft}%;width:${optRight-optLeft}%"></div>`;
+      }
+      barHTML += `<div class="range-dot ${dotClass}" style="left:${Math.max(0,Math.min(100,rp))}%"></div>`;
+      barHTML += `</div></div>`;
+    }
+
+    let detailHTML = '';
+    if (b.description) {
+      detailHTML += `<div class="bio-detail-desc">${b.description}</div>`;
+    }
+    if (b.lower_normal !== '' || b.upper_normal !== '') {
+      detailHTML += `<div class="bio-detail-ranges">`;
+      if (b.lower_normal !== '') detailHTML += `<div class="bio-detail-range"><strong>Normal low:</strong> ${b.lower_normal}</div>`;
+      if (b.upper_normal !== '') detailHTML += `<div class="bio-detail-range"><strong>Normal high:</strong> ${b.upper_normal}</div>`;
+      if (b.lower_optimal !== '') detailHTML += `<div class="bio-detail-range"><strong>Optimal low:</strong> ${b.lower_optimal}</div>`;
+      if (b.upper_optimal !== '') detailHTML += `<div class="bio-detail-range"><strong>Optimal high:</strong> ${b.upper_optimal}</div>`;
+      detailHTML += `</div>`;
+    }
+    if (b.low_causes || b.high_causes) {
+      detailHTML += `<div class="bio-detail-causes">`;
+      if (b.low_causes) detailHTML += `<p><strong>Common causes if low:</strong> ${b.low_causes}</p>`;
+      if (b.high_causes) detailHTML += `<p><strong>Common causes if high:</strong> ${b.high_causes}</p>`;
+      detailHTML += `</div>`;
+    }
+
+    html += `<div class="bio-card" data-status="${isAbn ? 'abnormal' : isOpt ? 'optimal' : isQual ? 'qual' : 'range'}" data-name="${b.name.toLowerCase()}">
+      <div class="bio-card-main" onclick="toggleCard(this.parentElement)">
+        <div class="bio-card-info">
+          <div class="bio-card-name">${b.name}</div>
+          <div class="bio-card-result">${b.result} ${b.units || ''}</div>
+        </div>
+        ${barHTML}
+        <span class="bio-card-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="bio-detail">${detailHTML}</div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+});
+
+html += `</section>`;
+
+// FOOTER
+html += `<div class="footer">
+  <p>TrueVitals Group Ltd · Company No. 16449605</p>
+  <p>This report is for informational purposes only and does not constitute medical advice.</p>
+  <p><a href="https://www.truevitals.co.uk">truevitals.co.uk</a></p>
+</div>`;
+
+main.innerHTML = html;
+
+// Interactions
+function toggleGroup(el) { el.classList.toggle('open'); }
+function toggleCard(el) { el.classList.toggle('expanded'); }
+
+function setActive(a) {
+  document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+  a.classList.add('active');
+}
+function setActiveMob(a) {
+  document.querySelectorAll('.mobile-nav a').forEach(l => l.classList.remove('active'));
+  a.classList.add('active');
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterBiomarkers();
+}
+
+function filterBiomarkers() {
+  const search = document.querySelector('.bio-search').value.toLowerCase();
+  const filter = document.querySelector('.filter-btn.active').dataset.filter;
+
+  document.querySelectorAll('.bio-card').forEach(card => {
+    const name = card.dataset.name;
+    const status = card.dataset.status;
+    let show = true;
+    if (search && !name.includes(search)) show = false;
+    if (filter === 'abnormal' && status !== 'abnormal') show = false;
+    if (filter === 'optimal' && status !== 'optimal') show = false;
+    card.style.display = show ? '' : 'none';
+  });
+
+  // Hide empty groups
+  document.querySelectorAll('.bio-group').forEach(g => {
+    const visible = g.querySelectorAll('.bio-card[style=""], .bio-card:not([style])').length;
+    g.style.display = visible > 0 ? '' : 'none';
+  });
+}
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Update active nav on scroll
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+  document.querySelectorAll('.mobile-nav a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// DOB GATE
+const dobInput = document.getElementById('gate-dob');
+const gateError = document.getElementById('gate-error');
+
+dobInput.addEventListener('input', function(e) {
+  let v = this.value.replace(/[^\d]/g, '');
+  if (v.length > 8) v = v.substring(0, 8);
+  let formatted = '';
+  if (v.length > 0) formatted = v.substring(0, Math.min(2, v.length));
+  if (v.length > 2) formatted += ' / ' + v.substring(2, Math.min(4, v.length));
+  if (v.length > 4) formatted += ' / ' + v.substring(4);
+  this.value = formatted;
+});
+
+dobInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') verifyDob();
+});
+
+function verifyDob() {
+  const entered = dobInput.value.replace(/\s/g, '').replace(/\//g, '/');
+  const stored = data.dob;
+  const normalize = (d) => {
+    let clean = d.replace(/\s/g, '');
+    if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
+      const parts = clean.split(/[-T]/);
+      return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    return clean;
+  };
+  if (normalize(entered) === normalize(stored)) {
+    document.getElementById('gate').classList.add('gate-hidden');
+    document.getElementById('app-nav').classList.remove('app-hidden');
+    document.getElementById('app-mobile-nav').classList.remove('app-hidden');
+    document.getElementById('main').classList.remove('app-hidden');
+    gateError.style.display = 'none';
+  } else {
+    gateError.style.display = 'block';
+    dobInput.style.borderColor = 'var(--red)';
+    setTimeout(() => { dobInput.style.borderColor = ''; }, 2000);
+  }
+}
+
+dobInput.focus();
+</script>
+</body>
+</html>
