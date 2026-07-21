@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueVitals Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080a; --bg2:#0d0d10; --surface:#131316; --surface2:#1a1a1e; --surface3:#212127;
+  --border:#242429; --border2:#33333a;
+  --text:#f7f7f8; --text2:#a5a5ae; --text3:#6e6e78;
+  --green:#2ce4ad; --green-soft:rgba(44,228,173,.12); --green-mid:rgba(44,228,173,.28);
+  --red:#ff5a5f; --red-soft:rgba(255,90,95,.12); --red-mid:rgba(255,90,95,.3);
+  --amber:#e8c15a; --amber-soft:rgba(232,193,90,.12); --amber-mid:rgba(232,193,90,.3);
+  --blue:#7c9bff; --blue-soft:rgba(124,155,255,.12);
+  --silh-top:#17171c; --silh-bot:#101014; --silh-stroke:#2a2a31;
+  --shadow:0 1px 0 rgba(255,255,255,.02), 0 10px 30px -12px rgba(0,0,0,.6);
+  --r:16px; --r-sm:11px;
+}
+body[data-theme="light"]{
+  --bg:#f6f7f9; --bg2:#eef0f4; --surface:#ffffff; --surface2:#f4f5f8; --surface3:#eceef2;
+  --border:#e3e6ec; --border2:#d3d7df;
+  --text:#14161c; --text2:#565b66; --text3:#8b909b;
+  --green:#0fb488; --green-soft:rgba(15,180,136,.12); --green-mid:rgba(15,180,136,.28);
+  --red:#e23d43; --red-soft:rgba(226,61,67,.1); --red-mid:rgba(226,61,67,.28);
+  --amber:#c79514; --amber-soft:rgba(199,149,20,.12); --amber-mid:rgba(199,149,20,.3);
+  --blue:#4864d8; --blue-soft:rgba(72,100,216,.1);
+  --silh-top:#e9ecf1; --silh-bot:#dfe3ea; --silh-stroke:#cfd4dd;
+  --shadow:0 1px 2px rgba(20,22,28,.04), 0 12px 30px -16px rgba(20,22,28,.18);
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(44,228,173,.05), transparent 60%),radial-gradient(900px 500px at 0% 10%, rgba(124,155,255,.04), transparent 55%);}
+.c-green{color:var(--green)} .c-amber{color:var(--amber)} .c-red{color:var(--red)}
+a{color:var(--green)}
+.hide{display:none!important}
+
+/* ---------- NAV ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:80;height:64px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;
+  background:color-mix(in srgb,var(--bg) 78%, transparent);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.nav-brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand{font-size:19px;font-weight:700;letter-spacing:-.4px}.brand span{color:var(--green)}
+.gate-logo-img{display:block;width:180px;height:auto;margin:0 auto 14px}
+.logo-dark,.logo-light{height:26px;width:auto;display:block}
+.logo-light{display:none}
+body[data-theme="light"] .logo-dark{display:none}
+body[data-theme="light"] .logo-light{display:block}
+.logo-print{height:30px;width:auto}
+.foot-logo{height:24px;width:auto;margin:0 auto 12px;display:block}
+body[data-theme="light"] .foot-logo.inv{display:none}
+body[data-theme="light"] .foot-logo.std{display:block}
+.foot-logo.std{display:none}
+.nav-patient{font-size:12.5px;color:var(--text3);padding-left:14px;border-left:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-links{display:flex;gap:2px}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:13px;font-weight:500;padding:8px 13px;border-radius:9px;transition:.18s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--green);background:var(--green-soft)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.iconbtn{display:flex;align-items:center;gap:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:transparent;border:1px solid var(--border2);border-radius:9px;padding:8px 12px;cursor:pointer;transition:.18s}
+.iconbtn:hover{color:var(--text);border-color:var(--green);background:var(--green-soft)}
+.iconbtn svg{width:15px;height:15px}
+.iconbtn.primary{color:var(--green);border-color:var(--green-mid)}
+
+/* ---------- MOBILE NAV ---------- */
+.mnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0));
+  background:color-mix(in srgb,var(--bg) 88%, transparent);backdrop-filter:blur(22px);border-top:1px solid var(--border)}
+.mnav-in{display:flex;justify-content:space-around}
+.mnav a{flex:1;color:var(--text3);text-decoration:none;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px}
+.mnav a.active{color:var(--green)}
+.mnav svg{width:20px;height:20px}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:940px;margin:0 auto;padding:92px 22px 120px}
+section{margin-bottom:60px;opacity:1}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:12px}
+.sec-title{font-size:clamp(22px,3.4vw,30px);font-weight:700;letter-spacing:-.6px;margin-bottom:6px}
+.sec-sub{color:var(--text2);font-size:15px;margin-bottom:26px;max-width:560px}
+
+/* ---------- HERO ---------- */
+.hero{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;
+  background:linear-gradient(160deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:24px;padding:40px 40px;box-shadow:var(--shadow)}
+.hero-name{font-size:clamp(34px,6vw,52px);font-weight:800;letter-spacing:-1.5px;line-height:1;display:flex;flex-direction:column;gap:10px;margin:6px 0 14px}
+.hero-name-sub{font-size:15px;font-weight:500;letter-spacing:0;color:var(--text2)}
+.hero-lede{color:var(--text2);font-size:15.5px;max-width:420px;margin-bottom:26px}
+.hero-stats{display:flex;gap:26px;flex-wrap:wrap}
+.hstat{display:flex;flex-direction:column}
+.hstat-n{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1}
+.hstat-l{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-top:4px}
+.hero-ring{position:relative;width:220px;height:220px;flex-shrink:0}
+.ring-svg{width:100%;height:100%;overflow:visible}
+.ring-track{fill:none;stroke:var(--surface3);stroke-width:12}
+.ring-track2{fill:none;stroke:var(--surface2);stroke-width:6}
+.ring-fill{fill:none;stroke:var(--green);stroke-width:12;stroke-linecap:round;filter:drop-shadow(0 0 8px var(--green-mid))}
+.ring-fill2{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round;opacity:.85}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.ring-pct span{font-size:22px;font-weight:600;color:var(--text2);margin-left:2px}
+.ring-cap{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+
+/* ---------- ALERT ---------- */
+.alert{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,var(--red-soft),transparent);border:1px solid var(--red-mid);border-radius:16px;padding:16px 18px;margin-bottom:28px;position:relative;overflow:hidden}
+.alert::before{content:"";position:absolute;inset:0;border-radius:16px;border:1px solid var(--red);opacity:0;animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0}50%{opacity:.5}}
+.alert-ic{flex-shrink:0;width:40px;height:40px;border-radius:11px;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center}
+.alert-ic svg{width:22px;height:22px}
+.alert-body{flex:1;min-width:0}
+.alert-title{font-weight:600;font-size:15px;margin-bottom:2px}
+.alert-text{font-size:13px;color:var(--text2)}
+.alert-btn{flex-shrink:0;font-family:inherit;font-weight:600;font-size:13px;color:var(--red);background:var(--red-soft);border:1px solid var(--red-mid);border-radius:10px;padding:9px 14px;cursor:pointer;transition:.18s}
+.alert-btn:hover{background:var(--red);color:#fff}
+
+/* ---------- BODY MAP ---------- */
+.bodywrap{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.bodysvg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.silhouette{opacity:.9}
+.leader{stroke:var(--border2);stroke-width:1;stroke-dasharray:3 4;opacity:.7}
+.node{cursor:pointer;opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .4s,transform .4s cubic-bezier(.34,1.56,.64,1)}
+.node.on{opacity:1;transform:scale(1)}
+.node-halo{fill:transparent;opacity:.16}
+.node-dot{stroke:var(--bg);stroke-width:2}
+.node-ic{color:#06110d;opacity:.85}
+.node-green .node-dot{fill:var(--green)} .node-green .node-halo{fill:var(--green);animation:halo 3s ease-in-out infinite}
+.node-amber .node-dot{fill:var(--amber)} .node-amber .node-halo{fill:var(--amber);animation:halo 3s ease-in-out infinite}
+.node-red .node-dot{fill:var(--red)} .node-red .node-halo{fill:var(--red);animation:haloRed 1.8s ease-in-out infinite}
+.node-red .node-ic,.node-amber .node-ic{color:#120c02}
+body[data-theme="light"] .node-ic{color:#fff}
+@keyframes halo{0%,100%{opacity:.14;r:18}50%{opacity:.26;r:22}}
+@keyframes haloRed{0%,100%{opacity:.2}50%{opacity:.4}}
+.node:hover .node-dot,.node:focus .node-dot{filter:brightness(1.15)}
+.node:focus{outline:none}
+.node:focus .node-halo{opacity:.4}
+.scan rect{fill:var(--green);opacity:0}
+.scan.run rect{animation:scan 1.5s cubic-bezier(.4,0,.2,1) 1}
+@keyframes scan{0%{opacity:0;transform:translateY(70px)}10%{opacity:.5}90%{opacity:.5}100%{opacity:0;transform:translateY(330px)}}
+.scan{transform-box:view-box}
+.bodytip{position:fixed;z-index:200;transform:translate(-50%,-100%);background:var(--surface3);border:1px solid var(--border2);border-radius:10px;padding:8px 11px;font-size:12px;color:var(--text);pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:var(--shadow);white-space:nowrap}
+.bodytip.show{opacity:1}
+.bodytip strong{display:block;font-size:12.5px;margin-bottom:1px}
+.tip-red{color:var(--red)}
+.mpills{display:none;gap:8px;overflow-x:auto;padding:14px 2px 4px;-webkit-overflow-scrolling:touch}
+.mpill{flex-shrink:0;display:flex;align-items:center;gap:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 13px;cursor:pointer;white-space:nowrap}
+.mpill-dot{width:8px;height:8px;border-radius:50%}
+.mpill-green .mpill-dot{background:var(--green)}.mpill-amber .mpill-dot{background:var(--amber)}.mpill-red .mpill-dot{background:var(--red)}
+
+/* ---------- SYSTEM GRID ---------- */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.scard{display:flex;align-items:center;gap:13px;text-align:left;font-family:inherit;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.scard:hover{transform:translateY(-2px);border-color:var(--border2)}
+.scard-ic{flex-shrink:0;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--surface2)}
+.scard-ic svg{width:20px;height:20px;color:var(--text2)}
+.scard-green .scard-ic{background:var(--green-soft)}.scard-green .scard-ic svg{color:var(--green)}
+.scard-amber .scard-ic{background:var(--amber-soft)}.scard-amber .scard-ic svg{color:var(--amber)}
+.scard-red .scard-ic{background:var(--red-soft)}.scard-red .scard-ic svg{color:var(--red)}
+.scard-body{flex:1;min-width:0}
+.scard-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.scard-meta{font-size:12px;color:var(--text3)}
+.scard-badge{flex-shrink:0;font-size:10.5px;font-weight:600;padding:4px 8px;border-radius:7px;text-align:center}
+.sb-green{background:var(--green-soft);color:var(--green)}.sb-amber{background:var(--amber-soft);color:var(--amber)}.sb-red{background:var(--red-soft);color:var(--red)}
+
+/* ---------- TOP FINDINGS ---------- */
+.finds{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.find{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);border-left:3px solid var(--border2)}
+.find-red{border-left-color:var(--red)}.find-green{border-left-color:var(--green)}.find-amber{border-left-color:var(--amber)}
+.find-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+.find-name{font-size:14px;font-weight:600}
+.find-val{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-top:2px}
+.find-val span{font-size:13px;font-weight:500;color:var(--text3)}
+.find-desc{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6}
+
+/* ---------- ANALYSIS CARDS ---------- */
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 26px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;border-left:3px solid var(--border2)}
+.acard-green{border-left-color:var(--green)}.acard-red{border-left-color:var(--red)}.acard-blue{border-left-color:var(--blue)}
+.acard-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;margin-bottom:14px}
+.acard-dot{width:8px;height:8px;border-radius:50%}
+.dot-green{background:var(--green)}.dot-red{background:var(--red)}.dot-blue{background:var(--blue)}
+.acard-c{font-size:14.5px;color:var(--text2);line-height:1.85;white-space:pre-line}
+.lead-warn{font-size:15px;font-weight:500;color:var(--text);line-height:1.7;padding:14px 16px;margin-bottom:16px;background:var(--red-soft);border-left:3px solid var(--red);border-radius:0 10px 10px 0;white-space:pre-line}
+.numbered{padding-left:74px}
+.num{position:absolute;left:22px;top:22px;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.num-red{background:var(--red-soft);color:var(--red)}.num-blue{background:var(--blue-soft);color:var(--blue)}
+
+/* ---------- CONTROLS ---------- */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.search{flex:1;min-width:200px;max-width:300px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:11px 15px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:.18s}
+.search:focus{border-color:var(--green)}
+.search::placeholder{color:var(--text3)}
+.fbtn{font-family:inherit;font-size:13px;font-weight:600;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 16px;cursor:pointer;transition:.18s}
+.fbtn:hover{color:var(--text);border-color:var(--border2)}
+.fbtn.active{color:var(--green);background:var(--green-soft);border-color:var(--green-mid)}
+
+/* ---------- GROUPS ---------- */
+.grp{margin-bottom:12px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.grp-flash{box-shadow:0 0 0 2px var(--green-mid)}
+.grp-h{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;cursor:pointer;user-select:none;transition:.18s}
+.grp-h:hover{background:var(--surface2)}
+.grp-name{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.grp-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text3)}
+.grp-flag{color:var(--red);font-weight:600}
+.chev{transition:transform .3s;color:var(--text3)}
+.grp.open .chev{transform:rotate(180deg)}
+.grp-body{display:none;padding:6px 12px 14px}
+.grp.open .grp-body{display:block}
+
+/* ---------- BIOMARKER CARD ---------- */
+.bc{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;background:var(--bg2);transition:border-color .18s}
+.bc:hover{border-color:var(--border2)}
+.bc-red{background:linear-gradient(90deg,var(--red-soft),transparent 55%)}
+.bc-green{background:linear-gradient(90deg,var(--green-soft),transparent 55%)}
+.bc-amber{background:linear-gradient(90deg,var(--amber-soft),transparent 55%)}
+.bc-main{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.bc-tick{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tick-red{background:var(--red)}.tick-green{background:var(--green)}.tick-amber{background:var(--amber)}.tick-blue{background:var(--blue)}
+.bc-info{flex:1;min-width:110px}
+.bc-name{font-size:14px;font-weight:500}
+.bc-res{font-size:13px;color:var(--text2)}
+.chip{flex-shrink:0;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.chip-flag{background:var(--red-soft);color:var(--red)}.chip-optimal{background:var(--green-soft);color:var(--green)}
+.chip-range{background:var(--amber-soft);color:var(--amber)}.chip-qual{background:var(--blue-soft);color:var(--blue)}
+.bc-chev{color:var(--text3);transition:transform .3s;flex-shrink:0}
+.bc.open .bc-chev{transform:rotate(180deg)}
+.bc-detail{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.bc-detail-in{padding:2px 16px 18px 39px;border-top:1px solid var(--border)}
+.bc-desc{font-size:13.5px;color:var(--text2);line-height:1.7;padding-top:14px;margin-bottom:14px}
+.bc-desc strong{color:var(--text);font-weight:600}
+.bc-ranges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.bc-ranges span{font-size:11.5px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;gap:1px}
+.bc-ranges em{font-style:normal;color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+.bc-causes{font-size:12.5px;color:var(--text3);line-height:1.6}
+.bc-causes em{font-style:normal;color:var(--text2);font-weight:600}
+
+/* ---------- RANGE BAR ---------- */
+.rbar-wrap{flex:1;max-width:240px;min-width:130px}
+.rbar-big{max-width:none;margin:4px 0 2px}
+.rbar{position:relative;height:10px;border-radius:6px;overflow:visible;
+  background:linear-gradient(90deg,var(--red-mid),var(--amber-mid) 35%,var(--amber-mid) 65%,var(--red-mid))}
+.rbar-normal{position:absolute;top:0;height:100%;background:var(--amber-soft);border-radius:6px}
+.rbar-opt{position:absolute;top:0;height:100%;background:var(--green-mid);border-radius:6px;box-shadow:inset 0 0 0 1px var(--green-soft)}
+.rbar-dot{position:absolute;top:50%;left:50%;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);border:2.5px solid var(--bg2);transition:left 1s cubic-bezier(.34,1.3,.5,1)}
+.rbar-dot.dot-red{background:var(--red);box-shadow:0 0 10px var(--red-mid)}
+.rbar-dot.dot-green{background:var(--green);box-shadow:0 0 10px var(--green-mid)}
+.rbar-dot.dot-amber{background:var(--amber);box-shadow:0 0 10px var(--amber-mid)}
+
+/* ---------- FOOTER ---------- */
+.foot{text-align:center;padding:44px 22px;border-top:1px solid var(--border);margin-top:40px}
+/* foot-brand replaced by .foot-logo img */
+.foot p{font-size:12px;color:var(--text3);margin-bottom:5px}
+
+/* ---------- GATE ---------- */
+.gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);
+  background-image:radial-gradient(700px 500px at 50% 30%, rgba(44,228,173,.1), transparent 60%);transition:opacity .5s,transform .5s}
+.gate-out{opacity:0;transform:scale(1.04);pointer-events:none}
+.gate-card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:46px 40px;max-width:410px;width:90%;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,.7);overflow:hidden}
+.gate-card>*{position:relative}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* gate-logo replaced by .gate-logo-img */
+.gate-sub{color:var(--text2);font-size:14px;margin-bottom:28px;line-height:1.55}
+.gate-label{display:block;text-align:left;font-size:12.5px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.gate-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:15px;color:var(--text);font-family:inherit;font-size:17px;text-align:center;letter-spacing:2px;outline:none;transition:.18s}
+.gate-input:focus{border-color:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.gate-input.shake{animation:shake .4s;border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.gate-btn{width:100%;margin-top:16px;padding:15px;background:var(--green);color:#04110c;font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:.18s}
+.gate-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.gate-error{color:var(--red);font-size:13px;margin-top:14px;display:none}
+.gate-foot{color:var(--text3);font-size:11px;margin-top:24px;line-height:1.5}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:820px){
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+  .finds{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr;text-align:center;padding:32px 24px}
+  .hero-name{align-items:center}.hero-lede{margin-left:auto;margin-right:auto}
+  .hero-stats{justify-content:center}
+  .hero-ring{margin:8px auto 0}
+}
+@media(max-width:720px){
+  .nav-links{display:none}.mnav{display:block}.nav-patient{display:none}
+  .nav-actions .label{display:none}
+  .wrap{padding:80px 12px 104px}
+  section{margin-bottom:40px}
+  .bodysvg{max-width:340px}
+  .mpills{display:flex}
+  .bodywrap .leader{display:none}
+  .numbered{padding-left:20px}.num{position:static;margin-bottom:12px}
+  .bc-main{flex-wrap:wrap;padding:12px 14px}.rbar-wrap{order:5;width:100%;max-width:none;margin-top:6px}
+  .bc-detail-in{padding-left:14px;padding-right:10px}
+  .bc-name{font-size:13.5px}.bc-res{font-size:12.5px}
+  .acard{padding:18px 16px}.acard-c{font-size:14px;line-height:1.8}
+  .lead-warn{font-size:14px;padding:12px 14px}
+  .sec-title{font-size:20px}.sec-sub{font-size:14px}
+  .sgrid{grid-template-columns:1fr}
+  .scard{padding:14px}
+  .find{padding:16px}
+  .find-name{font-size:13px}.find-val{font-size:18px}.find-desc{font-size:12.5px}
+  .grp-name{font-size:12px}.grp-meta{font-size:11px}
+  .chip{font-size:9.5px;padding:3px 8px}
+  .alert{flex-direction:column;text-align:center;gap:12px;padding:16px 14px}
+  .alert-btn{width:100%}
+  .hero-name{font-size:clamp(28px,8vw,40px)}
+  .hero-lede{font-size:14px}
+  .hero-stats{gap:18px}
+  .hstat-n{font-size:24px}.hstat-l{font-size:10px}
+  .hero-ring{width:180px;height:180px}
+  .ring-pct{font-size:42px}
+  .gate-card{padding:32px 24px}
+  .gate-logo-img{width:150px}
+  .gate-sub{font-size:13px}
+  .gate-input{font-size:16px;padding:13px}
+  .gate-btn{padding:13px;font-size:14px}
+  .controls{flex-direction:column;align-items:stretch}
+  .search{max-width:none;min-width:0}
+  .fbtn{text-align:center}
+  .bc-ranges{gap:6px}.bc-ranges span{font-size:10.5px;padding:5px 8px}
+  .bc-desc{font-size:13px}
+  .foot p{font-size:11px}
+}
+
+/* ---------- PRINT ---------- */
+@media print{
+  :root{--bg:#fff;--bg2:#fff;--surface:#fff;--surface2:#fff;--surface3:#fff;--border:#d8dae0;--border2:#c4c7cf;
+    --text:#111;--text2:#333;--text3:#666;--silh-top:#eee;--silh-bot:#e4e4e4;--silh-stroke:#ccc;--shadow:none}
+  body{background:#fff;background-image:none}
+  .nav,.mnav,.controls,.gate,.bodytip,.alert-btn,.bc-chev,.chev,.mpills{display:none!important}
+  .foot-logo.inv{display:none!important}.foot-logo.std{display:block!important}
+  .wrap{padding:0;max-width:none}
+  .reveal{opacity:1!important;transform:none!important}
+  .hero,.bodywrap,.acard,.find,.scard,.grp,.bc{box-shadow:none;break-inside:avoid}
+  .grp-body{display:block!important}.bc-detail{max-height:none!important}.bc-detail-in{padding-left:16px}
+  section{margin-bottom:22px;page-break-inside:auto}
+  .node{opacity:1!important;transform:none!important}
+  .print-head{display:flex!important}
+  a{color:#111;text-decoration:none}
+}
+.print-head{display:none;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:20px;border-bottom:2px solid #111}
+.print-head .brand{font-size:20px}
+.print-head .ph-meta{font-size:12px;color:#444;text-align:right}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img class="gate-logo-img" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
+    <div class="gate-sub">Enter your date of birth to unlock your report.</div>
+    <label class="gate-label">Date of birth</label>
+    <input type="text" class="gate-input" id="gate-dob" placeholder="DD / MM / YYYY" maxlength="14" autocomplete="off" inputmode="numeric">
+    <button class="gate-btn" onclick="verifyDob()">View my results</button>
+    <div class="gate-error" id="gate-error">That date of birth does not match. Please try again.</div>
+    <div class="gate-foot">Your results are private. Having trouble? Contact support@truevitals.co.uk</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav hide" id="app-nav">
+  <div class="nav-brand"><img class="logo-dark" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals"><img class="logo-light" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals"><div class="nav-patient" id="nav-patient"></div></div>
+  <div class="nav-links">
+    <a data-t="overview" href="#overview">Overview</a>
+    <a data-t="body" href="#body">Body map</a>
+    <a data-t="findings" href="#findings">Findings</a>
+    <a data-t="flags" href="#flags">Flags</a>
+    <a data-t="results" href="#results">Results</a>
+  </div>
+  <div class="nav-actions">
+    <button class="iconbtn" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="label" id="themeLabel">Dark</span></button>
+    <button class="iconbtn primary" onclick="printReport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg><span class="label">Share with GP</span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mnav hide" id="app-mnav">
+  <div class="mnav-in">
+    <a data-t="overview" href="#overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+    <a data-t="body" href="#body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v7M12 15l-4 6M12 15l4 6M6 10l6 1 6-1"/></svg>Body</a>
+    <a data-t="findings" href="#findings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 2.6 6.6L22 9.3l-5 4.6 1.5 7.1L12 17l-6.5 4 1.5-7.1-5-4.6 7.4-.7z"/></svg>Findings</a>
+    <a data-t="flags" href="#flags"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Flags</a>
+    <a data-t="results" href="#results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Results</a>
+  </div>
+</div>
+
+<div class="print-head" id="print-head">
+  <img class="logo-print" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals">
+  <div class="ph-meta" id="print-meta"></div>
+</div>
+<main class="wrap hide" id="app"></main>
+
+<script>
+// ============================================================
+// PASTE YOUR PDFMONKEY JSON BELOW  (replace this whole object)
+// ============================================================
+const REPORT_DATA = {"patient_name":"Melanie Philbin","dob":"18/08/1969","report_date":"2026-07-21","summary":"Melanie presents as a 56-year-old female with a BMI of 23.6, following a pescatarian diet rated 8 out of 10 for quality with a volume of 5 out of 10. She performs 5 or more cardio sessions and 4 resistance sessions per week at very high intensity with 10,000 to 15,000 daily steps. She is on HRT and takes nattokinase, iron, and multivitamins. She is already working with a coach to address a known elevated Lp(a). She reports low sex drive as her primary symptom.\n\nThere are strong positives throughout this report. Her metabolic health is exceptional: HbA1c at 35 (5.3%) and glucose at 4 are excellent, and her HOMA-IR at 0.3 reflects extraordinary insulin sensitivity from the training volume. Her triglycerides at 0.65 are outstanding. Her HDL at 1.8 is within optimal. Her kidney function is excellent (Cystatin C 0.77, eGFR 105). Her vitamin D at 123 is within optimal. Her B12 at 574 is within optimal. Her calcium, PTH, and corrected calcium are all well balanced. Her magnesium at 0.94 is within optimal despite the exercise demand. Her cortisol at 300 is within optimal, confirming the adrenal stress response is well maintained. Her thyroid is functioning well with negative antibodies. Her IgE at 66 is within range (minimal allergic burden). Her rheumatoid factor is normal. Her tumour markers are all within range. Her celiac screen is negative. Her urinalysis is normal. Her inflammation by CRP at 0.5 is within optimal.\n\nHowever, there are findings that require GP attention and information that should be shared with the HRT prescriber.\n\nThe ALT at 111 is approximately twice the upper limit of 56, and the AST at 73 is well above its limit of 45. These are the findings requiring the most urgent GP attention. The critically important context is that the GGT at 15 is completely normal. If the liver were under genuine toxic or inflammatory stress, GGT would be elevated alongside ALT and AST. The normal GGT strongly suggests this is not a classic liver disease pattern. Two explanations are most likely. The first is that the extreme training volume (9+ sessions per week plus over 10,000 steps) is releasing ALT and AST from muscle tissue rather than from the liver. Both enzymes are found in muscle, and very high-intensity exercise is a well-documented cause of elevated transaminases in athletes. The second is that one or more supplements (nattokinase, multivitamins, or others not listed) may be causing a hepatocellular reaction. A GP should investigate by repeating the liver function tests after a period of reduced training or a temporary supplement pause to identify the source. A liver ultrasound may also be appropriate.\n\nHer neutrophils at 0.99 are significantly below the normal range (lower limit 2), falling below the 1.0 threshold. Her total WBC at 3 is below range. This is severe neutropenia and means the front-line immune defence against bacterial infections is critically depleted. At 56 with this extreme training volume, exercise-induced bone marrow suppression is the most likely cause. The reticulocyte absolute at 29.28 (well below range) confirms the bone marrow is broadly underproducing, affecting both red and white blood cell lines. This should be discussed with a GP, who may wish to repeat the blood count after a period of reduced training.\n\nHer Lp(a) is above the laboratory's measurable range. Melanie is already aware and is working with a coach. The ApoB at 1.18 (above 0.9) and ApoB/A-I ratio at 0.843 (above the 0.6 female threshold) are being driven by the Lp(a) particles rather than by dietary LDL, which at 2.82 is well controlled. The modifiable risk factors (diet, exercise, metabolic health) are already optimised. Nattokinase is being taken specifically to address Lp(a).\n\nThe finding most relevant to the low sex drive is the oestradiol at 72. For someone on HRT, this is low. Oestrogen is the primary driver of female sexual desire, arousal, and vaginal health. At 72, the oestradiol is closer to what would be expected without HRT. The FSH at 62.42 remains very elevated, confirming the HRT is not providing enough oestrogen to suppress the menopausal signals from the brain. Despite an elevated testosterone (3.6, above the female range of 2.6), which would normally support libido, the low oestradiol appears to be overriding the testosterone's effect. The HRT prescriber should see the oestradiol and FSH results and may wish to adjust the oestrogen dose or delivery method.\n\nHer iron transport is compromised despite supplementation. Iron at 9.4 is at the absolute floor of range, and transferrin saturation at 14.56% is below range. Yet ferritin at 82 is within optimal, confirming healthy stores. The body has iron in reserve but is not mobilising it quickly enough to meet the extreme training demand. The RDW at 14.4 (above range) and the suppressed reticulocyte production (29.28) are consequences of this transport bottleneck. The timing and form of iron supplementation should be reviewed to maximise absorption.\n\nHer ALP at 35 is below the normal range. Low ALP can reflect nutritional factors and is consistent with the high training demand and diet volume of 5 out of 10.\n\nHer folate at 7 is below optimal despite taking a multivitamin. Intense exercise increases folate demand.\n\nHer testosterone at 3.6 is above the female range (limit 2.6), likely driven by the intense resistance training. Not currently causing symptoms but worth monitoring.","links":"The most urgent action from this report is GP investigation of the ALT (111) and AST (73). The normal GGT (15) and the low CK (52, which is unusually low for someone training at this intensity) create an atypical pattern that needs clarification. The GP may wish to repeat the liver function tests after a two-week reduction in training intensity and a temporary pause on non-essential supplements to determine whether the elevation is exercise-related, supplement-related, or a primary liver issue. If it persists despite rest and supplement cessation, a liver ultrasound would be the next step.\n\nThe neutrophils at 0.99 should be discussed with the GP. If Melanie has noticed being more susceptible to infections or illness, this explains why. The training volume may need to be reviewed with the coach to ensure adequate recovery is built in. Even one additional rest day per week or a structured deload every 4 to 6 weeks could support neutrophil recovery while maintaining fitness.\n\nThe low sex drive should be discussed with the HRT prescriber alongside the oestradiol (72) and FSH (62.42) results. The blood clearly shows the HRT is not providing enough oestrogen to suppress the menopausal axis or to support sexual function. The prescriber may wish to increase the oestrogen dose, change the delivery method (transdermal patches or gels may achieve higher and more stable oestradiol levels than oral), or review the overall HRT regimen.\n\nThe iron supplementation should be optimised. At 9.4 circulating iron and 14.56% transferrin saturation despite taking supplements, the current approach is not working well enough. Iron should be taken on an empty stomach with vitamin C to enhance absorption. It should be taken at least 2 hours away from tea, coffee, dairy, calcium supplements, and multivitamins (all of which impair iron absorption). Taking the iron and the multivitamin at different times of day is important. If the current form is not bisglycinate, switching to iron bisglycinate may improve absorption and reduce gut side effects.\n\nThe diet volume at 5 out of 10 may be contributing to the below-optimal albumin (38), the low ALP (35), and the below-optimal folate (7). At 60kg with 9+ training sessions per week and over 10,000 steps, caloric maintenance is approximately 2,000 to 2,300 calories. Protein should be at least 96 to 120g per day (1.6 to 2g per kilogram). The diet quality at 8 out of 10 is excellent (pescatarian), but the body needs more of it to support the training volume, blood cell production, and recovery.\n\nThe Lp(a) management with the coach should continue. The modifiable cardiovascular risk factors are already well optimised (LDL 2.82, triglycerides 0.65, HDL 1.8, HbA1c 35, HOMA-IR 0.3). Emerging Lp(a)-targeting therapies are in advanced clinical trials and may become available in the coming years.\n\nA follow-up blood test in 8 to 12 weeks focusing on ALT, AST, GGT (after training/supplement modification), full blood count with neutrophils and reticulocytes, iron studies with transferrin saturation, ApoB, and oestradiol (after HRT adjustment if made) is recommended.","flags":"ALT at 111 (approximately 2x upper limit of 56) and AST at 73 (above limit of 45). GGT at 15 (normal). Atypical pattern requiring GP investigation. Exercise-related muscle release or supplement-related hepatocellular effect most likely. Liver ultrasound may be appropriate.\n\nNeutrophils at 0.99 (below 1.0 threshold, significantly below range). WBC at 3 (below range). Severe neutropenia likely from exercise-induced bone marrow suppression. GP discussion recommended. Reticulocyte absolute at 29.28 (significantly below range) confirms broad marrow suppression.\n\nLp(a) above the laboratory's measurable range. Already known and being managed. ApoB 1.18 (above 0.9) driven by Lp(a) particles rather than dietary LDL. ApoB/A-I ratio 0.843 (above 0.6 female threshold).\n\nOestradiol at 72 (low for someone on HRT). FSH at 62.42 (still elevated). HRT not providing adequate oestrogen. Most likely cause of the low sex drive. HRT prescriber should review.\n\nIron at 9.4 (floor of range) and transferrin saturation at 14.56% (below range) despite supplementation. Ferritin 82 (stores OK). Iron transport insufficient for training demand. Supplement timing and form should be optimised.\n\nRDW at 14.4 (above range). Red blood cells varying in size from iron transport insufficiency.\n\nFIB-4 at 1.85 (above threshold). Inflated by age and very high ALT. Not reliable until ALT source is confirmed.\n\nALP at 35 (below range). Nutritional factors likely.\n\nTestosterone at 3.6 (above female range). Exercise-driven. Not currently symptomatic.\n\nNLR at 0.639 (below range). Inverted ratio from severe neutropenia.\n\nInsulin at 1.68 (below range), C-Peptide at 138.4 (below range), HOMA-IR at 0.3 (below range), HOMA-B at 67.2 (below range). All reflect extreme insulin sensitivity from exercise, not pancreatic insufficiency.\n\nFolate at 7 (below optimal). Increase intake.\n\nBasophils at 0.01 (below range). Minor.","recommendations":"The ALT (111) and AST (73) should be investigated by a GP as a priority. Repeat LFTs after reduced training and supplement pause recommended.\n\nThe neutrophils (0.99) should be discussed with a GP. Repeat FBC after reduced training recommended.\n\nThe oestradiol (72) and FSH (62.42) should be shared with the HRT prescriber for dose review.\n\nIron supplementation should be optimised (timing, form, taken away from other supplements).\n\nA follow-up test in 8 to 12 weeks focusing on ALT, AST, GGT, FBC with neutrophils and reticulocytes, iron studies, ApoB, and oestradiol is recommended.","supplementation":"Iron bisglycinate (if not already this form) at 25 to 50mg daily, taken on an empty stomach with vitamin C, at least 2 hours away from tea, coffee, dairy, calcium, and the multivitamin. The current supplementation is not delivering enough circulating iron despite healthy stores (ferritin 82). Timing and separation from other supplements is critical.\n\nFolate at 400 to 800mcg daily (standalone, not relying on the multivitamin dose). At 7, below optimal despite supplementation.\n\nContinue vitamin D at current dose (123, within optimal).\n\nContinue nattokinase as advised by the coach for Lp(a) management.\n\nThe multivitamin should be reviewed with the GP during the ALT/AST investigation, as some multivitamin formulations contain compounds that can cause liver enzyme elevation at high doses.","biomarkers":[{"key":"albumin","name":"Albumin","group":"LIVER & METABOLIC","result":"38","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4167","lower_normal":"34","upper_normal":"50","lower_optimal":"40","upper_optimal":"48","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4583333333","upper_optimal_position":"0.625","units":"g/L","description":"Below optimal at 38. At 60kg with 5+ cardio and 4 resistance sessions per week, the body's protein demands are very high. A diet volume of 5 out of 10 may not be providing enough protein to maintain optimal albumin alongside the extreme training volume","low_causes":"Insufficient protein, intense exercise","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alt","name":"ALT","group":"LIVER & METABOLIC","result":"111","within_normal":"FALSE","within_optimal":"FALSE","result_position":"1","lower_normal":"7","upper_normal":"56","lower_optimal":"7","upper_optimal":"20","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.4217687075","units":"U/L","description":"Significantly above the normal range at 111, approximately twice the upper limit of 56. This is the finding that requires the most urgent GP attention in this report. ALT is traditionally considered a liver enzyme, but it is also found in muscle tissue. The unusual aspect of this result is that GGT at 15 is completely normal. If the liver were under genuine toxic stress from alcohol, medications, or fatty liver disease, GGT would typically be elevated alongside ALT. The fact that GGT is pristine while ALT is 111 raises two possibilities. The first is that the extreme training volume (5+ cardio sessions, 4 resistance sessions, and 10,000 to 15,000 steps per week) is releasing significant ALT from muscle tissue rather than from the liver. Very high-intensity exercise is a well-documented cause of elevated ALT and AST in athletes. The second possibility is supplement-related liver irritation. Nattokinase, high-dose multivitamins, and other supplements can occasionally cause drug-induced liver injury, and some people are more susceptible than others. A GP should repeat the liver function tests after a period of reduced training intensity or a temporary pause on supplements to determine which factor is driving the elevation. A liver ultrasound may also be appropriate to rule out structural causes","low_causes":"Rarely significant","high_causes":"Intense exercise (muscle release), supplement-related liver irritation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alkalinephosphatase","name":"Alkaline Phosphatase","group":"LIVER & METABOLIC","result":"35","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.281","lower_normal":"46","upper_normal":"116","lower_optimal":"60","upper_optimal":"100","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.5904761905","units":"IU/L","description":"Below the normal range at 35 (lower limit 46). Low ALP can occur with low zinc or magnesium intake, hypothyroidism (ruled out here as thyroid is healthy), or intense exercise. At 56 with very high training volume and a diet volume of 5 out of 10, nutritional factors are the most likely explanation","low_causes":"Nutritional factors, intense exercise","high_causes":"Bone disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ast","name":"AST","group":"LIVER & METABOLIC","result":"73","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.9583","lower_normal":"13","upper_normal":"45","lower_optimal":"13","upper_optimal":"25","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.4583333333","units":"U/L","description":"Above range at 73 (limit 45). AST is found in both liver and muscle tissue, and like the ALT (111), the elevation is very likely driven by the extreme exercise volume releasing AST from muscle. The normal GGT (15) supports this interpretation. However, the magnitude of both elevations (ALT 111, AST 73) warrants GP investigation to confirm the cause","low_causes":"Rarely significant","high_causes":"Intense exercise, supplement-related","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"gammagt","name":"Gamma GT","group":"LIVER & METABOLIC","result":"15","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4412","lower_normal":"4","upper_normal":"38","lower_optimal":"10","upper_optimal":"25","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3921568627","upper_optimal_position":"0.5392156863","units":"IU/L","description":"Within optimal at 15. This is a critically important finding. GGT is the most sensitive liver enzyme for toxic or inflammatory liver damage. At 15, the liver is not under toxic stress. This strongly suggests the elevated ALT (111) and AST (73) are not coming from the liver itself but from muscle tissue or a supplement-related effect that is not following the typical toxic pattern","low_causes":"Rarely significant","high_causes":"Alcohol, medications","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bilirubin","name":"Bilirubin","group":"LIVER & METABOLIC","result":"7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.375","lower_normal":"5","upper_normal":"21","lower_optimal":"5","upper_optimal":"15","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5416666667","units":"umol/L","description":"Within range","low_causes":"Rarely significant","high_causes":"Liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"protein","name":"Total Protein","group":"LIVER & METABOLIC","result":"70","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5067","lower_normal":"57","upper_normal":"82","lower_optimal":"65","upper_optimal":"75","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.44","upper_optimal_position":"0.5733333333","units":"g/L","description":"Within range","low_causes":"Liver disease","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"globulin","name":"Globulin","group":"LIVER & METABOLIC","result":"32","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5926","lower_normal":"18","upper_normal":"36","lower_optimal":"24","upper_optimal":"32","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.5925925926","units":"g/L","description":"Within range","low_causes":"Immune deficiency","high_causes":"Chronic inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"agratio","name":"Albumin/Globulin Ratio","group":"LIVER & METABOLIC","result":"1.19","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3548","lower_normal":"1.1","upper_normal":"2.5","lower_optimal":"1.1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"Ratio","description":"Within range","low_causes":"Liver disease","high_causes":"Not significant","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fib4","name":"FIB-4 Score","group":"LIVER & METABOLIC","result":"1.85","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6379","lower_normal":"","upper_normal":"1.45","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3448275862","units":"","description":"Above the screening threshold at 1.85. However, this score is being inflated by two factors: the age component (at 56, the age alone pushes FIB-4 higher) and the very high ALT (111), which is the numerator in the formula. If the ALT is coming from muscle rather than liver (as the normal GGT suggests), the FIB-4 is meaningless. Once the ALT is investigated and the cause confirmed, the FIB-4 can be recalculated. The normal GGT and bilirubin argue strongly against liver fibrosis","low_causes":"Not applicable","high_causes":"Age + elevated ALT inflating score","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"totalcholesterol","name":"Total Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"4.9","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4712","lower_normal":"","upper_normal":"5.2","lower_optimal":"","upper_optimal":"4.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4326923077","units":"mmol/L","description":"Within optimal at 4.9","low_causes":"Very low rare","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ldlcholesterol","name":"LDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2.82","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.47","lower_normal":"","upper_normal":"3","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3333333333","units":"mmol/L","description":"Within range at 2.82. The LDL itself is well controlled. The elevated ApoB (1.18) is being driven by the Lp(a) particles rather than by excessive LDL","low_causes":"Very low rare","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdlcholesterol","name":"HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"1.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.75","lower_normal":"1.2","upper_normal":"","lower_optimal":"1.4","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5833333333","upper_optimal_position":"","units":"mmol/L","description":"Protective cholesterol. Within optimal at 1.8. A strong finding reflecting the regular exercise and pescatarian diet quality","low_causes":"Sedentary lifestyle","high_causes":"Exercise, diet quality","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"triglycerides","name":"Triglycerides","group":"LIPIDS & CARDIOVASCULAR","result":"0.65","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1912","lower_normal":"","upper_normal":"1.7","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2941176471","units":"mmol/L","description":"Outstanding at 0.65","low_causes":"Very low rare","high_causes":"Excess carbohydrates","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cholesterolratio","name":"TC:HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"2.72","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3022","lower_normal":"","upper_normal":"4.5","lower_optimal":"","upper_optimal":"3.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3888888889","units":"Ratio","description":"Outstanding at 2.72","low_causes":"Low TC or high HDL","high_causes":"Low HDL","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdloftotal","name":"HDL % of total","group":"LIPIDS & CARDIOVASCULAR","result":"36.73","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"%","description":"Excellent. Over a third of all cholesterol is the protective type","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"nonhdlcholesterol","name":"Non-HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"3.1","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3875","lower_normal":"","upper_normal":"4","lower_optimal":"","upper_optimal":"3","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.375","units":"mmol/L","description":"Within range at 3.1","low_causes":"Very low rare","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vldl","name":"VLDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1923","lower_normal":"","upper_normal":"0.78","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3205128205","units":"mmol/L","description":"Within optimal","low_causes":"Rarely significant","high_causes":"Excess carbohydrates","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apolipoproteina1","name":"Apolipoprotein A-1","group":"LIPIDS & CARDIOVASCULAR","result":"1.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3993","lower_normal":"1.22","upper_normal":"2.13","lower_optimal":"1.6","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4725274725","upper_optimal_position":"0.619047619","units":"g/L","description":"Protective cholesterol protein. Within range but below optimal at 1.4","low_causes":"Similar to low HDL","high_causes":"Exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"apolipoproteinb","name":"Apolipoprotein B","group":"LIPIDS & CARDIOVASCULAR","result":"1.18","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6556","lower_normal":"","upper_normal":"0.9","lower_optimal":"","upper_optimal":"0.7","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3888888889","units":"g/L","description":"Above the threshold at 1.18 (limit 0.9). Melanie is already aware of her cardiovascular risk and is working with a coach. The elevated ApoB in the context of normal LDL (2.82) and outstanding triglycerides (0.65) confirms that the excess particles are being driven by the very high Lipoprotein(a) rather than by dietary or metabolic LDL. Lp(a) particles are counted in the ApoB total, and when Lp(a) is as high as Melanie's, it artificially inflates the ApoB. The modifiable LDL component is actually well controlled. Nattokinase is being taken to address Lp(a) specifically","low_causes":"Very low rare","high_causes":"Lp(a)-driven","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apoba1ratio","name":"ApoB/A-I Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.843","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7025","lower_normal":"","upper_normal":"0.6","lower_optimal":"","upper_optimal":"0.4","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3333333333","units":"Ratio","description":"Above the female threshold of 0.6 at 0.843. As with ApoB, this is being driven primarily by the Lp(a) particles rather than by dietary cholesterol","low_causes":"High ApoA-1","high_causes":"Lp(a)-driven ApoB elevation","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"tghdlratio","name":"Triglyceride/HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.361","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1203","lower_normal":"","upper_normal":"1.5","lower_optimal":"","upper_optimal":"0.9","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3","units":"Ratio","description":"Outstanding at 0.361. Confirms excellent metabolic health and insulin sensitivity","low_causes":"Very low TG, high HDL","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"remnantcholesterol","name":"Remnant Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.28","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.175","lower_normal":"","upper_normal":"0.8","lower_optimal":"","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3125","units":"mmol/L","description":"Within optimal","low_causes":"Very low TG","high_causes":"Metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"lipoproteina","name":"Lipoprotein(a)","group":"LIPIDS & CARDIOVASCULAR","result":"Above measurable range","within_normal":"FALSE","within_optimal":"FALSE","result_position":"1","lower_normal":"","upper_normal":"32","lower_optimal":"","upper_optimal":"14","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.2188","units":"nmol/L","description":"Above the laboratory's measurable range. Melanie is already aware of her elevated Lp(a) and is working with a coach and taking nattokinase to address it. Lp(a) is genetically inherited and cannot be changed by diet, exercise, or lifestyle. It is fixed for life. The fact that Melanie's exercise volume, diet quality, and metabolic markers (triglycerides 0.65, HDL 1.8, HbA1c 35, HOMA-IR 0.3) are all excellent confirms she is doing everything within her control to optimise the modifiable cardiovascular risk factors. The Lp(a) is the one factor that lifestyle cannot address. This should remain permanently recorded on medical notes. Emerging therapies targeting Lp(a) directly are in clinical trials and may become available in the coming years","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"glucose","name":"Glucose","group":"GLUCOSE & INSULIN","result":"4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4","lower_normal":"3.5","upper_normal":"6","lower_optimal":"4.2","upper_optimal":"5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4266666667","upper_optimal_position":"0.5333333333","units":"mmol/L","description":"Within range at 4. Excellent blood sugar control","low_causes":"Excessive insulin","high_causes":"Prediabetes","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hba1c","name":"HbA1c","group":"GLUCOSE & INSULIN","result":"35","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4167","lower_normal":"","upper_normal":"42","lower_optimal":"","upper_optimal":"35","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.4166666667","units":"mmol/mol","description":"Excellent at 35 (5.3%). Outstanding blood sugar control","low_causes":"Iron deficiency","high_causes":"Prediabetes","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"insulin","name":"Insulin","group":"GLUCOSE & INSULIN","result":"1.68","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3196","lower_normal":"2.6","upper_normal":"24.9","lower_optimal":"3","upper_optimal":"10","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3393124066","upper_optimal_position":"0.4439461883","units":"mIU/L","description":"Below range at 1.68. The pancreas is producing very little insulin. However, in the context of excellent blood sugar control (glucose 4, HbA1c 35) and a HOMA-IR of 0.3 (extreme insulin sensitivity), this reflects a body that is so efficient at using insulin that it needs very little. The extreme exercise volume drives this efficiency. This is not a pancreatic concern but rather a marker of exceptional metabolic fitness","low_causes":"Extreme insulin sensitivity from exercise","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cpeptide","name":"C-Peptide","group":"GLUCOSE & INSULIN","result":"138.4","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3065","lower_normal":"240","upper_normal":"1500","lower_optimal":"400","upper_optimal":"800","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3756613757","upper_optimal_position":"0.4814814815","units":"pmol/L","description":"Below range at 138.4 pmol/L. Mirrors the low insulin and confirms very low pancreatic output. In context of perfect blood sugar control, this reflects extreme efficiency rather than insufficiency","low_causes":"Extreme insulin sensitivity","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homair","name":"HOMA-IR","group":"GLUCOSE & INSULIN","result":"0.3","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2667","lower_normal":"0.5","upper_normal":"1.5","lower_optimal":"0.5","upper_optimal":"1","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5","units":"Ratio","description":"Below the normal range at 0.3. Exceptional insulin sensitivity. The body is managing blood sugar with a fraction of the insulin most people need. This is one of the strongest metabolic findings in this report and reflects the cumulative effect of the exercise volume","low_causes":"Extreme sensitivity from exercise","high_causes":"Insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homab","name":"HOMA-B","group":"GLUCOSE & INSULIN","result":"67.2","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2978","lower_normal":"80","upper_normal":"200","lower_optimal":"80","upper_optimal":"200","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"","description":"Below range at 67.2. Low pancreatic effort in context of perfect blood sugar. The pancreas does not need to work harder because the body uses what it produces with extraordinary efficiency","low_causes":"Efficient sensitivity","high_causes":"Overcompensating","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hscrp","name":"High Sensitivity CRP","group":"INFLAMMATION","result":"0.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.05","lower_normal":"","upper_normal":"5","lower_optimal":"","upper_optimal":"1","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.1","units":"mg/L","description":"Within optimal at 0.5. No systemic inflammation despite the elevated ALT and AST, which further supports the muscle-origin interpretation","low_causes":"Rarely significant","high_causes":"Infection, inflammation","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"esr","name":"ESR","group":"INFLAMMATION","result":"10","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4167","lower_normal":"","upper_normal":"12","lower_optimal":"","upper_optimal":"5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2083333333","units":"mm/hour","description":"Within range at 10","low_causes":"Rarely significant","high_causes":"Infection, autoimmune","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"nlr","name":"Neutrophil-to-Lymphocyte Ratio","group":"INFLAMMATION","result":"0.639","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2732","lower_normal":"1","upper_normal":"3","lower_optimal":"1","upper_optimal":"3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"Ratio","description":"Significantly below range at 0.639. The very low neutrophils (0.99) create an inverted ratio where lymphocytes outnumber neutrophils, a pattern characteristic of exercise-induced immune suppression","low_causes":"Exercise-induced suppression","high_causes":"Systemic inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"sodium","name":"Sodium","group":"ELECTROLYTES & MINERALS","result":"144","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6154","lower_normal":"133","upper_normal":"146","lower_optimal":"138","upper_optimal":"142","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4615384615","upper_optimal_position":"0.5641025641","units":"mmol/L","description":"Within range","low_causes":"Overhydration","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"potassium","name":"Potassium","group":"ELECTROLYTES & MINERALS","result":"4.2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.463","lower_normal":"3.5","upper_normal":"5.3","lower_optimal":"4","upper_optimal":"4.8","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4259259259","upper_optimal_position":"0.5740740741","units":"mmol/L","description":"Within optimal","low_causes":"Diuretics","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"chloride","name":"Chloride","group":"ELECTROLYTES & MINERALS","result":"101","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4872","lower_normal":"95","upper_normal":"108","lower_optimal":"98","upper_optimal":"104","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4102564103","upper_optimal_position":"0.5641025641","units":"mmol/L","description":"Within optimal","low_causes":"Vomiting","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bicarbonate","name":"Bicarbonate","group":"ELECTROLYTES & MINERALS","result":"24.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4788","lower_normal":"20","upper_normal":"31","lower_optimal":"22","upper_optimal":"28","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3939393939","upper_optimal_position":"0.5757575758","units":"mmol/L","description":"Within range","low_causes":"Metabolic acidosis","high_causes":"Metabolic alkalosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"calcium","name":"Calcium","group":"ELECTROLYTES & MINERALS","result":"2.35","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4912","lower_normal":"2.08","upper_normal":"2.65","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4619883041","upper_optimal_position":"0.5789473684","units":"mmol/L","description":"Within optimal","low_causes":"Vitamin D deficiency","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"correctedcalcium","name":"Corrected Calcium","group":"ELECTROLYTES & MINERALS","result":"2.45","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5417","lower_normal":"2.2","upper_normal":"2.6","lower_optimal":"2.3","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"mmol/L","description":"Within optimal","low_causes":"Vitamin D deficiency","high_causes":"Hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"phosphate","name":"Phosphate","group":"ELECTROLYTES & MINERALS","result":"1.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4559","lower_normal":"0.78","upper_normal":"1.65","lower_optimal":"1","upper_optimal":"1.3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4176245211","upper_optimal_position":"0.5325670498","units":"mmol/L","description":"Within optimal","low_causes":"Hyperparathyroidism","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"magnesium","name":"Magnesium","group":"ELECTROLYTES & MINERALS","result":"0.94","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.569","lower_normal":"0.53","upper_normal":"1.11","lower_optimal":"0.85","upper_optimal":"1","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.5172413793","upper_optimal_position":"0.6034482759","units":"mmol/L","description":"Within optimal. Impressive given the extreme exercise volume (magnesium is lost through sweat)","low_causes":"Exercise, sweat","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"aniongap","name":"Anion Gap","group":"ELECTROLYTES & MINERALS","result":"22.4","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.9333","lower_normal":"8","upper_normal":"16","lower_optimal":"8","upper_optimal":"16","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.6666666667","units":"mEq/L","description":"Above range at 22.4. May reflect exercise-related acid production and high protein metabolism","low_causes":"Hypoalbuminaemia","high_causes":"Exercise acid, protein metabolism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinine","name":"Creatinine","group":"KIDNEY FUNCTION","result":"63","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4472","lower_normal":"49","upper_normal":"90","lower_optimal":"55","upper_optimal":"75","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3821138211","upper_optimal_position":"0.5447154472","units":"umol/L","description":"Within range","low_causes":"Low muscle mass","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"egfr","name":"eGFR","group":"KIDNEY FUNCTION","result":"90","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.75","lower_normal":"60","upper_normal":"","lower_optimal":"90","upper_optimal":"","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.75","upper_optimal_position":"","units":"mL/min/1.73m2","description":"At 90 or above. Healthy kidney function confirmed by Cystatin C eGFR at 105","low_causes":"CKD","high_causes":"Higher is better","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"cystatinc","name":"Cystatin C","group":"KIDNEY FUNCTION","result":"0.77","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.35","lower_normal":"","upper_normal":"1.1","lower_optimal":"","upper_optimal":"0.85","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3863636364","units":"mg/L","description":"Within optimal at 0.77. Excellent kidney function with Cystatin C eGFR of 105. A very positive finding","low_causes":"Rarely significant","high_causes":"Kidney disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"urea","name":"Urea","group":"KIDNEY FUNCTION","result":"7.5","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.62","lower_normal":"3.2","upper_normal":"8.2","lower_optimal":"3.5","upper_optimal":"6","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3533333333","upper_optimal_position":"0.52","units":"mmol/L","description":"Within range but at the upper end. High protein turnover from intense exercise and dietary protein contribute","low_causes":"Liver disease","high_causes":"Protein intake, exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"uricacid","name":"Uric Acid","group":"KIDNEY FUNCTION","result":"215","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3702","lower_normal":"184","upper_normal":"464","lower_optimal":"200","upper_optimal":"350","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3523809524","upper_optimal_position":"0.530952381","units":"umol/L","description":"Within range","low_causes":"Low purine diet","high_causes":"Genetics","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hemoglobin","name":"Hemoglobin","group":"HEMATOLOGY","result":"134","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4889","lower_normal":"120","upper_normal":"150","lower_optimal":"130","upper_optimal":"145","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.6111111111","units":"g/L","description":"Within optimal. Good oxygen-carrying capacity for the training volume","low_causes":"Iron deficiency","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hematocrit","name":"Hematocrit","group":"HEMATOLOGY","result":"0.392","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.44","lower_normal":"0.36","upper_normal":"0.46","lower_optimal":"0.38","upper_optimal":"0.44","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"L/L","description":"Within range","low_causes":"Anemia","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rbc","name":"RBC","group":"HEMATOLOGY","result":"4.37","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5233","lower_normal":"3.8","upper_normal":"4.8","lower_optimal":"4","upper_optimal":"4.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.5666666667","units":"x 10^12/L","description":"Within range","low_causes":"Anemia","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mcv","name":"MCV","group":"HEMATOLOGY","result":"89.9","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4611","lower_normal":"83","upper_normal":"101","lower_optimal":"85","upper_optimal":"95","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3703703704","upper_optimal_position":"0.5555555556","units":"fL","description":"Within optimal","low_causes":"Iron deficiency","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mch","name":"MCH","group":"HEMATOLOGY","result":"30.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5733","lower_normal":"27","upper_normal":"32","lower_optimal":"28","upper_optimal":"31","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"pg","description":"Within range","low_causes":"Iron deficiency","high_causes":"B12/folate deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mchc","name":"MCHC","group":"HEMATOLOGY","result":"341","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6222","lower_normal":"315","upper_normal":"345","lower_optimal":"320","upper_optimal":"340","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.6111111111","units":"g/L","description":"Within range","low_causes":"Iron deficiency","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rdw","name":"RDW","group":"HEMATOLOGY","result":"14.4","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7222","lower_normal":"11.6","upper_normal":"14","lower_optimal":"12","upper_optimal":"13.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5972222222","units":"%","description":"Above range at 14.4 (limit 14). The red blood cells are varying in size more than normal. With the transferrin saturation at 14.56% (below range) and iron at 9.4 (at the floor of range), the iron supply to the bone marrow is insufficient despite adequate stores (ferritin 82). The body has iron in reserve but is not mobilising it quickly enough to keep up with the extreme training demand. The RDW reflects this mismatch: some cells are being produced with adequate iron, others with less","low_causes":"Iron transport insufficiency, exercise demand","high_causes":"Nutritional stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"plateletcount","name":"Platelet Count","group":"HEMATOLOGY","result":"210","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4103","lower_normal":"150","upper_normal":"410","lower_optimal":"200","upper_optimal":"350","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3974358974","upper_optimal_position":"0.5897435897","units":"x 10^9/L","description":"Within optimal","low_causes":"Bone marrow disorders","high_causes":"Inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mpv","name":"MPV","group":"HEMATOLOGY","result":"9.9","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.6444","lower_normal":"7.1","upper_normal":"10.1","lower_optimal":"8","upper_optimal":"10","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4333333333","upper_optimal_position":"0.6555555556","units":"fL","description":"Within range","low_causes":"Bone marrow suppression","high_causes":"Platelet turnover","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"wbc","name":"WBC","group":"HEMATOLOGY","result":"3","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2778","lower_normal":"4","upper_normal":"10","lower_optimal":"5","upper_optimal":"8","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5555555556","units":"x 10^9/L","description":"Below the normal range at 3 (lower limit 4). The total white blood cell count is depleted. The neutrophil finding below explains where the deficit lies","low_causes":"Intense exercise, immune suppression","high_causes":"Bacterial infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"neutrophilcount","name":"Neutrophil Count","group":"HEMATOLOGY","result":"0.99","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.266","lower_normal":"2","upper_normal":"7","lower_optimal":"3","upper_optimal":"6","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"x 10^9/L","description":"Significantly below the normal range at 0.99 (lower limit 2). Neutrophils are the body's main defence against bacterial infections, and at 0.99 the front-line immune defence is severely depleted. This is below 1.0, which is the threshold at which susceptibility to bacterial infections increases meaningfully. At 56 with 5+ cardio sessions, 4 resistance sessions, and 10,000 to 15,000 daily steps, the exercise volume is the most likely driver. Intense exercise chronically suppresses neutrophil production and accelerates neutrophil clearance from the blood. The bone marrow is also underproducing new red blood cells (reticulocyte absolute 29.28), suggesting a broader pattern of marrow suppression from the training demands. This should be discussed with a GP, who may wish to repeat the full blood count after a period of reduced training to determine whether the neutropenia resolves. If it persists at rest, further investigation would be warranted","low_causes":"Intense exercise, chronic overtraining, bone marrow suppression","high_causes":"Bacterial infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lymphocytecount","name":"Lymphocyte Count","group":"HEMATOLOGY","result":"1.55","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.425","lower_normal":"1","upper_normal":"3","lower_optimal":"1.5","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"x 10^9/L","description":"Within optimal","low_causes":"Immunodeficiency","high_causes":"Viral infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"monocytecount","name":"Monocyte Count","group":"HEMATOLOGY","result":"0.25","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3542","lower_normal":"0.2","upper_normal":"1","lower_optimal":"0.3","upper_optimal":"0.7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.375","upper_optimal_position":"0.5416666667","units":"x 10^9/L","description":"Within range","low_causes":"Bone marrow suppression","high_causes":"Chronic infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"eosinophilcount","name":"Eosinophil Count","group":"HEMATOLOGY","result":"0.2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4583","lower_normal":"0.02","upper_normal":"0.5","lower_optimal":"0.1","upper_optimal":"0.3","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5277777778","units":"x 10^9/L","description":"Within range","low_causes":"Stress","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"basophilcount","name":"Basophil Count","group":"HEMATOLOGY","result":"0.01","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2917","lower_normal":"0.02","upper_normal":"0.1","lower_optimal":"0.02","upper_optimal":"0.08","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3333333333","upper_optimal_position":"0.5833333333","units":"x 10^9/L","description":"Below range at 0.01. Minor finding","low_causes":"Stress","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocytecount","name":"Reticulocyte Count","group":"HEMATOLOGY","result":"0.67","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3617","lower_normal":"0.5","upper_normal":"2.5","lower_optimal":"1","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4166666667","upper_optimal_position":"0.5833333333","units":"%","description":"Within range but below optimal","low_causes":"Bone marrow suppression","high_causes":"Blood loss","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocyteabsolute","name":"Reticulocyte Absolute","group":"HEMATOLOGY","result":"29.28","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.1952","lower_normal":"50","upper_normal":"100","lower_optimal":"55","upper_optimal":"80","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3666666667","upper_optimal_position":"0.5333333333","units":"x 10^9/L","description":"Significantly below range at 29.28 (lower limit 50). The bone marrow is producing far fewer new red blood cells than it should. Combined with the severe neutropenia (0.99), the bone marrow appears broadly suppressed. The most likely cause is the extreme exercise volume exceeding the body's capacity to maintain full blood cell production. The iron transport issue (transferrin saturation 14.56% below range) may also be limiting the bone marrow's ability to produce red cells at full capacity despite adequate iron stores (ferritin 82)","low_causes":"Exercise-induced bone marrow suppression, iron transport insufficiency","high_causes":"Blood loss","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iron","name":"Iron","group":"IRON STUDIES","result":"9.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3396","lower_normal":"9","upper_normal":"30.4","lower_optimal":"15","upper_optimal":"22","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4267912773","upper_optimal_position":"0.5358255452","units":"umol/L","description":"At the absolute floor of range at 9.4 (lower limit 9). Despite taking iron supplements, circulating iron is almost below range. This creates a paradox with the ferritin (82, healthy stores): the body has iron in reserve but is not getting it into the bloodstream quickly enough to meet the extreme exercise demand. The training volume is consuming iron faster than it can be absorbed and mobilised. Timing and form of iron supplementation should be reviewed (taken on an empty stomach with vitamin C, away from tea, coffee, dairy, and other supplements that impair absorption)","low_causes":"Intense exercise demand exceeding absorption, poor supplement timing","high_causes":"Hemochromatosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ferritin","name":"Ferritin","group":"IRON STUDIES","result":"82","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4187","lower_normal":"10","upper_normal":"291","lower_optimal":"50","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3807829181","upper_optimal_position":"0.4994068802","units":"ng/mL","description":"Within optimal at 82. Healthy iron stores. The issue is transport (iron 9.4 at floor, transferrin saturation 14.56% below range) rather than storage","low_causes":"Iron deficiency","high_causes":"Iron overload","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tibc","name":"TIBC","group":"IRON STUDIES","result":"61.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.514","lower_normal":"44","upper_normal":"76.1","lower_optimal":"50","upper_optimal":"65","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3956386293","upper_optimal_position":"0.5514018692","units":"umol/L","description":"Within optimal. The body's iron transport capacity is adequate, but the saturation at 14.56% shows the available transport is not being filled","low_causes":"Iron overload","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrinsaturation","name":"Transferrin Saturation","group":"IRON STUDIES","result":"14.56","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3023","lower_normal":"18","upper_normal":"55","lower_optimal":"25","upper_optimal":"40","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3963963964","upper_optimal_position":"0.5315315315","units":"%","description":"Below the normal range at 14.56% (lower limit 18%). Only 14.56% of the available iron transport is carrying iron, meaning the blood delivery system is running nearly empty despite healthy stores (ferritin 82). This is the mechanism behind the suppressed reticulocyte production (29.28) and the elevated RDW (14.4): the bone marrow does not have enough circulating iron to produce red cells at full capacity. Optimising iron supplement absorption is the priority","low_causes":"Intense exercise demand, poor absorption timing","high_causes":"Iron overload","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrin","name":"Transferrin","group":"IRON STUDIES","result":"2.57","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3513","lower_normal":"2.5","upper_normal":"3.8","lower_optimal":"2.6","upper_optimal":"3.2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.358974359","upper_optimal_position":"0.5128205128","units":"g/L","description":"Within range","low_causes":"Iron overload","high_causes":"Iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"testosterone","name":"Testosterone","group":"HORMONES","result":"3.6","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.8254","lower_normal":"0.5","upper_normal":"2.6","lower_optimal":"0.8","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.380952381","upper_optimal_position":"0.5714285714","units":"nmol/L","description":"Above the normal range for females at 3.6 (limit 2.6). Despite reporting low sex drive, testosterone is elevated. This is likely being driven by the extreme exercise and bodybuilding volume, as resistance training stimulates androgen production. DHEA supplementation (if included in the supplement regimen) can also convert to testosterone. Elevated testosterone in women can cause acne, hair thinning, or voice changes, though these were not reported. The low libido is paradoxical with elevated testosterone and suggests the issue is oestrogen-related rather than androgen-related (discussed under oestradiol below)","low_causes":"Low production","high_causes":"Intense resistance training, DHEA supplementation, adrenal","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freetestosterone","name":"Free Testosterone","group":"HORMONES","result":"0.0476","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"nmol/L","description":"Available testosterone. At 0.0476 with SHBG at 57.4, an adequate proportion is reaching the tissues","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"freeandrogenindex","name":"Free Androgen Index","group":"HORMONES","result":"6.27","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.6539","lower_normal":"0.5","upper_normal":"6.5","lower_optimal":"1","upper_optimal":"5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3611111111","upper_optimal_position":"0.5833333333","units":"Ratio","description":"Within range but near the upper boundary at 6.27 (limit 6.5). Confirms testosterone availability is at the high end of normal for a female","low_causes":"Low androgens","high_causes":"Intense exercise, PCOS","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"shbg","name":"SHBG","group":"HORMONES","result":"57.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4168","lower_normal":"27.8","upper_normal":"146","lower_optimal":"40","upper_optimal":"100","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3677382967","upper_optimal_position":"0.5369430344","units":"nmol/L","description":"Within optimal. HRT (oestrogen) typically raises SHBG. At 57.4 it is within a healthy range","low_causes":"Obesity","high_causes":"HRT, aging","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lh","name":"LH","group":"HORMONES","result":"35","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"IU/L","description":"Elevated at 35, consistent with peri- or post-menopausal status. The HRT is not fully suppressing LH, which suggests the oestrogen dose may not be sufficient to override the menopausal signals from the brain","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fsh","name":"FSH","group":"HORMONES","result":"62.42","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"IU/L","description":"Highly elevated at 62.42, confirming peri- or post-menopausal status. Despite being on HRT, FSH remains very high, which strongly suggests the current HRT is not providing enough oestrogen to suppress the menopausal axis. The brain is sending intense signals to the ovaries demanding more oestrogen, which means the HRT dose may need adjustment. This finding should be shared with the HRT prescriber","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"estradiol","name":"Estradiol","group":"HORMONES","result":"72","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"pmol/L","description":"Low at 72 for someone on HRT. This is the most likely explanation for the low sex drive. Oestrogen is the primary driver of female sexual desire, arousal, and vaginal health. At 72 on HRT, the oestrogen level is closer to what would be expected without HRT than with it. The elevated FSH (62.42) confirms the body is not receiving enough oestrogen to satisfy the brain's demands. Low oestradiol affects libido through reduced blood flow to the genital tissues, reduced vaginal lubrication, and reduced sensitivity. Combined with the elevated testosterone (3.6, which would normally support libido), the low oestradiol appears to be overriding the testosterone's effect. This should be discussed with the HRT prescriber, who may wish to increase the oestrogen dose or change the delivery method. This is the finding most directly relevant to the low sex drive reported","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"progesterone","name":"Progesterone","group":"HORMONES","result":"0.98","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"nmol/L","description":"Low at 0.98. Whether progesterone is part of the HRT regimen depends on the type prescribed. Progesterone supports sleep, mood, and has calming effects","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"prolactin","name":"Prolactin","group":"HORMONES","result":"177","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4667","lower_normal":"45","upper_normal":"375","lower_optimal":"100","upper_optimal":"300","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3888888889","upper_optimal_position":"0.5909090909","units":"mIU/L","description":"Within optimal","low_causes":"Rarely significant","high_causes":"Stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cortisol","name":"Cortisol","group":"HORMONES","result":"300","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4646","lower_normal":"172","upper_normal":"497","lower_optimal":"250","upper_optimal":"400","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4133333333","upper_optimal_position":"0.5671794872","units":"nmol/L","description":"Within the optimal range at 300. A healthy stress response despite the extreme training volume. The adrenal function is well maintained","low_causes":"Adrenal insufficiency","high_causes":"Chronic stress","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"dheas","name":"DHEA-S","group":"HORMONES","result":"663.0","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3597","lower_normal":"350","upper_normal":"4300","lower_optimal":"1000","upper_optimal":"3000","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.388185654","upper_optimal_position":"0.5569620253","units":"ug/L","description":"An adrenal hormone supporting energy and resilience. Within range at 663","low_causes":"Aging, adrenal insufficiency","high_causes":"Adrenal overactivity","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"leptin","name":"Leptin","group":"HORMONES","result":"4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3571","lower_normal":"2","upper_normal":"30","lower_optimal":"5","upper_optimal":"20","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.369047619","upper_optimal_position":"0.5476190476","units":"ug/L","description":"Within range at BMI 23.6 with very high exercise volume","low_causes":"Very low body fat","high_causes":"Obesity","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tsh","name":"TSH","group":"THYROID","result":"1.72","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4255","lower_normal":"0.55","upper_normal":"4.78","lower_optimal":"1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3687943262","upper_optimal_position":"0.4869976359","units":"mIU/L","description":"Within optimal. Thyroid functioning well","low_causes":"Hyperthyroidism","high_causes":"Hypothyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft4","name":"FT4","group":"THYROID","result":"14.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4315","lower_normal":"11.5","upper_normal":"22.7","lower_optimal":"14","upper_optimal":"18","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4077380952","upper_optimal_position":"0.5267857143","units":"pmol/L","description":"Within optimal","low_causes":"Hypothyroidism","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft3","name":"FT3","group":"THYROID","result":"4.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4667","lower_normal":"2.6","upper_normal":"7.1","lower_optimal":"4.5","upper_optimal":"5.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4740740741","upper_optimal_position":"0.5481481481","units":"pmol/L","description":"Within range at 4.4 but marginally below optimal (4.5). FT3 is the active form of thyroid hormone. At 4.4 the conversion from FT4 to FT3 may be slightly below ideal. Intense exercise and caloric restriction can both affect T4 to T3 conversion. Ensuring adequate caloric intake would support optimal conversion","low_causes":"Hypothyroidism, intense exercise, underfueling","high_causes":"Hyperthyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tpoantibodies","name":"TPO Antibodies","group":"THYROID","result":"6.6","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.2391","lower_normal":"","upper_normal":"13.8","lower_optimal":"","upper_optimal":"6","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2173913043","units":"IU/mL","description":"Negative","low_causes":"Not applicable","high_causes":"Hashimoto's","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"thyroglobulinantibody","name":"Thyroglobulin Antibody","group":"THYROID","result":"1.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1477","lower_normal":"","upper_normal":"4.4","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2272727273","units":"IU/mL","description":"Negative","low_causes":"Not applicable","high_causes":"Autoimmune thyroid","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vitamind","name":"Vitamin D","group":"VITAMINS & NUTRIENTS","result":"123","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4956","lower_normal":"50","upper_normal":"200","lower_optimal":"100","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4444444444","upper_optimal_position":"0.5555555556","units":"nmol/L","description":"Within optimal at 123. Excellent","low_causes":"Limited sun exposure","high_causes":"Excessive supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"vitaminb12","name":"Vitamin B12","group":"VITAMINS & NUTRIENTS","result":"574","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4943","lower_normal":"193","upper_normal":"982","lower_optimal":"300","upper_optimal":"600","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3785382341","upper_optimal_position":"0.5052809463","units":"pg/mL","description":"Within optimal at 574","low_causes":"Poor diet","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"folate","name":"Folate","group":"VITAMINS & NUTRIENTS","result":"7","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4286","lower_normal":"3","upper_normal":"17","lower_optimal":"8","upper_optimal":"14","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4523809524","upper_optimal_position":"0.5952380952","units":"ug/L","description":"Within range but below optimal at 7. Despite taking a multivitamin, folate is below where it should be. Intense exercise increases folate demand, and the diet volume of 5 out of 10 may not be providing enough folate-rich food (leafy greens, legumes). Increasing dietary folate or adding a standalone folate supplement may be needed","low_causes":"Insufficient intake, exercise demand","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinekinase","name":"Creatine Kinase","group":"CARDIAC MARKERS","result":"52","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3848","lower_normal":"25","upper_normal":"200","lower_optimal":"50","upper_optimal":"150","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.380952381","upper_optimal_position":"0.5714285714","units":"U/L","description":"Within optimal at 52. Interestingly low for someone training at this volume. CK from muscle is typically elevated in athletes. The low CK combined with very high ALT (111) and AST (73) is an unusual pattern that a GP should consider when investigating the liver enzymes","low_causes":"Low muscle mass","high_causes":"Intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"amylase","name":"Amylase","group":"DIGESTIVE","result":"61","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4508","lower_normal":"30","upper_normal":"118","lower_optimal":"40","upper_optimal":"80","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3712121212","upper_optimal_position":"0.5227272727","units":"IU/L","description":"Within optimal","low_causes":"Pancreatic insufficiency","high_causes":"Pancreatitis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lipase","name":"Lipase","group":"DIGESTIVE","result":"45","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5603","lower_normal":"13","upper_normal":"60","lower_optimal":"20","upper_optimal":"45","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3829787234","upper_optimal_position":"0.5602836879","units":"U/L","description":"Within range","low_causes":"Pancreatic insufficiency","high_causes":"Pancreatitis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igg","name":"IgG","group":"IMMUNOLOGY","result":"13.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5825","lower_normal":"6.5","upper_normal":"16","lower_optimal":"8","upper_optimal":"14","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3859649123","upper_optimal_position":"0.5964912281","units":"g/L","description":"Within optimal","low_causes":"Immunodeficiency","high_causes":"Chronic infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igm","name":"IgM","group":"IMMUNOLOGY","result":"1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4","lower_normal":"0.5","upper_normal":"3","lower_optimal":"0.6","upper_optimal":"2","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3466666667","upper_optimal_position":"0.5333333333","units":"g/L","description":"Within optimal","low_causes":"Immunodeficiency","high_causes":"Acute infections","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iga","name":"IgA","group":"IMMUNOLOGY","result":"2.6","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5699","lower_normal":"0.4","upper_normal":"3.5","lower_optimal":"1","upper_optimal":"2.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3978494624","upper_optimal_position":"0.5591397849","units":"g/L","description":"Within range","low_causes":"Immunodeficiency","high_causes":"Mucosal inflammation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ige","name":"IgE","group":"IMMUNOLOGY","result":"66","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.33","lower_normal":"","upper_normal":"100","lower_optimal":"","upper_optimal":"50","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.25","units":"IU/mL","description":"Within range at 66. Minimal allergic burden","low_causes":"Not applicable","high_causes":"Allergies","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"rheumatoidfactor","name":"Rheumatoid Factor","group":"IMMUNOLOGY","result":"5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1786","lower_normal":"","upper_normal":"14","lower_optimal":"","upper_optimal":"8","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2857142857","units":"IU/mL","description":"Within range","low_causes":"Not applicable","high_causes":"RA","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca125","name":"CA-125","group":"TUMOR MARKERS","result":"7.2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1161","lower_normal":"","upper_normal":"31","lower_optimal":"","upper_optimal":"15","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2419354839","units":"U/mL","description":"Within range","low_causes":"Not applicable","high_causes":"Ovarian conditions","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca153","name":"CA 15-3","group":"TUMOR MARKERS","result":"6.34","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1057","lower_normal":"","upper_normal":"30","lower_optimal":"","upper_optimal":"20","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.3333333333","units":"U/mL","description":"Within range","low_causes":"Not applicable","high_causes":"Breast conditions","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca199","name":"CA 19-9","group":"TUMOR MARKERS","result":"16.48","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2227","lower_normal":"","upper_normal":"37","lower_optimal":"","upper_optimal":"20","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2702702703","units":"kIU/L","description":"Within range","low_causes":"Not applicable","high_causes":"Pancreatic conditions","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cea","name":"CEA","group":"TUMOR MARKERS","result":"1.32","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1737","lower_normal":"","upper_normal":"3.8","lower_optimal":"","upper_optimal":"2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2631578947","units":"ng/mL","description":"Within range","low_causes":"Not applicable","high_causes":"Colorectal conditions","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"totalantioxidantstatus","name":"Total Antioxidant Status","group":"SPECIALIZED TESTS","result":"1.8","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6879","lower_normal":"1.3","upper_normal":"1.77","lower_optimal":"1.5","upper_optimal":"1.7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.475177305","upper_optimal_position":"0.6170212766","units":"mmol/L","description":"Marginally above range at 1.8. Likely from the multivitamin supplementation","low_causes":"Poor diet","high_causes":"Supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"parathyroidhormone","name":"Parathyroid Hormone","group":"SPECIALIZED TESTS","result":"2.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4507","lower_normal":"0.98","upper_normal":"4.73","lower_optimal":"1.5","upper_optimal":"3.5","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.3795555556","upper_optimal_position":"0.5573333333","units":"pmol/L","description":"Within optimal. Well balanced with vitamin D at 123 and calcium at 2.35","low_causes":"Hypoparathyroidism","high_causes":"Vitamin D deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"antittg","name":"Anti-tTG IgA","group":"AUTOIMMUNE & CELIAC","result":"0.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0348","lower_normal":"","upper_normal":"7.19","lower_optimal":"","upper_optimal":"4","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"","upper_optimal_position":"0.2781641168","units":"CU","description":"Negative","low_causes":"Not applicable","high_causes":"Celiac disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ph","name":"pH","group":"URINALYSIS","result":"7","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5714","lower_normal":"4.5","upper_normal":"8","lower_optimal":"6","upper_optimal":"7","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4761904762","upper_optimal_position":"0.5714285714","units":"pH units","description":"Within range","low_causes":"Acidic diet","high_causes":"UTI","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"specificgravity","name":"Specific Gravity","group":"URINALYSIS","result":"1.01","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4","lower_normal":"1.005","upper_normal":"1.03","lower_optimal":"1.01","upper_optimal":"1.025","lower_normal_position":"0.3333333333","upper_normal_position":"0.6666666667","lower_optimal_position":"0.4","upper_optimal_position":"0.6","units":"-","description":"Within range","low_causes":"Overhydration","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineprotein","name":"Protein (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ketones","name":"Ketones","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urineglucose","name":"Glucose (Urine)","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urobilinogen","name":"Urobilinogen","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"nitrite","name":"Nitrite","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"casts","name":"Casts","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bacterialcount","name":"Bacterial Count","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"culturesensitvities","name":"Culture & Sensitivities","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"-","description":"Negative is normal.","low_causes":"","high_causes":"","padding":"1","one_sided":"0.5","range_type":"normal"}]};
+
+// ============================================================
+//  TrueVitals report engine — builds everything from REPORT_DATA
+// ============================================================
+const data = REPORT_DATA;
+const bms = (data.biomarkers || []).map(b => ({ ...b }));
+
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// ---- helpers -------------------------------------------------
+function statusOf(b) {
+  if (b.within_normal === 'FALSE') return 'flag';
+  if (b.within_optimal === 'TRUE') return 'optimal';
+  if (b.within_normal === 'TRUE') return 'range';
+  return 'qual'; // qualitative (Negative etc.)
+}
+const num = (v) => (v === '' || v == null ? null : parseFloat(v));
+
+// ---- global stats -------------------------------------------
+const assessable = bms.filter(b => b.within_optimal === 'TRUE' || b.within_optimal === 'FALSE');
+const totalTested = bms.length;
+const flaggedCount = bms.filter(b => b.within_normal === 'FALSE').length;
+const optimalCount = bms.filter(b => b.within_optimal === 'TRUE').length;
+const rangeCount = bms.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+const healthPct = assessable.length ? Math.round((optimalCount / assessable.length) * 100) : 0;
+
+// ---- groups --------------------------------------------------
+const groupOrder = ['LIVER & METABOLIC','LIPIDS & CARDIOVASCULAR','GLUCOSE & INSULIN','INFLAMMATION','ELECTROLYTES & MINERALS','KIDNEY FUNCTION','HEMATOLOGY','IRON STUDIES','HORMONES','THYROID','VITAMINS & NUTRIENTS','CARDIAC MARKERS','DIGESTIVE','IMMUNOLOGY','PROSTATE','TUMOR MARKERS','SPECIALIZED TESTS','AUTOIMMUNE & CELIAC','URINALYSIS'];
+const groups = {};
+bms.forEach(b => { (groups[b.group] = groups[b.group] || []).push(b); });
+
+function groupStatus(names) {
+  let markers = [];
+  names.forEach(n => { if (groups[n]) markers = markers.concat(groups[n]); });
+  if (!markers.length) return null;
+  const flagged = markers.filter(b => b.within_normal === 'FALSE').length;
+  if (flagged) return { s: 'flag', flagged, total: markers.length, optimal: markers.filter(b => b.within_optimal === 'TRUE').length };
+  const nonOpt = markers.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+  const optimal = markers.filter(b => b.within_optimal === 'TRUE').length;
+  return { s: nonOpt ? 'amber' : 'optimal', flagged: 0, total: markers.length, optimal };
+}
+
+// ---- body-system map (the signature element) ----------------
+// organ = sits on the silhouette; satellite = flanking node with a leader line
+const SYSTEMS = [
+  { id:'thyroid',  label:'Thyroid',        groups:['THYROID'],                               type:'organ', x:190, y:96,  icon:'thyroid' },
+  { id:'cardio',   label:'Heart & Vessels',groups:['LIPIDS & CARDIOVASCULAR','CARDIAC MARKERS'], type:'organ', x:206, y:142, icon:'heart' },
+  { id:'liver',    label:'Liver',          groups:['LIVER & METABOLIC'],                     type:'organ', x:166, y:188, icon:'liver' },
+  { id:'gut',      label:'Metabolic & Gut',groups:['GLUCOSE & INSULIN','DIGESTIVE'],         type:'organ', x:190, y:206, icon:'gut' },
+  { id:'kidney',   label:'Kidneys',        groups:['KIDNEY FUNCTION'],                       type:'organ', x:216, y:214, icon:'kidney' },
+  { id:'hormones', label:'Hormones',       groups:['HORMONES'],                              type:'organ', x:170, y:232, icon:'hormone' },
+  { id:'urinary',  label:'Urinary',        groups:['URINALYSIS'],                            type:'organ', x:190, y:256, icon:'drop' },
+  { id:'prostate', label:'Prostate',       groups:['PROSTATE'],                              type:'organ', x:206, y:270, icon:'shield' },
+  // satellites — left
+  { id:'blood',    label:'Blood & Iron',   groups:['HEMATOLOGY','IRON STUDIES','INFLAMMATION'], type:'sat', side:'l', x:64, y:150, tx:120, ty:150, icon:'drop' },
+  { id:'immune',   label:'Immune',         groups:['IMMUNOLOGY','AUTOIMMUNE & CELIAC'],      type:'sat', side:'l', x:64, y:224, tx:150, ty:200, icon:'shield' },
+  { id:'vitamins', label:'Vitamins',       groups:['VITAMINS & NUTRIENTS'],                  type:'sat', side:'l', x:64, y:298, tx:162, ty:290, icon:'leaf' },
+  // satellites — right
+  { id:'minerals', label:'Bone & Minerals',groups:['ELECTROLYTES & MINERALS'],               type:'sat', side:'r', x:316, y:150, tx:260, ty:150, icon:'bone' },
+  { id:'screening',label:'Screening',      groups:['TUMOR MARKERS'],                         type:'sat', side:'r', x:316, y:224, tx:230, ty:200, icon:'scan' },
+  { id:'special',  label:'Specialist',     groups:['SPECIALIZED TESTS'],                     type:'sat', side:'r', x:316, y:298, tx:218, ty:290, icon:'flask' },
+];
+
+const ICONS = {
+  thyroid:'<path d="M8 7c1.5 2 2.5 2 4 2s2.5 0 4-2M9 9c-1 3-1 6 3 6s4-3 3-6"/>',
+  heart:'<path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7-.2c0 5-7 9.6-7 9.6z"/>',
+  liver:'<path d="M4 8c5-2 11-2 16 0 0 5-3 9-8 9-3 0-4-2-5-4s-2-3-3-5z"/>',
+  gut:'<path d="M6 5v4a3 3 0 0 0 6 0 3 3 0 0 1 6 0v3a3 3 0 0 1-6 0"/>',
+  kidney:'<path d="M9 5c-3 0-4 3-4 6s2 8 4 8 2-3 2-5-1-4 1-6c-1-2-2-3-3-3z"/>',
+  hormone:'<circle cx="9" cy="15" r="4"/><path d="M12 12l6-6M14 6h4v4"/>',
+  drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+  shield:'<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
+  leaf:'<path d="M5 19c8 1 14-4 14-13-8-1-15 4-14 13zM5 19c3-4 6-6 9-7"/>',
+  bone:'<path d="M8 8a2 2 0 1 0-2 2l6 6a2 2 0 1 0 2 2 2 2 0 1 0 2-2l-6-6a2 2 0 1 0-2-2z"/>',
+  scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3M4 12h16"/>',
+  flask:'<path d="M9 3h6M10 3v6l-4 8a2 2 0 0 0 2 3h8a2 2 0 0 0 2-3l-4-8V3"/>',
+};
+
+// ============================================================
+//  BUILD
+// ============================================================
+const app = document.getElementById('app');
+const patientName = data.patient_name || 'Your';
+const firstName = patientName.split(' ')[0];
+document.getElementById('nav-patient').textContent = patientName + ' · ' + (data.report_date || '');
+
+let out = '';
+
+// ---------- PRIORITY BANNER ----------
+const summaryRaw = data.summary || '';
+const priority = /\b(important|priority|gp)\b/i.test(summaryRaw);
+if (priority) {
+  out += `<div class="alert" id="alert">
+    <div class="alert-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <div class="alert-body">
+      <div class="alert-title">A few results need a conversation with your GP</div>
+      <div class="alert-text">We have flagged findings in this report that are worth raising with your doctor. Bring this report to your appointment.</div>
+    </div>
+    <button class="alert-btn" onclick="goTo('flags')">See the flags</button>
+  </div>`;
+}
+
+// ---------- HERO ----------
+out += `<section id="overview" class="reveal">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">TrueVitals Report · ${esc(data.report_date || '')}</div>
+      <h1 class="hero-name">${esc(firstName)}<span class="hero-name-sub">Your complete blood analysis</span></h1>
+      <p class="hero-lede">${totalTested} biomarkers measured across ${Object.keys(groups).length} body systems. Here is the whole picture, from a single blood draw.</p>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-n">${totalTested}</span><span class="hstat-l">Measured</span></div>
+        <div class="hstat"><span class="hstat-n c-green">${optimalCount}</span><span class="hstat-l">Optimal</span></div>
+        <div class="hstat"><span class="hstat-n c-amber">${rangeCount}</span><span class="hstat-l">In range</span></div>
+        <div class="hstat"><span class="hstat-n c-red">${flaggedCount}</span><span class="hstat-l">Flagged</span></div>
+      </div>
+    </div>
+    <div class="hero-ring">
+      <svg viewBox="0 0 220 220" class="ring-svg" aria-hidden="true">
+        <circle cx="110" cy="110" r="94" class="ring-track"/>
+        <circle cx="110" cy="110" r="94" class="ring-fill" id="ringFill"
+          transform="rotate(-90 110 110)"/>
+        <circle cx="110" cy="110" r="72" class="ring-track2"/>
+        <circle cx="110" cy="110" r="72" class="ring-fill2" id="ringFill2" transform="rotate(-90 110 110)"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ringPct">0<span>%</span></div>
+        <div class="ring-cap">in optimal range</div>
+      </div>
+    </div>
+  </div>
+</section>`;
+
+// ---------- BODY MAP ----------
+const systemsWith = SYSTEMS.filter(sys => sys.groups.some(g => groups[g] && groups[g].length));
+function statusColor(s){ return s==='flag'?'red':s==='amber'?'amber':'green'; }
+
+let nodesSvg = '', linesSvg = '', pillsHtml = '';
+systemsWith.forEach(sys => {
+  const st = groupStatus(sys.groups); if (!st) return;
+  const col = statusColor(st.s);
+  sys._st = st; sys._col = col;
+  if (sys.type === 'sat') {
+    linesSvg += `<line class="leader" x1="${sys.x}" y1="${sys.y}" x2="${sys.tx}" y2="${sys.ty}"/>`;
+  }
+  const r = sys.type === 'organ' ? 9 : 11;
+  nodesSvg += `<g class="node node-${col}" data-sys="${sys.id}" tabindex="0" role="button"
+      aria-label="${esc(sys.label)}: ${st.flagged?st.flagged+' flagged':'clear'}"
+      onclick="pickSystem('${sys.id}')" onmouseenter="tip(event,'${sys.id}')" onmousemove="tipMove(event)" onmouseleave="tipHide()"
+      onfocus="tip(event,'${sys.id}')" onblur="tipHide()">
+      <circle class="node-halo" cx="${sys.x}" cy="${sys.y}" r="${r+9}"/>
+      <circle class="node-dot" cx="${sys.x}" cy="${sys.y}" r="${r}"/>
+      <g class="node-ic" transform="translate(${sys.x-7},${sys.y-7}) scale(0.58)" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</g>
+    </g>`;
+  pillsHtml += `<button class="mpill mpill-${col}" onclick="pickSystem('${sys.id}')">
+      <span class="mpill-dot"></span>${esc(sys.label)}${st.flagged?` · ${st.flagged}`:''}</button>`;
+});
+
+out += `<section id="body" class="reveal">
+  <div class="eyebrow">Body map</div>
+  <h2 class="sec-title">Where your results land</h2>
+  <p class="sec-sub">Each system is coloured by its results. Tap any point to jump to those biomarkers.</p>
+  <div class="bodywrap">
+    <svg viewBox="0 0 380 400" class="bodysvg" id="bodysvg" aria-label="Interactive body map">
+      <defs>
+        <linearGradient id="silh" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--silh-top)"/><stop offset="1" stop-color="var(--silh-bot)"/>
+        </linearGradient>
+      </defs>
+      <g class="scan" id="scan"><rect x="120" y="0" width="140" height="8"/></g>
+      <g class="silhouette" fill="url(#silh)" stroke="var(--silh-stroke)" stroke-width="1">
+        <circle cx="190" cy="60" r="28"/>
+        <rect x="180" y="84" width="20" height="16" rx="7"/>
+        <rect x="150" y="96" width="80" height="170" rx="36"/>
+        <rect x="118" y="100" width="22" height="150" rx="11"/>
+        <rect x="240" y="100" width="22" height="150" rx="11"/>
+        <rect x="158" y="258" width="26" height="132" rx="13"/>
+        <rect x="196" y="258" width="26" height="132" rx="13"/>
+      </g>
+      ${linesSvg}
+      ${nodesSvg}
+    </svg>
+    <div class="mpills">${pillsHtml}</div>
+  </div>
+</section>`;
+
+// ---------- SYSTEM GRID ----------
+let gridHtml = '';
+systemsWith.forEach(sys => {
+  const st = sys._st, col = sys._col;
+  const badge = st.flagged ? `${st.flagged} flagged` : (st.s === 'amber' ? 'In range' : 'All optimal');
+  gridHtml += `<button class="scard scard-${col}" onclick="pickSystem('${sys.id}')">
+    <span class="scard-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</svg></span>
+    <span class="scard-body"><span class="scard-name">${esc(sys.label)}</span>
+      <span class="scard-meta">${st.total} marker${st.total!==1?'s':''}</span></span>
+    <span class="scard-badge sb-${col}">${badge}</span>
+  </button>`;
+});
+out += `<section id="systems" class="reveal">
+  <div class="eyebrow">Systems</div>
+  <h2 class="sec-title">A breakdown by area</h2>
+  <p class="sec-sub">A snapshot of every system tested. Tap through to the detail.</p>
+  <div class="sgrid">${gridHtml}</div>
+</section>`;
+
+// ---------- TOP FINDINGS ----------
+const scored = bms.filter(b => num(b.result_position) != null &&
+    (num(b.lower_optimal_position) != null || num(b.upper_optimal_position) != null))
+  .map(b => {
+    const lo = num(b.lower_optimal_position), uo = num(b.upper_optimal_position);
+    let mid;
+    if (lo != null && uo != null) mid = (lo + uo) / 2;
+    else if (lo != null) mid = lo; else mid = uo;
+    return { b, dev: Math.abs(num(b.result_position) - mid) };
+  })
+  .sort((a, z) => z.dev - a.dev).slice(0, 5).map(x => x.b);
+
+if (scored.length) {
+  let tf = '';
+  scored.forEach(b => {
+    const st = statusOf(b);
+    const first = (b.description || '').split(/(?<=\.)\s/)[0];
+    tf += `<div class="find find-${st==='flag'?'red':st==='optimal'?'green':'amber'}">
+      <div class="find-top">
+        <div><div class="find-name">${esc(b.name)}</div>
+          <div class="find-val">${esc(b.result)} <span>${esc(b.units||'')}</span></div></div>
+        <span class="chip chip-${st}">${st==='flag'?'Outside range':st==='optimal'?'Optimal':'In range'}</span>
+      </div>
+      ${rangeBar(b, true)}
+      <p class="find-desc">${esc(first)}</p>
+    </div>`;
+  });
+  out += `<section id="findings" class="reveal">
+    <div class="eyebrow">Highlights</div>
+    <h2 class="sec-title">Key findings at a glance</h2>
+    <p class="sec-sub">The five results that sit furthest from their optimal window.</p>
+    <div class="finds">${tf}</div>
+  </section>`;
+}
+
+// ---------- ANALYSIS SECTIONS ----------
+function analysisBlock(title, body, accent) {
+  if (!body) return '';
+  return `<div class="acard acard-${accent}">
+    <div class="acard-h"><span class="acard-dot dot-${accent}"></span>${esc(title)}</div>
+    <div class="acard-c">${esc(body)}</div></div>`;
+}
+function splitItems(text){
+  if(!text) return [];
+  return text.split('\n').map(s=>s.trim()).filter(s=>s.length>2).map(s=>s.replace(/^[•\-\u2022]\s*/,''));
+}
+
+// summary: lift priority first-paragraph out
+let summaryText = summaryRaw, leadPara = '';
+if (priority) {
+  const parts = summaryRaw.split('\n\n');
+  if (/\b(important|priority|gp)\b/i.test(parts[0])) { leadPara = parts[0]; summaryText = parts.slice(1).join('\n\n').trim(); }
+}
+out += `<section id="summary" class="reveal">
+  <div class="eyebrow">The picture</div>
+  <h2 class="sec-title">Your summary</h2>
+  <p class="sec-sub">What the numbers say, in plain terms.</p>
+  <div class="acard acard-green">
+    ${leadPara ? `<div class="lead-warn">${esc(leadPara)}</div>` : ''}
+    <div class="acard-c">${esc(summaryText)}</div>
+  </div>
+  ${data.links ? `<div class="acard acard-green"><div class="acard-h"><span class="acard-dot dot-green"></span>Lifestyle recommendations</div><div class="acard-c">${esc(data.links)}</div></div>` : ''}
+</section>`;
+
+// flags
+const flags = splitItems(data.flags);
+if (flags.length){
+  let fh='';
+  flags.forEach((f,i)=>{ fh += `<div class="acard acard-red numbered"><div class="num num-red">${String(i+1).padStart(2,'0')}</div><div class="acard-c">${esc(f)}</div></div>`; });
+  out += `<section id="flags" class="reveal"><div class="eyebrow">Attention</div><h2 class="sec-title">Findings to act on</h2><p class="sec-sub">${flags.length} item${flags.length!==1?'s':''} worth a closer look.</p>${fh}</section>`;
+}
+// recommendations
+const recs = splitItems(data.recommendations);
+if (recs.length){
+  let rh='';
+  recs.forEach((r,i)=>{ rh += `<div class="acard acard-blue numbered"><div class="num num-blue">${String(i+1).padStart(2,'0')}</div><div class="acard-c">${esc(r)}</div></div>`; });
+  out += `<section id="clinical" class="reveal"><div class="eyebrow">Clinical</div><h2 class="sec-title">To discuss with your GP</h2><p class="sec-sub">Bring these points to your appointment.</p>${rh}</section>`;
+}
+// supplements
+const supps = splitItems(data.supplementation);
+if (supps.length){
+  let sh='';
+  supps.forEach(s=>{ const warn=/^do not/i.test(s); sh += `<div class="acard acard-${warn?'red':'green'}"><div class="acard-c">${esc(s)}</div></div>`; });
+  out += `<section id="supplements" class="reveal"><div class="eyebrow">Support</div><h2 class="sec-title">Supplement guidance</h2><p class="sec-sub">Tailored to your specific results.</p>${sh}</section>`;
+}
+
+// ---------- FULL RESULTS ----------
+out += `<section id="results" class="reveal">
+  <div class="eyebrow">Full results</div>
+  <h2 class="sec-title">Every biomarker</h2>
+  <p class="sec-sub">Search, filter, and tap any marker for the detail.</p>
+  <div class="controls">
+    <input class="search" id="search" placeholder="Search biomarkers…" oninput="applyFilter()">
+    <button class="fbtn active" data-f="all" onclick="setFilter(this)">All</button>
+    <button class="fbtn" data-f="flag" onclick="setFilter(this)">Flagged</button>
+    <button class="fbtn" data-f="optimal" onclick="setFilter(this)">Optimal</button>
+  </div>`;
+
+groupOrder.forEach(gName => {
+  const g = groups[gName]; if (!g) return;
+  const gFlag = g.filter(b => b.within_normal === 'FALSE').length;
+  out += `<div class="grp" data-group="${esc(gName)}" id="grp-${slug(gName)}">
+    <div class="grp-h" onclick="toggleGrp(this.parentElement)">
+      <span class="grp-name">${esc(gName)}</span>
+      <span class="grp-meta">${g.length} markers ${gFlag?`<span class="grp-flag">${gFlag} flagged</span>`:''}
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="grp-body">`;
+  g.forEach(b => { out += bioCard(b); });
+  out += `</div></div>`;
+});
+out += `</section>`;
+
+// ---------- FOOTER ----------
+out += `<footer class="foot">
+  <img class="foot-logo inv" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
+  <img class="foot-logo std" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals">
+  <p>Report generated ${esc(data.report_date || '')} · TrueVitals Group Ltd · Company No. 16449605</p>
+  <p>This report is for informational purposes only and does not constitute medical advice.</p>
+  <p style="margin-top:16px;margin-bottom:12px"><a href="https://www.trustpilot.com/evaluate/truevitals.co.uk" style="color:var(--green);text-decoration:none;font-weight:600;font-size:13px">Found this report helpful? Leave us a review on Trustpilot</a></p>
+  <p><a href="https://www.truevitals.co.uk">truevitals.co.uk</a></p>
+</footer>`;
+
+app.innerHTML = out;
+
+// ============================================================
+//  COMPONENT BUILDERS
+// ============================================================
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+
+function rangeBar(b, big){
+  const rp = num(b.result_position); if (rp == null) return '';
+  const lnp = num(b.lower_normal_position), unp = num(b.upper_normal_position);
+  if (lnp == null && unp == null) return '';
+  const lo = num(b.lower_optimal_position), uo = num(b.upper_optimal_position);
+  const st = statusOf(b);
+  const dotc = st==='flag'?'red':st==='optimal'?'green':'amber';
+  const L = (lnp==null?0:lnp)*100, U=(unp==null?1:unp)*100;
+  const oL = (lo==null?L/100:lo)*100, oU=(uo==null?U/100:uo)*100;
+  const pos = Math.max(2, Math.min(98, rp*100));
+  return `<div class="rbar-wrap ${big?'rbar-big':''}">
+    <div class="rbar">
+      <div class="rbar-normal" style="left:${L}%;width:${Math.max(0,U-L)}%"></div>
+      <div class="rbar-opt" style="left:${oL}%;width:${Math.max(0,oU-oL)}%"></div>
+      <div class="rbar-dot dot-${dotc}" style="--x:${pos}%" data-x="${pos}"></div>
+    </div>
+  </div>`;
+}
+
+function bioCard(b){
+  const st = statusOf(b);
+  const col = st==='flag'?'red':st==='optimal'?'green':st==='qual'?'blue':'amber';
+  const badge = st==='flag'?'Outside range':st==='optimal'?'Optimal':st==='qual'?esc(b.result||'—'):'In range';
+  const bar = rangeBar(b, false);
+  // detail
+  let detail = '';
+  if (b.description){
+    const parts = (b.description||'').split(/(?<=\.)\s/);
+    const head = parts.shift(); const rest = parts.join(' ');
+    detail += `<p class="bc-desc"><strong>${esc(head)}</strong>${rest?' '+esc(rest):''}</p>`;
+  }
+  const ranges = [];
+  if (b.lower_optimal!=='') ranges.push(`<span><em>Optimal low</em>${esc(b.lower_optimal)}</span>`);
+  if (b.upper_optimal!=='') ranges.push(`<span><em>Optimal high</em>${esc(b.upper_optimal)}</span>`);
+  if (b.lower_normal!=='') ranges.push(`<span><em>Normal low</em>${esc(b.lower_normal)}</span>`);
+  if (b.upper_normal!=='') ranges.push(`<span><em>Normal high</em>${esc(b.upper_normal)}</span>`);
+  if (ranges.length) detail += `<div class="bc-ranges">${ranges.join('')}</div>`;
+  if (b.low_causes || b.high_causes){
+    detail += `<div class="bc-causes">`;
+    if (b.low_causes) detail += `<p><em>If low</em> ${esc(b.low_causes)}</p>`;
+    if (b.high_causes) detail += `<p><em>If high</em> ${esc(b.high_causes)}</p>`;
+    detail += `</div>`;
+  }
+  return `<div class="bc bc-${col}" data-status="${st}" data-name="${esc((b.name||'').toLowerCase())}">
+    <div class="bc-main" onclick="toggleCard(this.parentElement)">
+      <span class="bc-tick tick-${col}"></span>
+      <div class="bc-info"><div class="bc-name">${esc(b.name)}</div><div class="bc-res">${esc(b.result)} ${esc(b.units||'')}</div></div>
+      ${bar}
+      <span class="chip chip-${st}">${badge}</span>
+      <svg class="bc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="bc-detail"><div class="bc-detail-in">${detail||'<p class="bc-desc">No additional detail for this marker.</p>'}</div></div>
+  </div>`;
+}
+
+// ============================================================
+//  INTERACTIONS
+// ============================================================
+function toggleGrp(el){ el.classList.toggle('open'); animateBarsIn(el); }
+function toggleCard(el){
+  const open = el.classList.toggle('open');
+  const d = el.querySelector('.bc-detail');
+  d.style.maxHeight = open ? d.firstElementChild.scrollHeight + 24 + 'px' : '0px';
+}
+function goTo(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function pickSystem(sysId){
+  const sys = SYSTEMS.find(s=>s.id===sysId); if(!sys) return;
+  // open matching groups, close others, scroll to first
+  document.querySelectorAll('.grp').forEach(g=>{
+    const on = sys.groups.includes(g.dataset.group);
+    g.classList.toggle('open', on);
+    if(on) animateBarsIn(g);
+  });
+  const first = sys.groups.map(g=>document.getElementById('grp-'+slug(g))).find(Boolean);
+  if(first){
+    // reset filters so the group is visible
+    document.getElementById('search').value=''; setActiveFilter('all'); applyFilter();
+    setTimeout(()=>first.scrollIntoView({behavior:'smooth',block:'start'}),60);
+    first.classList.add('grp-flash'); setTimeout(()=>first.classList.remove('grp-flash'),1200);
+  }
+}
+
+// tooltip for body map
+const tipEl = document.createElement('div'); tipEl.className='bodytip'; document.body.appendChild(tipEl);
+function tip(e,sysId){
+  const sys=SYSTEMS.find(s=>s.id===sysId); const st=sys&&sys._st; if(!st) return;
+  tipEl.innerHTML = `<strong>${esc(sys.label)}</strong>${st.optimal} of ${st.total} optimal${st.flagged?` · <span class="tip-red">${st.flagged} flagged</span>`:''}`;
+  tipEl.classList.add('show'); tipMove(e);
+}
+function tipMove(e){ const t=(e&&e.touches&&e.touches[0])||e; if(!t||t.clientX==null){ tipHide(); return; } tipEl.style.left=t.clientX+'px'; tipEl.style.top=(t.clientY-14)+'px'; }
+function tipHide(){ tipEl.classList.remove('show'); }
+
+// filters
+function setFilter(btn){ document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); applyFilter(); }
+function setActiveFilter(f){ document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('active', b.dataset.f===f)); }
+function applyFilter(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const f=document.querySelector('.fbtn.active').dataset.f;
+  document.querySelectorAll('.bc').forEach(c=>{
+    let show=true;
+    if(q && !c.dataset.name.includes(q)) show=false;
+    if(f==='flag' && c.dataset.status!=='flag') show=false;
+    if(f==='optimal' && c.dataset.status!=='optimal') show=false;
+    c.style.display=show?'':'none';
+  });
+  document.querySelectorAll('.grp').forEach(g=>{
+    const vis=[...g.querySelectorAll('.bc')].some(c=>c.style.display!=='none');
+    g.style.display=vis?'':'none';
+    if((q||f!=='all')&&vis) g.classList.add('open');
+  });
+}
+window.setFilter=setFilter; window.applyFilter=applyFilter;
+
+// range bar fill on reveal
+function animateBarsIn(scope){
+  (scope||document).querySelectorAll('.rbar-dot:not(.lit)').forEach(d=>{
+    d.classList.add('lit'); requestAnimationFrame(()=>{ d.style.left=d.dataset.x+'%'; });
+  });
+}
+
+// theme toggle
+function toggleTheme(){
+  const b=document.body; const light=b.getAttribute('data-theme')==='light';
+  b.setAttribute('data-theme', light?'dark':'light');
+  document.getElementById('themeLabel').textContent = light?'Light':'Dark';
+}
+window.toggleTheme=toggleTheme;
+
+// print
+function printReport(){
+  document.querySelectorAll('.grp,.bc').forEach(el=>el.classList.add('open'));
+  document.querySelectorAll('.bc-detail').forEach(d=>{ d.style.maxHeight='none'; });
+  window.print();
+}
+window.printReport=printReport;
+
+// scroll reveal + active nav
+const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+const navSections=['overview','body','findings','flags','results'];
+const navObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    document.querySelectorAll('.nav-links a,.mnav a').forEach(a=>a.classList.toggle('active', a.dataset.t===e.target.id));
+  }});
+},{rootMargin:'-45% 0px -50% 0px'});
+navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.observe(el); });
+
+// ============================================================
+//  GATE + LAUNCH ANIMATION
+// ============================================================
+function runIntro(){
+  // ring count-up
+  const R=94, C=2*Math.PI*R; const fill=document.getElementById('ringFill');
+  const R2=72, C2=2*Math.PI*R2; const fill2=document.getElementById('ringFill2');
+  fill.style.strokeDasharray=C; fill.style.strokeDashoffset=C;
+  fill2.style.strokeDasharray=C2; fill2.style.strokeDashoffset=C2;
+  const optFrac=assessable.length?optimalCount/assessable.length:0;
+  const flagFrac=totalTested?flaggedCount/totalTested:0;
+  const t0=performance.now(), dur=1400;
+  const pctEl=document.getElementById('ringPct');
+  function step(t){
+    const k=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-k,3);
+    fill.style.strokeDashoffset=C*(1-optFrac*e);
+    fill2.style.strokeDashoffset=C2*(1-flagFrac*e);
+    pctEl.innerHTML=Math.round(healthPct*e)+'<span>%</span>';
+    if(k<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+  // scan sweep + node pop
+  const scan=document.getElementById('scan'); if(scan) scan.classList.add('run');
+  document.querySelectorAll('.node').forEach((n,i)=>{ setTimeout(()=>n.classList.add('on'), 300+i*70); });
+  // first-visible bars
+  setTimeout(()=>animateBarsIn(document), 200);
+}
+
+const dob=document.getElementById('gate-dob');
+const gerr=document.getElementById('gate-error');
+dob.addEventListener('input',function(){
+  let v=this.value.replace(/[^\d]/g,'').slice(0,8), f='';
+  if(v.length>0)f=v.slice(0,2); if(v.length>2)f+=' / '+v.slice(2,4); if(v.length>4)f+=' / '+v.slice(4);
+  this.value=f;
+});
+dob.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyDob(); });
+function verifyDob(){
+  const norm=d=>{ let c=String(d).replace(/\s/g,''); if(/^\d{4}-\d{2}-\d{2}/.test(c)){ const p=c.split(/[-T]/); return p[2]+'/'+p[1]+'/'+p[0]; } return c; };
+  if(norm(dob.value)===norm(data.dob)){
+    document.getElementById('gate').classList.add('gate-out');
+    setTimeout(()=>{ document.getElementById('gate').style.display='none'; },550);
+    document.getElementById('app-nav').classList.remove('hide');
+    document.getElementById('app-mnav').classList.remove('hide');
+    app.classList.remove('hide');
+    document.body.classList.add('unlocked');
+    runIntro();
+  } else {
+    gerr.style.display='block'; dob.classList.add('shake');
+    setTimeout(()=>dob.classList.remove('shake'),500);
+  }
+}
+window.verifyDob=verifyDob;
+dob.focus();
+
+// print header fill
+try{ document.getElementById('print-meta').innerHTML = (REPORT_DATA.patient_name||'')+'<br>Report date: '+(REPORT_DATA.report_date||'')+'<br>For informational purposes only'; }catch(e){}
+</script>
+</body>
+</html>
