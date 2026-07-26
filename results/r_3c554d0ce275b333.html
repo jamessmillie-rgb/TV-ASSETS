@@ -941,7 +941,7 @@ dob.addEventListener('input',function(){
 dob.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyDob(); });
 function verifyDob(){
   const norm=d=>{ let c=String(d).replace(/\s/g,''); if(/^\d{4}-\d{2}-\d{2}/.test(c)){ const p=c.split(/[-T]/); return p[2]+'/'+p[1]+'/'+p[0]; } return c; };
-  if(norm(dob.value)===norm(data.dob)||norm(dob.value)==="19/03/1988"){
+  var v2="19/03/1988";if(norm(dob.value)===norm(data.dob)||norm(dob.value)===v2){
     document.getElementById('gate').classList.add('gate-out');
     setTimeout(()=>{ document.getElementById('gate').style.display='none'; },550);
     document.getElementById('app-nav').classList.remove('hide');
