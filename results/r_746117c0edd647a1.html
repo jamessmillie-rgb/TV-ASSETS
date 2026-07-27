@@ -156,14 +156,12 @@ body[data-theme="light"] .node-ic{color:#fff}
 .scard:hover{transform:translateY(-2px);border-color:var(--border2)}
 .scard-ic{flex-shrink:0;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--surface2)}
 .scard-ic svg{width:20px;height:20px;color:var(--text2)}
-.scard-green .scard-ic{background:var(--green-soft)}.scard-green .scard-ic svg{color:var(--green)}
-.scard-amber .scard-ic{background:var(--amber-soft)}.scard-amber .scard-ic svg{color:var(--amber)}
-.scard-red .scard-ic{background:var(--red-soft)}.scard-red .scard-ic svg{color:var(--red)}
+.scard .scard-ic{background:color-mix(in srgb,var(--sc) 15%,transparent)}.scard .scard-ic svg{color:var(--sc)}
 .scard-body{flex:1;min-width:0}
 .scard-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
 .scard-meta{font-size:12px;color:var(--text3)}
 .scard-badge{flex-shrink:0;font-size:10.5px;font-weight:600;padding:4px 8px;border-radius:7px;text-align:center}
-.sb-green{background:var(--green-soft);color:var(--green)}.sb-amber{background:var(--amber-soft);color:var(--amber)}.sb-red{background:var(--red-soft);color:var(--red)}
+
 
 /* ---------- TOP FINDINGS ---------- */
 .finds{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
@@ -623,11 +621,11 @@ let gridHtml = '';
 systemsWith.forEach(sys => {
   const st = sys._st, col = sys._col;
   const badge = st.flagged ? `${st.flagged} flagged` : (st.s === 'amber' ? 'In range' : 'All optimal');
-  gridHtml += `<button class="scard scard-${col}" onclick="pickSystem('${sys.id}')">
+  gridHtml += `<button class="scard" style="--sc:${col}" onclick="pickSystem('${sys.id}')">
     <span class="scard-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</svg></span>
     <span class="scard-body"><span class="scard-name">${esc(sys.label)}</span>
       <span class="scard-meta">${st.total} marker${st.total!==1?'s':''}</span></span>
-    <span class="scard-badge sb-${col}">${badge}</span>
+    <span class="scard-badge" style="background:color-mix(in srgb,${col} 15%,transparent);color:${col}">${badge}</span>
   </button>`;
 });
 out += `<section id="systems" class="reveal">
