@@ -125,6 +125,8 @@ section{margin-bottom:60px;opacity:1}
 .node-halo{fill:transparent;opacity:.16}
 .node-dot{stroke:var(--bg);stroke-width:2}
 .node-ic{color:#06110d;opacity:.85}
+.node-gradient .node-dot{stroke:var(--bg);stroke-width:2}
+.node-gradient .node-halo{opacity:.16;animation:halo 3s ease-in-out infinite}
 .node-green .node-dot{fill:var(--green)} .node-green .node-halo{fill:var(--green);animation:halo 3s ease-in-out infinite}
 .node-amber .node-dot{fill:var(--amber)} .node-amber .node-halo{fill:var(--amber);animation:halo 3s ease-in-out infinite}
 .node-red .node-dot{fill:var(--red)} .node-red .node-halo{fill:var(--red);animation:haloRed 1.8s ease-in-out infinite}
@@ -144,9 +146,10 @@ body[data-theme="light"] .node-ic{color:#fff}
 .bodytip strong{display:block;font-size:12.5px;margin-bottom:1px}
 .tip-red{color:var(--red)}
 .mpills{display:none;gap:8px;overflow-x:auto;padding:14px 2px 4px;-webkit-overflow-scrolling:touch}
-.mpill{flex-shrink:0;display:flex;align-items:center;gap:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 13px;cursor:pointer;white-space:nowrap}
+.mpill{border-left:3px solid var(--pill-c, var(--border))}
+.mpill{flex-shrink:0;display:flex;align-items:center;gap:7px;border-left:3px solid var(--pill-c, var(--border));font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 13px;cursor:pointer;white-space:nowrap}
 .mpill-dot{width:8px;height:8px;border-radius:50%}
-.mpill-green .mpill-dot{background:var(--green)}.mpill-amber .mpill-dot{background:var(--amber)}.mpill-red .mpill-dot{background:var(--red)}
+
 
 /* ---------- SYSTEM GRID ---------- */
 .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -341,15 +344,11 @@ body[data-theme="light"] .node-ic{color:#fff}
 .print-head .brand{font-size:20px}
 .print-head .ph-meta{font-size:12px;color:#444;text-align:right}
 
-.tvp{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;
-  padding:0 0 15px;margin:0 0 26px;border-bottom:1px solid var(--border);
-  font-size:12.5px;line-height:1.6;color:var(--text3)}
+.tvp{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:0 0 15px;margin:0 0 26px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.6;color:var(--text3)}
 .tvp a{color:var(--text2);text-decoration:none;border-bottom:1px solid var(--border2)}
 .tvp a:hover{color:var(--green);border-bottom-color:var(--green)}
 .tvp-d{opacity:.4}
-.tvp-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:600;
-  letter-spacing:1.4px;color:var(--text2);background:none;border:1px dashed var(--border2);
-  border-radius:5px;padding:2px 7px;margin-left:5px;cursor:pointer;transition:.15s}
+.tvp-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:600;letter-spacing:1.4px;color:var(--text2);background:none;border:1px dashed var(--border2);border-radius:5px;padding:2px 7px;margin-left:5px;cursor:pointer;transition:.15s}
 .tvp-code:hover{color:var(--green);border-color:var(--green)}
 @media(max-width:720px){.tvp{gap:4px 0;flex-direction:column;align-items:flex-start;font-size:12px}.tvp-d{display:none}}
 @media print{.tvp{display:none!important}}
@@ -543,26 +542,57 @@ out += `<section id="overview" class="reveal">
 
 // ---------- BODY MAP ----------
 const systemsWith = SYSTEMS.filter(sys => sys.groups.some(g => groups[g] && groups[g].length));
-function statusColor(s){ return s==='flag'?'red':s==='amber'?'amber':'green'; }
+function statusColor(s, st) {
+  // Calculate a 0-1 health score for this system
+  if (!st || !st.total) return 'green';
+  var optPct = st.optimal / st.total;
+  var flagPct = st.flagged / st.total;
+  // Score: 1.0 = all optimal, 0.0 = all flagged
+  var score = optPct - flagPct;
+  score = Math.max(0, Math.min(1, (score + 1) / 2)); // normalise to 0-1
+  return score;
+}
+// Map score to colour on a 5-stop gradient: red -> orange -> yellow -> light teal -> bright teal
+function scoreToColor(score) {
+  var stops = [
+    [0.0, [255, 90, 95]],    // --red
+    [0.25, [232, 160, 70]],  // orange
+    [0.5, [232, 193, 90]],   // --amber/yellow
+    [0.75, [100, 200, 180]], // light teal
+    [1.0, [44, 228, 173]]    // --green (bright teal)
+  ];
+  for (var i = 0; i < stops.length - 1; i++) {
+    if (score <= stops[i+1][0]) {
+      var t = (score - stops[i][0]) / (stops[i+1][0] - stops[i][0]);
+      var r = Math.round(stops[i][1][0] + t * (stops[i+1][1][0] - stops[i][1][0]));
+      var g = Math.round(stops[i][1][1] + t * (stops[i+1][1][1] - stops[i][1][1]));
+      var b = Math.round(stops[i][1][2] + t * (stops[i+1][1][2] - stops[i][1][2]));
+      return 'rgb('+r+','+g+','+b+')';
+    }
+  }
+  return 'rgb(44,228,173)';
+}
 
 let nodesSvg = '', linesSvg = '', pillsHtml = '';
 systemsWith.forEach(sys => {
   const st = groupStatus(sys.groups); if (!st) return;
-  const col = statusColor(st.s);
+  const rawScore = statusColor(st.s, st);
+  const col = typeof rawScore === "number" ? scoreToColor(rawScore) : rawScore;
+  const colClass = typeof rawScore === "number" ? "gradient" : rawScore;
   sys._st = st; sys._col = col;
   if (sys.type === 'sat') {
     linesSvg += `<line class="leader" x1="${sys.x}" y1="${sys.y}" x2="${sys.tx}" y2="${sys.ty}"/>`;
   }
   const r = sys.type === 'organ' ? 9 : 11;
-  nodesSvg += `<g class="node node-${col}" data-sys="${sys.id}" tabindex="0" role="button"
+  nodesSvg += `<g class="node node-gradient" data-sys="${sys.id}" tabindex="0" role="button"
       aria-label="${esc(sys.label)}: ${st.flagged?st.flagged+' flagged':'clear'}"
       onclick="pickSystem('${sys.id}')" onmouseenter="tip(event,'${sys.id}')" onmousemove="tipMove(event)" onmouseleave="tipHide()"
       onfocus="tip(event,'${sys.id}')" onblur="tipHide()">
-      <circle class="node-halo" cx="${sys.x}" cy="${sys.y}" r="${r+9}"/>
-      <circle class="node-dot" cx="${sys.x}" cy="${sys.y}" r="${r}"/>
+      <circle class="node-halo" cx="${sys.x}" cy="${sys.y}" r="${r+9}" fill="${col}" style="opacity:.16;animation:halo 3s ease-in-out infinite"/>
+      <circle class="node-dot" cx="${sys.x}" cy="${sys.y}" r="${r}" fill="${col}"/>
       <g class="node-ic" transform="translate(${sys.x-7},${sys.y-7}) scale(0.58)" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</g>
     </g>`;
-  pillsHtml += `<button class="mpill mpill-${col}" onclick="pickSystem('${sys.id}')">
+  pillsHtml += `<button class="mpill" style="--pill-c:${col}" onclick="pickSystem('${sys.id}')">
       <span class="mpill-dot"></span>${esc(sys.label)}${st.flagged?` · ${st.flagged}`:''}</button>`;
 });
 
