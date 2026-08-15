@@ -323,8 +323,17 @@ body[data-theme="light"] .node-ic{color:#fff}
 
 /* ---------- PRINT ---------- */
 @media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   :root{--bg:#fff;--bg2:#fff;--surface:#fff;--surface2:#fff;--surface3:#fff;--border:#d8dae0;--border2:#c4c7cf;
     --text:#111;--text2:#333;--text3:#666;--silh-top:#eee;--silh-bot:#e4e4e4;--silh-stroke:#ccc;--shadow:none}
+  .rbar{background:linear-gradient(90deg,#f3caca,#f4e3b8 35%,#f4e3b8 65%,#f3caca)!important;border:1px solid #d8dae0}
+  .rbar-normal{background:#faf0d2!important}
+  .rbar-opt{background:#bfeeda!important;box-shadow:inset 0 0 0 1px #7fd9b8!important}
+  .rbar-dot{box-shadow:none!important;border-color:#ffffff!important}
+  .rbar-dot.dot-green{background:#12b487!important}
+  .rbar-dot.dot-amber{background:#d9a92f!important}
+  .rbar-dot.dot-red{background:#e64d52!important}
+  .chip{border:1px solid #c4c7cf}
   body{background:#fff;background-image:none}
   .nav,.mnav,.controls,.gate,.bodytip,.alert-btn,.bc-chev,.chev,.mpills{display:none!important}
   .foot-logo.inv{display:none!important}.foot-logo.std{display:block!important}
