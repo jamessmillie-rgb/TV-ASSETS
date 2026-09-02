@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueVitals Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080a; --bg2:#0d0d10; --surface:#131316; --surface2:#1a1a1e; --surface3:#212127;
+  --border:#242429; --border2:#33333a;
+  --text:#f7f7f8; --text2:#a5a5ae; --text3:#6e6e78;
+  --green:#2ce4ad; --green-soft:rgba(44,228,173,.12); --green-mid:rgba(44,228,173,.28);
+  --red:#ff5a5f; --red-soft:rgba(255,90,95,.12); --red-mid:rgba(255,90,95,.3);
+  --amber:#e8c15a; --amber-soft:rgba(232,193,90,.12); --amber-mid:rgba(232,193,90,.3);
+  --blue:#7c9bff; --blue-soft:rgba(124,155,255,.12);
+  --silh-top:#17171c; --silh-bot:#101014; --silh-stroke:#2a2a31;
+  --shadow:0 1px 0 rgba(255,255,255,.02), 0 10px 30px -12px rgba(0,0,0,.6);
+  --r:16px; --r-sm:11px;
+}
+body[data-theme="light"]{
+  --bg:#f6f7f9; --bg2:#eef0f4; --surface:#ffffff; --surface2:#f4f5f8; --surface3:#eceef2;
+  --border:#e3e6ec; --border2:#d3d7df;
+  --text:#14161c; --text2:#565b66; --text3:#8b909b;
+  --green:#0fb488; --green-soft:rgba(15,180,136,.12); --green-mid:rgba(15,180,136,.28);
+  --red:#e23d43; --red-soft:rgba(226,61,67,.1); --red-mid:rgba(226,61,67,.28);
+  --amber:#c79514; --amber-soft:rgba(199,149,20,.12); --amber-mid:rgba(199,149,20,.3);
+  --blue:#4864d8; --blue-soft:rgba(72,100,216,.1);
+  --silh-top:#e9ecf1; --silh-bot:#dfe3ea; --silh-stroke:#cfd4dd;
+  --shadow:0 1px 2px rgba(20,22,28,.04), 0 12px 30px -16px rgba(20,22,28,.18);
+}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 600px at 80% -10%, rgba(44,228,173,.05), transparent 60%),radial-gradient(900px 500px at 0% 10%, rgba(124,155,255,.04), transparent 55%);}
+.c-green{color:var(--green)} .c-amber{color:var(--amber)} .c-red{color:var(--red)}
+a{color:var(--green)}
+.hide{display:none!important}
+
+/* ---------- NAV ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:80;height:64px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;
+  background:color-mix(in srgb,var(--bg) 78%, transparent);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.nav-brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand{font-size:19px;font-weight:700;letter-spacing:-.4px}.brand span{color:var(--green)}
+.gate-logo-img{display:block;width:180px;height:auto;margin:0 auto 14px}
+.logo-dark,.logo-light{height:26px;width:auto;display:block}
+.logo-light{display:none}
+body[data-theme="light"] .logo-dark{display:none}
+body[data-theme="light"] .logo-light{display:block}
+.logo-print{height:30px;width:auto}
+.foot-logo{height:24px;width:auto;margin:0 auto 12px;display:block}
+body[data-theme="light"] .foot-logo.inv{display:none}
+body[data-theme="light"] .foot-logo.std{display:block}
+.foot-logo.std{display:none}
+.nav-patient{font-size:12.5px;color:var(--text3);padding-left:14px;border-left:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-links{display:flex;gap:2px}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:13px;font-weight:500;padding:8px 13px;border-radius:9px;transition:.18s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--green);background:var(--green-soft)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.iconbtn{display:flex;align-items:center;gap:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:transparent;border:1px solid var(--border2);border-radius:9px;padding:8px 12px;cursor:pointer;transition:.18s}
+.iconbtn:hover{color:var(--text);border-color:var(--green);background:var(--green-soft)}
+.iconbtn svg{width:15px;height:15px}
+.iconbtn.primary{color:var(--green);border-color:var(--green-mid)}
+
+/* ---------- MOBILE NAV ---------- */
+.mnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0));
+  background:color-mix(in srgb,var(--bg) 88%, transparent);backdrop-filter:blur(22px);border-top:1px solid var(--border)}
+.mnav-in{display:flex;justify-content:space-around}
+.mnav a{flex:1;color:var(--text3);text-decoration:none;font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px}
+.mnav a.active{color:var(--green)}
+.mnav svg{width:20px;height:20px}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:940px;margin:0 auto;padding:92px 22px 120px}
+section{margin-bottom:60px;opacity:1}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:12px}
+.sec-title{font-size:clamp(22px,3.4vw,30px);font-weight:700;letter-spacing:-.6px;margin-bottom:6px}
+.sec-sub{color:var(--text2);font-size:15px;margin-bottom:26px;max-width:560px}
+
+/* ---------- HERO ---------- */
+.hero{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;
+  background:linear-gradient(160deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:24px;padding:40px 40px;box-shadow:var(--shadow)}
+.hero-name{font-size:clamp(34px,6vw,52px);font-weight:800;letter-spacing:-1.5px;line-height:1;display:flex;flex-direction:column;gap:10px;margin:6px 0 14px}
+.hero-name-sub{font-size:15px;font-weight:500;letter-spacing:0;color:var(--text2)}
+.hero-lede{color:var(--text2);font-size:15.5px;max-width:420px;margin-bottom:26px}
+.hero-stats{display:flex;gap:26px;flex-wrap:wrap}
+.hstat{display:flex;flex-direction:column}
+.hstat-n{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1}
+.hstat-l{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-top:4px}
+.hero-ring{position:relative;width:220px;height:220px;flex-shrink:0}
+.ring-svg{width:100%;height:100%;overflow:visible}
+.ring-track{fill:none;stroke:var(--surface3);stroke-width:12}
+.ring-track2{fill:none;stroke:var(--surface2);stroke-width:6}
+.ring-fill{fill:none;stroke:var(--green);stroke-width:12;stroke-linecap:round;filter:drop-shadow(0 0 8px var(--green-mid))}
+.ring-fill2{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round;opacity:.85}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.ring-pct span{font-size:22px;font-weight:600;color:var(--text2);margin-left:2px}
+.ring-cap{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+
+/* ---------- ALERT ---------- */
+.alert{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,var(--red-soft),transparent);border:1px solid var(--red-mid);border-radius:16px;padding:16px 18px;margin-bottom:28px;position:relative;overflow:hidden}
+.alert::before{content:"";position:absolute;inset:0;border-radius:16px;border:1px solid var(--red);opacity:0;animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0}50%{opacity:.5}}
+.alert-ic{flex-shrink:0;width:40px;height:40px;border-radius:11px;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center}
+.alert-ic svg{width:22px;height:22px}
+.alert-body{flex:1;min-width:0}
+.alert-title{font-weight:600;font-size:15px;margin-bottom:2px}
+.alert-text{font-size:13px;color:var(--text2)}
+.alert-btn{flex-shrink:0;font-family:inherit;font-weight:600;font-size:13px;color:var(--red);background:var(--red-soft);border:1px solid var(--red-mid);border-radius:10px;padding:9px 14px;cursor:pointer;transition:.18s}
+.alert-btn:hover{background:var(--red);color:#fff}
+
+/* ---------- BODY MAP ---------- */
+.bodywrap{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.bodysvg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.silhouette{opacity:.9}
+.leader{stroke:var(--border2);stroke-width:1;stroke-dasharray:3 4;opacity:.7}
+.node{cursor:pointer;opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .4s,transform .4s cubic-bezier(.34,1.56,.64,1)}
+.node.on{opacity:1;transform:scale(1)}
+.node-halo{fill:transparent;opacity:.16}
+.node-dot{stroke:var(--bg);stroke-width:2}
+.node-ic{color:#06110d;opacity:.85}
+.node-gradient .node-dot{stroke:var(--bg);stroke-width:2}
+.node-gradient .node-halo{opacity:.16;animation:halo 3s ease-in-out infinite}
+.node-green .node-dot{fill:var(--green)} .node-green .node-halo{fill:var(--green);animation:halo 3s ease-in-out infinite}
+.node-amber .node-dot{fill:var(--amber)} .node-amber .node-halo{fill:var(--amber);animation:halo 3s ease-in-out infinite}
+.node-red .node-dot{fill:var(--red)} .node-red .node-halo{fill:var(--red);animation:haloRed 1.8s ease-in-out infinite}
+.node-red .node-ic,.node-amber .node-ic{color:#120c02}
+body[data-theme="light"] .node-ic{color:#fff}
+@keyframes halo{0%,100%{opacity:.14;r:18}50%{opacity:.26;r:22}}
+@keyframes haloRed{0%,100%{opacity:.2}50%{opacity:.4}}
+.node:hover .node-dot,.node:focus .node-dot{filter:brightness(1.15)}
+.node:focus{outline:none}
+.node:focus .node-halo{opacity:.4}
+.scan rect{fill:var(--green);opacity:0}
+.scan.run rect{animation:scan 1.5s cubic-bezier(.4,0,.2,1) 1}
+@keyframes scan{0%{opacity:0;transform:translateY(70px)}10%{opacity:.5}90%{opacity:.5}100%{opacity:0;transform:translateY(330px)}}
+.scan{transform-box:view-box}
+.bodytip{position:fixed;z-index:200;transform:translate(-50%,-100%);background:var(--surface3);border:1px solid var(--border2);border-radius:10px;padding:8px 11px;font-size:12px;color:var(--text);pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:var(--shadow);white-space:nowrap}
+.bodytip.show{opacity:1}
+.bodytip strong{display:block;font-size:12.5px;margin-bottom:1px}
+.tip-red{color:var(--red)}
+.mpills{display:none;gap:8px;overflow-x:auto;padding:14px 2px 4px;-webkit-overflow-scrolling:touch}
+.mpill{flex-shrink:0;display:flex;align-items:center;gap:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 13px;cursor:pointer;white-space:nowrap}
+.mpill-dot{width:8px;height:8px;border-radius:50%;background:var(--pill-c, var(--green))}
+
+
+/* ---------- SYSTEM GRID ---------- */
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.scard{display:flex;align-items:center;gap:13px;text-align:left;font-family:inherit;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.scard:hover{transform:translateY(-2px);border-color:var(--border2)}
+.scard-ic{flex-shrink:0;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--surface2)}
+.scard-ic svg{width:20px;height:20px;color:var(--text2)}
+.scard .scard-ic{background:color-mix(in srgb,var(--sc) 15%,transparent)}.scard .scard-ic svg{color:var(--sc)}
+.scard-body{flex:1;min-width:0}
+.scard-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.scard-meta{font-size:12px;color:var(--text3)}
+.scard-badge{flex-shrink:0;font-size:10.5px;font-weight:600;padding:4px 8px;border-radius:7px;text-align:center}
+
+
+/* ---------- TOP FINDINGS ---------- */
+.finds{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.find{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);border-left:3px solid var(--border2)}
+.find-red{border-left-color:var(--red)}.find-green{border-left-color:var(--green)}.find-amber{border-left-color:var(--amber)}
+.find-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+.find-name{font-size:14px;font-weight:600}
+.find-val{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-top:2px}
+.find-val span{font-size:13px;font-weight:500;color:var(--text3)}
+.find-desc{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6}
+
+/* ---------- ANALYSIS CARDS ---------- */
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 26px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;border-left:3px solid var(--border2)}
+.acard-green{border-left-color:var(--green)}.acard-red{border-left-color:var(--red)}.acard-blue{border-left-color:var(--blue)}
+.acard-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;margin-bottom:14px}
+.acard-dot{width:8px;height:8px;border-radius:50%}
+.dot-green{background:var(--green)}.dot-red{background:var(--red)}.dot-blue{background:var(--blue)}
+.acard-c{font-size:14.5px;color:var(--text2);line-height:1.85;white-space:pre-line}
+.lead-warn{font-size:15px;font-weight:500;color:var(--text);line-height:1.7;padding:14px 16px;margin-bottom:16px;background:var(--red-soft);border-left:3px solid var(--red);border-radius:0 10px 10px 0;white-space:pre-line}
+.numbered{padding-left:74px}
+.num{position:absolute;left:22px;top:22px;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.num-red{background:var(--red-soft);color:var(--red)}.num-blue{background:var(--blue-soft);color:var(--blue)}
+
+/* ---------- CONTROLS ---------- */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.search{flex:1;min-width:200px;max-width:300px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:11px 15px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:.18s}
+.search:focus{border-color:var(--green)}
+.search::placeholder{color:var(--text3)}
+.fbtn{font-family:inherit;font-size:13px;font-weight:600;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 16px;cursor:pointer;transition:.18s}
+.fbtn:hover{color:var(--text);border-color:var(--border2)}
+.fbtn.active{color:var(--green);background:var(--green-soft);border-color:var(--green-mid)}
+
+/* ---------- GROUPS ---------- */
+.grp{margin-bottom:12px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.grp-flash{box-shadow:0 0 0 2px var(--green-mid)}
+.grp-h{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;cursor:pointer;user-select:none;transition:.18s}
+.grp-h:hover{background:var(--surface2)}
+.grp-name{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.7px}
+.grp-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text3)}
+.grp-flag{color:var(--red);font-weight:600}
+.chev{transition:transform .3s;color:var(--text3)}
+.grp.open .chev{transform:rotate(180deg)}
+.grp-body{display:none;padding:6px 12px 14px}
+.grp.open .grp-body{display:block}
+
+/* ---------- BIOMARKER CARD ---------- */
+.bc{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;background:var(--bg2);transition:border-color .18s}
+.bc:hover{border-color:var(--border2)}
+.bc-red{background:linear-gradient(90deg,var(--red-soft),transparent 55%)}
+.bc-green{background:linear-gradient(90deg,var(--green-soft),transparent 55%)}
+.bc-amber{background:linear-gradient(90deg,var(--amber-soft),transparent 55%)}
+.bc-main{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer}
+.bc-tick{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tick-red{background:var(--red)}.tick-green{background:var(--green)}.tick-amber{background:var(--amber)}.tick-blue{background:var(--blue)}
+.bc-info{flex:1;min-width:110px}
+.bc-name{font-size:14px;font-weight:500}
+.bc-res{font-size:13px;color:var(--text2)}
+.chip{flex-shrink:0;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.chip-flag{background:var(--red-soft);color:var(--red)}.chip-optimal{background:var(--green-soft);color:var(--green)}
+.chip-range{background:var(--amber-soft);color:var(--amber)}.chip-qual{background:var(--blue-soft);color:var(--blue)}
+.bc-chev{color:var(--text3);transition:transform .3s;flex-shrink:0}
+.bc.open .bc-chev{transform:rotate(180deg)}
+.bc-detail{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.bc-detail-in{padding:2px 16px 18px 39px;border-top:1px solid var(--border)}
+.bc-desc{font-size:13.5px;color:var(--text2);line-height:1.7;padding-top:14px;margin-bottom:14px}
+.bc-desc strong{color:var(--text);font-weight:600}
+.bc-ranges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.bc-ranges span{font-size:11.5px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column;gap:1px}
+.bc-ranges em{font-style:normal;color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+.bc-causes{font-size:12.5px;color:var(--text3);line-height:1.6}
+.bc-causes em{font-style:normal;color:var(--text2);font-weight:600}
+
+/* ---------- RANGE BAR ---------- */
+.rbar-wrap{flex:1;max-width:240px;min-width:130px}
+.rbar-big{max-width:none;margin:4px 0 2px}
+.rbar{position:relative;height:10px;border-radius:6px;overflow:visible;
+  background:linear-gradient(90deg,var(--red-mid),var(--amber-mid) 35%,var(--amber-mid) 65%,var(--red-mid))}
+.rbar-normal{position:absolute;top:0;height:100%;background:var(--amber-soft);border-radius:6px}
+.rbar-opt{position:absolute;top:0;height:100%;background:var(--green-mid);border-radius:6px;box-shadow:inset 0 0 0 1px var(--green-soft)}
+.rbar-dot{position:absolute;top:50%;left:50%;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);border:2.5px solid var(--bg2);transition:left 1s cubic-bezier(.34,1.3,.5,1)}
+.rbar-dot.dot-red{background:var(--red);box-shadow:0 0 10px var(--red-mid)}
+.rbar-dot.dot-green{background:var(--green);box-shadow:0 0 10px var(--green-mid)}
+.rbar-dot.dot-amber{background:var(--amber);box-shadow:0 0 10px var(--amber-mid)}
+
+/* ---------- FOOTER ---------- */
+.foot{text-align:center;padding:44px 22px;border-top:1px solid var(--border);margin-top:40px}
+/* foot-brand replaced by .foot-logo img */
+.foot p{font-size:12px;color:var(--text3);margin-bottom:5px}
+
+/* ---------- GATE ---------- */
+.gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);
+  background-image:radial-gradient(700px 500px at 50% 30%, rgba(44,228,173,.1), transparent 60%);transition:opacity .5s,transform .5s}
+.gate-out{opacity:0;transform:scale(1.04);pointer-events:none}
+.gate-card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:46px 40px;max-width:410px;width:90%;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,.7);overflow:hidden}
+.gate-card>*{position:relative}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* gate-logo replaced by .gate-logo-img */
+.gate-sub{color:var(--text2);font-size:14px;margin-bottom:28px;line-height:1.55}
+.gate-label{display:block;text-align:left;font-size:12.5px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.gate-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:15px;color:var(--text);font-family:inherit;font-size:17px;text-align:center;letter-spacing:2px;outline:none;transition:.18s}
+.gate-input:focus{border-color:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.gate-input.shake{animation:shake .4s;border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.gate-btn{width:100%;margin-top:16px;padding:15px;background:var(--green);color:#04110c;font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:.18s}
+.gate-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.gate-error{color:var(--red);font-size:13px;margin-top:14px;display:none}
+.gate-foot{color:var(--text3);font-size:11px;margin-top:24px;line-height:1.5}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:820px){
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+  .finds{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr;text-align:center;padding:32px 24px}
+  .hero-name{align-items:center}.hero-lede{margin-left:auto;margin-right:auto}
+  .hero-stats{justify-content:center}
+  .hero-ring{margin:8px auto 0}
+}
+@media(max-width:720px){
+  .nav-links{display:none}.mnav{display:block}.nav-patient{display:none}
+  .nav-actions .label{display:none}
+  .wrap{padding:80px 12px 104px}
+  section{margin-bottom:40px}
+  .bodysvg{max-width:340px}
+  .mpills{display:flex}
+  .bodywrap .leader{display:none}
+  .numbered{padding-left:20px}.num{position:static;margin-bottom:12px}
+  .bc-main{flex-wrap:wrap;padding:12px 14px}.rbar-wrap{order:5;width:100%;max-width:none;margin-top:6px}
+  .bc-detail-in{padding-left:14px;padding-right:10px}
+  .bc-name{font-size:13.5px}.bc-res{font-size:12.5px}
+  .acard{padding:18px 16px}.acard-c{font-size:14px;line-height:1.8}
+  .lead-warn{font-size:14px;padding:12px 14px}
+  .sec-title{font-size:20px}.sec-sub{font-size:14px}
+  .sgrid{grid-template-columns:1fr}
+  .scard{padding:14px}
+  .find{padding:16px}
+  .find-name{font-size:13px}.find-val{font-size:18px}.find-desc{font-size:12.5px}
+  .grp-name{font-size:12px}.grp-meta{font-size:11px}
+  .chip{font-size:9.5px;padding:3px 8px}
+  .alert{flex-direction:column;text-align:center;gap:12px;padding:16px 14px}
+  .alert-btn{width:100%}
+  .hero-name{font-size:clamp(28px,8vw,40px)}
+  .hero-lede{font-size:14px}
+  .hero-stats{gap:18px}
+  .hstat-n{font-size:24px}.hstat-l{font-size:10px}
+  .hero-ring{width:180px;height:180px}
+  .ring-pct{font-size:42px}
+  .gate-card{padding:32px 24px}
+  .gate-logo-img{width:150px}
+  .gate-sub{font-size:13px}
+  .gate-input{font-size:16px;padding:13px}
+  .gate-btn{padding:13px;font-size:14px}
+  .controls{flex-direction:column;align-items:stretch}
+  .search{max-width:none;min-width:0}
+  .fbtn{text-align:center}
+  .bc-ranges{gap:6px}.bc-ranges span{font-size:10.5px;padding:5px 8px}
+  .bc-desc{font-size:13px}
+  .foot p{font-size:11px}
+}
+
+/* ---------- PRINT ---------- */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  :root{--bg:#fff;--bg2:#fff;--surface:#fff;--surface2:#fff;--surface3:#fff;--border:#d8dae0;--border2:#c4c7cf;
+    --text:#111;--text2:#333;--text3:#666;--silh-top:#eee;--silh-bot:#e4e4e4;--silh-stroke:#ccc;--shadow:none}
+  .rbar{background:linear-gradient(90deg,#f3caca,#f4e3b8 35%,#f4e3b8 65%,#f3caca)!important;border:1px solid #d8dae0}
+  .rbar-normal{background:#faf0d2!important}
+  .rbar-opt{background:#bfeeda!important;box-shadow:inset 0 0 0 1px #7fd9b8!important}
+  .rbar-dot{box-shadow:none!important;border-color:#ffffff!important}
+  .rbar-dot.dot-green{background:#12b487!important}
+  .rbar-dot.dot-amber{background:#d9a92f!important}
+  .rbar-dot.dot-red{background:#e64d52!important}
+  .chip{border:1px solid #c4c7cf}
+  body{background:#fff;background-image:none}
+  .nav,.mnav,.controls,.gate,.bodytip,.alert-btn,.bc-chev,.chev,.mpills{display:none!important}
+  .foot-logo.inv{display:none!important}.foot-logo.std{display:block!important}
+  .wrap{padding:0;max-width:none}
+  .reveal{opacity:1!important;transform:none!important}
+  .hero,.bodywrap,.acard,.find,.scard,.grp,.bc{box-shadow:none;break-inside:avoid}
+  .grp-body{display:block!important}.bc-detail{max-height:none!important}.bc-detail-in{padding-left:16px}
+  section{margin-bottom:22px;page-break-inside:auto}
+  .node{opacity:1!important;transform:none!important}
+  .print-head{display:flex!important}
+  a{color:#111;text-decoration:none}
+}
+.print-head{display:none;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:20px;border-bottom:2px solid #111}
+.print-head .brand{font-size:20px}
+.print-head .ph-meta{font-size:12px;color:#444;text-align:right}
+.tvp{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:0 0 15px;margin:0 0 26px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.6;color:var(--text3)}.tvp a{color:var(--text2);text-decoration:none;border-bottom:1px solid var(--border2)}.tvp a:hover{color:var(--green);border-bottom-color:var(--green)}.tvp-d{opacity:.4}.tvp-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:600;letter-spacing:1.4px;color:var(--text2);background:none;border:1px dashed var(--border2);border-radius:5px;padding:2px 7px;margin-left:5px;cursor:pointer;transition:.15s}.tvp-code:hover{color:var(--green);border-color:var(--green)}@media(max-width:720px){.tvp{gap:4px 0;flex-direction:column;align-items:flex-start;font-size:12px}.tvp-d{display:none}}@media print{.tvp{display:none!important}}</style>
+</head>
+<body data-theme="dark">
+
+<!-- GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <img class="gate-logo-img" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
+    <div class="gate-sub">Enter your date of birth to unlock your report.</div>
+    <label class="gate-label">Date of birth</label>
+    <input type="text" class="gate-input" id="gate-dob" placeholder="DD / MM / YYYY" maxlength="14" autocomplete="off" inputmode="numeric">
+    <button class="gate-btn" onclick="verifyDob()">View my results</button>
+    <div class="gate-error" id="gate-error">That date of birth does not match. Please try again.</div>
+    <div class="gate-foot">Your results are private. Having trouble? Contact support@truevitals.co.uk</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav hide" id="app-nav">
+  <div class="nav-brand"><img class="logo-dark" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals"><img class="logo-light" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals"><div class="nav-patient" id="nav-patient"></div></div>
+  <div class="nav-links">
+    <a data-t="overview" href="#overview">Overview</a>
+    <a data-t="body" href="#body">Body map</a>
+    <a data-t="findings" href="#findings">Findings</a>
+    <a data-t="flags" href="#flags">Flags</a>
+    <a data-t="results" href="#results">Results</a>
+  </div>
+  <div class="nav-actions">
+    <button class="iconbtn" onclick="toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="label" id="themeLabel">Dark</span></button>
+    <button class="iconbtn primary" onclick="printReport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg><span class="label">Share with GP</span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mnav hide" id="app-mnav">
+  <div class="mnav-in">
+    <a data-t="overview" href="#overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+    <a data-t="body" href="#body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v7M12 15l-4 6M12 15l4 6M6 10l6 1 6-1"/></svg>Body</a>
+    <a data-t="findings" href="#findings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 2.6 6.6L22 9.3l-5 4.6 1.5 7.1L12 17l-6.5 4 1.5-7.1-5-4.6 7.4-.7z"/></svg>Findings</a>
+    <a data-t="flags" href="#flags"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Flags</a>
+    <a data-t="results" href="#results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Results</a>
+  </div>
+</div>
+
+<div class="print-head" id="print-head">
+  <img class="logo-print" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals">
+  <div class="ph-meta" id="print-meta"></div>
+</div>
+<main class="wrap hide" id="app"></main>
+
+<script>
+// ============================================================
+// PASTE YOUR PDFMONKEY JSON BELOW  (replace this whole object)
+// ============================================================
+const REPORT_DATA = {"patient_name":"Jessie Thomas","dob":"05/01/1988","report_date":"2026-09-02","summary":"Jessie is a 38-year-old female presenting with a BMI of 19.1, following a Mediterranean diet rated 8 out of 10 for quality with a volume of 4 out of 10. She trains four times per week, split evenly between two cardio and two resistance sessions, with 7,500 to 10,000 daily steps. She vapes nicotine. She reports low energy and fatigue, hair thinning and hair loss, and brain fog. Her goals are to improve energy levels, balance hormones, and reduce stress and anxiety.\n\nTwo findings from this panel warrant a conversation with her GP before anything else in the report. The first is her amylase, which at 164 is significantly above the upper limit of 118, and her lipase, which at 79 is above the upper limit of 60. Amylase and lipase are enzymes produced primarily by the pancreas to help digest food. When both are elevated together, it raises the possibility of pancreatic inflammation, a condition called pancreatitis, or less commonly a structural issue such as a blocked duct. At Jessie's age and with no alcohol intake reported, the most likely explanations are either a subclinical episode of pancreatic irritation or salivary gland contribution to the amylase, since amylase is also produced by the salivary glands. However, lipase is more specific to the pancreas, and having both elevated together makes this a finding that her GP should investigate, ideally with a repeat fasting sample and clinical assessment. If she has experienced any upper abdominal pain, nausea, or discomfort after eating, these would be worth mentioning at that appointment.\n\nThe second finding for GP attention is her CA-125, a tumour marker, which at 42.4 is above the upper limit of 35. CA-125 is a protein that can be released by ovarian tissue and by the lining of the abdomen and pelvis. It is important to understand that CA-125 is elevated in a wide range of benign conditions. Endometriosis, ovarian cysts, fibroids, pelvic inflammatory disease, and even menstruation itself can all raise CA-125. At 38, a mildly elevated CA-125 is far more commonly explained by one of these benign causes than by anything sinister. However, NICE guidelines recommend that any CA-125 above 35 should prompt further investigation, typically a pelvic ultrasound, and her GP should arrange this. It may be worth noting where Jessie was in her menstrual cycle when the blood was drawn, as a sample taken during or just after a period can produce a transient rise.\n\nWith those two findings addressed, there is a great deal of positive news in this panel. Jessie's metabolic health is exceptional. Her fasting glucose at 4.4 sits comfortably within the optimal range, her HbA1c at 31 mmol/mol is well below the 36 threshold that marks optimal long-term blood sugar control, and her HOMA-IR, a measure of how sensitively the body responds to insulin, is 0.66, which places her firmly in the insulin-sensitive category. Her insulin at 3.4 and C-peptide at 1.24 are both within range, reflecting a pancreas that is producing just enough insulin to keep blood sugar perfectly controlled without overworking. This is textbook metabolic efficiency.\n\nHer cardiovascular and lipid profile is equally impressive. Total cholesterol at 4.6 is healthy, but it is the composition that stands out. Her HDL, the protective cholesterol that carries fat away from artery walls, is 2.0, which is outstanding. Her LDL at 2.41 is within the optimal range below 2.6, and her triglycerides at 0.36 are remarkably low. Her ApoB, the protein that carries LDL particles into the arterial wall and is considered the single best marker of cardiovascular risk, is 0.64, well below the 0.8 optimal threshold. Her ApoB to ApoA-I ratio at 0.44 is in the lower risk category, and her Lp(a), an inherited and unchangeable cardiovascular risk marker, is below 25, which means her genetic cardiovascular risk from this marker is low. This is genuinely useful information because it means her already excellent lipid profile is not masking any hidden inherited risk. Her remnant cholesterol at 0.19 and TG/HDL ratio at 0.18 are both well within optimal ranges. Her hs-CRP, the most sensitive measure of systemic inflammation, is 0.4, which at this level indicates virtually no inflammatory activity. Taken together, her cardiovascular risk profile is among the best that can be achieved.\n\nHer liver is in excellent health. ALT at 12 is well below the optimal female threshold of 25, Gamma GT at 17 is clean, AST at 23 is mid-range, bilirubin at 12 is healthy, and her FIB-4 score, a composite measure of liver fibrosis risk, is 1.1, comfortably below the threshold. Albumin at 41 confirms good synthetic liver function. Her kidneys are performing well, with an eGFR above 90 by the standard calculation and a Cystatin C-based eGFR of 107, which is a more accurate measure of true kidney filtration. Her Cystatin C itself at 0.82 is healthy. Urea and creatinine are both within range.\n\nHer thyroid is functioning normally. TSH at 2.22 sits within the optimal range of 1.0 to 2.5, Free T4 at 17.6 is within the optimal band of 14 to 20, and Free T3 at 4.6 is at the lower edge of the optimal range of 4.5 to 6.5. Both thyroid antibodies, TPO and thyroglobulin, are negative, which rules out autoimmune thyroid disease as a contributor to her fatigue or hair thinning. Her immune system markers, IgG, IgM, IgA, and IgE, are all within their respective ranges, her rheumatoid factor is negative, and her coeliac screen is negative, ruling out coeliac disease as a cause of her symptoms.\n\nHer hormonal picture is consistent with either the follicular or early luteal phase of her cycle. Oestradiol at 218 and progesterone at 2.1 would fit a follicular phase pattern. LH at 9.28 and FSH at 9.19 are within follicular ranges and, importantly, FSH is well below the levels that would suggest perimenopausal changes. Her testosterone at 0.7 is within the female range, and her free androgen index at 1 is healthy. SHBG at 70 is within range, though towards the upper half. DHEA-S at 5.9 umol/L, equivalent to approximately 2,174 ug/dL, is comfortably within range, and prolactin at 143 is normal. Cortisol at 268 is within the expected morning range. Overall, there is no obvious hormonal imbalance driving her symptoms.\n\nNow, the findings that connect directly to how Jessie feels. Her transferrin saturation is 14.37%, below the lower limit of 18%, and her ferritin is 35, which while within the laboratory range of 10 to 291, is below the optimal threshold of 40 for women. Her serum iron at 9.2 is right at the floor of the range. Transferrin saturation measures how much of the body's iron-carrying protein is actually loaded with iron, and at 14% it means her transport system is running underfilled. Ferritin represents stored iron, and at 35 there is not much in reserve. These findings sit alongside an absolute reticulocyte count of 26.8, which is below the lower limit of 50. Reticulocytes are newly made red blood cells released from the bone marrow, and a low count suggests the bone marrow is not producing red cells at full pace, which is exactly what happens when iron supply is insufficient to support production. Her haemoglobin at 124 is within range but sits near the lower boundary of 120, and her haematocrit at 0.363 is right at the floor of its range.\n\nPut these together, and the picture is of early iron depletion. She has not yet developed frank anaemia, but her iron stores are thin, her transport is underfilled, and her bone marrow has already slowed its output in response. This is a pattern that directly causes fatigue, brain fog, and hair thinning, which are exactly the symptoms she reports. The mechanism is straightforward: iron is essential for oxygen transport in the blood, for energy production inside cells, and for the rapid cell turnover that hair follicles require. When supply runs short, the body prioritises oxygen delivery to vital organs and quietly downgrades functions like hair growth.\n\nThe likely driver is her diet volume. At a BMI of 19.1, Jessie is already at the lower end of a healthy weight, and she rates her eating volume at just 4 out of 10. A Mediterranean diet rated 8 for quality is excellent in composition, but if the total amount of food is insufficient, even a perfect diet cannot deliver enough iron. Menstrual losses further deplete iron each month, and if intake is not keeping pace with losses, the stores gradually thin. This is not a crisis, but it is the single most actionable finding in this report and the most likely explanation for all three of her symptoms.\n\nHer chloride at 109 is marginally above the upper limit of 108. In isolation, a one-point elevation in chloride is rarely significant. It can reflect mild dehydration at the time of sampling or a slightly more acidic metabolic environment, which is loosely supported by her bicarbonate sitting at 20.4, right at the floor of its range. Together, these could suggest a mild tendency towards metabolic acidosis, but at these margins this is more likely a hydration effect than a clinical concern. If she was not fasting with adequate water intake before the sample, this alone could explain it.\n\nHer MPV, mean platelet volume, at 10.3 is marginally above the upper limit of 10.1. MPV measures the average size of platelets, and slightly larger platelets simply indicate that the bone marrow is producing younger, more active platelets. At this margin, it is not a concern and does not require any action.\n\nHer vitamin D at 96 is within the optimal range of 75 to 120, her B12 at 630 is within the optimal range of 500 to 900, and her folate at 16 is healthy. Calcium, corrected calcium, phosphate, and parathyroid hormone are all within range, confirming her bone mineral metabolism is working well. Her magnesium at 0.82 is within the laboratory range but falls just below the optimal lower bound of 0.85, which is worth addressing given her goals around stress and anxiety, as magnesium plays a central role in nervous system regulation and sleep quality.\n\nHer total antioxidant activity at 1.38 is within range, her creatine kinase at 128 is healthy for her training load, and her uric acid at 296 is within the optimal female range. Her urinalysis is entirely clean, with no protein, no glucose, no blood, no white cells, no nitrites, no bacteria, and no growth on culture.\n\nIn summary, Jessie has exceptional metabolic, cardiovascular, liver, kidney, and thyroid health. The two findings that need GP attention are the elevated amylase and lipase, which need investigation to exclude a pancreatic cause, and the mildly elevated CA-125, which warrants a pelvic ultrasound. The finding most likely to be driving her day-to-day symptoms of fatigue, brain fog, and hair thinning is early iron depletion in the context of insufficient calorie intake for her body's needs. Addressing her diet volume and iron stores is the single change most likely to make her feel different.","links":"Jessie's results point to three areas of action: a GP conversation for the pancreatic enzymes and CA-125, targeted nutritional changes to address her iron status and energy availability, and a small number of supplements to support recovery.\n\nThe most important conversation is with her GP, and she should bring three numbers: amylase 164 (upper limit 118), lipase 79 (upper limit 60), and CA-125 42.4 (upper limit 35). For the pancreatic enzymes, her GP will likely want to repeat the test fasting and may arrange an abdominal ultrasound to look at the pancreas and biliary system. For the CA-125, NICE guidelines recommend a pelvic ultrasound as a next step when the result exceeds 35. Jessie should mention where she was in her menstrual cycle when the blood was drawn, as this affects interpretation.\n\nFor her iron status, the priority is increasing total food intake. At 47.6 kg and 158 cm with four training sessions per week and 7,500 to 10,000 daily steps, Jessie's estimated maintenance calorie requirement is approximately 1,750 to 1,900 calories per day using a moderate activity multiplier. Rating her diet volume at 4 out of 10 suggests she may be eating significantly below this. She does not need to gain weight aggressively, but consistently eating below maintenance will continue to deplete iron stores and suppress bone marrow output. A target of 1,800 to 1,950 calories per day would support her training, her iron needs, and her energy levels without driving unwanted weight gain. Her protein target should be approximately 62 to 76 grams per day, based on 1.3 to 1.6 g/kg of bodyweight for her activity level.\n\nIron-rich foods should feature prominently: red meat two to three times per week, dark poultry meat, lentils, chickpeas, spinach, and fortified cereals. Pairing plant-based iron sources with vitamin C, such as peppers, tomatoes, or citrus, significantly improves absorption. Tea and coffee should be consumed between meals rather than with them, as the tannins inhibit iron uptake.\n\nFor stress and anxiety management, her magnesium sitting just below optimal is worth addressing both through diet and supplementation. Magnesium-rich foods include pumpkin seeds, almonds, dark chocolate, avocado, and leafy greens. Given her goals around stress, ensuring adequate sleep is important: a fixed wake time, daylight exposure within an hour of rising, a caffeine cut-off by early afternoon (noting that nicotine from vaping also disrupts sleep architecture), and a cool, dark bedroom environment all support better sleep quality and lower cortisol.\n\nRegarding vaping, nicotine is a vasoconstrictor that can impair blood flow to the hair follicle and has been associated with hair thinning. It also raises baseline cortisol and can worsen anxiety. Reducing or stopping vaping would support both her hair and her stress-related goals.\n\nA retest in 12 weeks should include a full blood count, iron studies (ferritin, transferrin saturation, serum iron), reticulocyte count, amylase, lipase, and CA-125. This will confirm whether her iron stores are responding to dietary changes and supplementation, whether the reticulocyte count has recovered, and whether the pancreatic enzymes and CA-125 have normalised.","flags":"GP-URGENT FINDINGS:\n\nAmylase 164 IU/L (upper limit 118) and Lipase 79 U/L (upper limit 60): Both pancreatic enzymes elevated simultaneously. Recommend repeat fasting sample and clinical assessment. Abdominal ultrasound to assess pancreas and biliary tree. Enquire about abdominal symptoms.\n\nCA-125 42.4 U/mL (upper limit 35): Mildly elevated. Per NICE NG12, recommend pelvic ultrasound. Consider timing relative to menstrual cycle. Benign causes (endometriosis, ovarian cyst, fibroids) are statistically far more likely at age 38.\n\nIRON AND HAEMATOLOGY:\n\nTransferrin saturation 14.37% (lower limit 18%): Iron transport underfilled. Serum iron 9.2 at the floor of range (9 to 30.4). Ferritin 35 ng/mL, within lab range but below optimal threshold of 40 for women. Absolute reticulocyte count 26.8 x10^9/L (lower limit 50): Suppressed red cell production consistent with early iron-restricted erythropoiesis. Haemoglobin 124 and haematocrit 0.363 both at the lower boundary of their ranges. Pattern consistent with pre-anaemic iron depletion, likely driven by insufficient caloric intake combined with menstrual losses. Directly relevant to reported fatigue, brain fog, and hair thinning.\n\nELECTROLYTES:\n\nChloride 109 mmol/L (upper limit 108): Marginal elevation, one point above range. Bicarbonate 20.4 at the floor of range (20 to 31). Pattern could suggest mild metabolic acidosis but more likely reflects hydration status at time of sampling. No action required unless persistent on retest.\n\nMINOR:\n\nMPV 10.3 fL (upper limit 10.1): Marginally above range. Reflects younger, larger platelets. Not clinically significant at this margin.\n\nMagnesium 0.82 mmol/L: Within lab range (0.53 to 1.11) but below optimal threshold of 0.85. Relevant to stress, anxiety, and sleep quality goals.\n\nReassuring negatives: Thyroid function normal with negative antibodies. Coeliac screen negative. Rheumatoid factor negative. All immunoglobulins within range. Liver enzymes and FIB-4 normal. Kidney function excellent (Cystatin C eGFR 107). Metabolic markers optimal (HbA1c 31, HOMA-IR 0.66). Lipid profile excellent (ApoB 0.64, Lp(a) below 25, TG/HDL 0.18). hs-CRP 0.4. Urinalysis clean. FSH and LH within premenopausal range. CEA, CA 15-3, and CA 19-9 all normal.","recommendations":"1. Book a GP appointment within two weeks. Bring this report and highlight amylase 164, lipase 79, and CA-125 42.4. Request repeat fasting pancreatic enzymes, abdominal ultrasound, and pelvic ultrasound.\n\n2. Increase total daily food intake to 1,800 to 1,950 calories per day. This is the single most impactful change from this report. Track intake for two weeks to establish a baseline and identify the gap.\n\n3. Increase protein intake to 62 to 76 grams per day to support training, recovery, and hair growth.\n\n4. Include iron-rich foods at least once daily: red meat two to three times per week, dark poultry, lentils, chickpeas, fortified cereals. Pair plant iron sources with vitamin C. Avoid tea and coffee within an hour of iron-rich meals.\n\n5. Begin iron supplementation as detailed in the supplementation section.\n\n6. Begin magnesium supplementation to support sleep quality and stress management.\n\n7. Maintain current vitamin D status with a low-dose maintenance supplement through autumn and winter.\n\n8. Consider reducing or stopping nicotine vaping to support hair health, anxiety levels, and sleep quality.\n\n9. Prioritise sleep hygiene: fixed wake time, morning daylight exposure, caffeine cut-off by 1pm, cool dark bedroom.\n\n10. Retest in 12 weeks: full blood count, reticulocyte count, iron studies, amylase, lipase, CA-125.","supplementation":"Iron: Ferrous bisglycinate, 25 mg daily, taken on an empty stomach or with a vitamin C source such as a small glass of orange juice. Take at least two hours away from tea, coffee, or calcium-containing foods. This is to address her transferrin saturation of 14.37% and ferritin of 35, both below optimal, and to support recovery of her reticulocyte count. Ferrous bisglycinate is the best-tolerated form with fewer gastrointestinal side effects than ferrous sulphate.\n\nVitamin C: 200 mg taken alongside the iron supplement. This converts non-haem iron into its more absorbable form and can double absorption rates.\n\nMagnesium: Magnesium glycinate, 300 mg, taken 30 to 60 minutes before bed. Her magnesium at 0.82 sits just below the optimal threshold of 0.85, and glycinate is the form best suited to supporting relaxation, sleep quality, and nervous system regulation, which directly addresses her goals around stress and anxiety.\n\nVitamin D3: Cholecalciferol, 1,000 to 2,000 IU daily, taken with her largest meal containing fat. Her vitamin D at 96 is within the optimal range, but as this sample was taken in late August at peak sun exposure, a maintenance dose through autumn and winter will prevent the seasonal decline that typically drops levels by 30 to 50 nmol/L.\n\nVitamin K2: MK-7 form, 100 mcg daily, taken with the vitamin D supplement. K2 directs calcium into bones and teeth rather than soft tissue, and should always accompany vitamin D supplementation.\n\nThe most important changes from this report are not supplements. They are eating more food, consistently reaching 1,800 to 1,950 calories per day with adequate protein, and discussing the elevated pancreatic enzymes and CA-125 with her GP.","biomarkers":[{"key":"glucose","name":"Blood Glucose","group":"GLUCOSE & INSULIN","result":"4.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4533","lower_normal":"3.5","upper_normal":"6","lower_optimal":"4.0","upper_optimal":"5.4","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4000","upper_optimal_position":"0.5867","units":"mmol/l","description":"Fasting blood glucose measures the amount of sugar in the blood after an overnight fast. It reflects how well the body manages blood sugar in the absence of recent food. Jessie's result of 4.4 is within the optimal range of 4.0 to 5.4, indicating excellent blood sugar regulation. This is consistent with her strong insulin sensitivity shown by her HOMA-IR result.","low_causes":"Prolonged fasting, excess insulin production, adrenal insufficiency","high_causes":"Insulin resistance, type 2 diabetes, stress response, high carbohydrate intake","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hba1c_percent","name":"HbA1c (%)","group":"GLUCOSE & INSULIN","result":"5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4167","lower_normal":"3.8","upper_normal":"6.0","lower_optimal":"4.0","upper_optimal":"5.6","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3636","upper_optimal_position":"0.6061","units":"%","description":"HbA1c percentage measures the proportion of haemoglobin in red blood cells that has become coated with sugar over the previous two to three months. It provides a longer-term picture of blood sugar control than a single fasting glucose reading. Jessie's result of 5.0% is well within the normal range, confirming sustained excellent glucose management.","low_causes":"Shortened red blood cell lifespan, blood loss, haemolytic anaemia","high_causes":"Chronic elevated blood sugar, pre-diabetes, diabetes","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hba1c_mmol","name":"HbA1c (mmol/mol)","group":"GLUCOSE & INSULIN","result":"31","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3690","lower_normal":"20","upper_normal":"42","lower_optimal":"20","upper_optimal":"36","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5556","units":"mmol/mol","description":"This is the same HbA1c measurement expressed in the internationally standardised mmol/mol units. Jessie's result of 31 is well below the optimal ceiling of 36 and far below the 42 threshold that marks pre-diabetes. This confirms excellent long-term blood sugar control.","low_causes":"Shortened red blood cell lifespan, blood loss","high_causes":"Chronic elevated blood sugar, pre-diabetes, diabetes","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"insulin","name":"Insulin Levels","group":"GLUCOSE & INSULIN","result":"3.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3453","lower_normal":"2.6","upper_normal":"24.9","lower_optimal":"2.0","upper_optimal":"8.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3064","upper_optimal_position":"0.4156","units":"mIU/L","description":"Fasting insulin measures the amount of insulin the pancreas needs to produce to maintain healthy blood sugar levels. A low-normal result like Jessie's 3.4 is desirable because it means the body's cells are responding efficiently to insulin, so the pancreas does not need to produce large amounts. Combined with her normal glucose, this confirms excellent insulin sensitivity.","low_causes":"Very low carbohydrate diet, high insulin sensitivity, lean body composition","high_causes":"Insulin resistance, excess carbohydrate intake, obesity, metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"c_peptide","name":"C-Peptide","group":"GLUCOSE & INSULIN","result":"1.24","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3485","lower_normal":"1.1","upper_normal":"4.4","lower_optimal":"1.1","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.4576","units":"ug/l","description":"C-peptide is a protein released in equal amounts alongside insulin when the pancreas produces insulin. It provides a reliable measure of how much insulin the pancreas is actually making, because unlike insulin itself, C-peptide is not broken down by the liver on its first pass. Jessie's result of 1.24 ug/L (equivalent to approximately 410 pmol/L) is within the laboratory range and confirms adequate pancreatic insulin production. The low-normal value is consistent with her lean body composition and efficient insulin sensitivity.","low_causes":"Type 1 diabetes, low carbohydrate intake, high insulin sensitivity","high_causes":"Insulin resistance, type 2 diabetes, pancreatic tumour","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homa_ir","name":"HOMA-IR","group":"GLUCOSE & INSULIN","result":"0.66","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4400","lower_normal":"0.5","upper_normal":"1.5","lower_optimal":"0.5","upper_optimal":"1.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5000","units":"","description":"HOMA-IR, the Homeostatic Model Assessment of Insulin Resistance, uses the fasting glucose and insulin values to estimate how efficiently the body responds to insulin. A score below 1.0 indicates strong insulin sensitivity, meaning the cells respond readily to insulin and blood sugar is managed with minimal effort. Jessie's score of 0.66 is optimal and reflects excellent metabolic health.","low_causes":"High insulin sensitivity, lean body composition, low carbohydrate diet","high_causes":"Insulin resistance, obesity, metabolic syndrome, excess caloric intake","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"homa_b","name":"HOMA-B","group":"GLUCOSE & INSULIN","result":"75.56","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2963","lower_normal":"80","upper_normal":"200","lower_optimal":"80","upper_optimal":"200","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6667","units":"","description":"HOMA-B estimates the functional capacity of the pancreatic beta cells, the cells responsible for producing insulin. It is calculated from fasting insulin and glucose. Jessie's result of 75.6 is marginally below the lower reference of 80, but in the context of a perfectly normal fasting glucose of 4.4, an HbA1c of 31, and a HOMA-IR of 0.66, this reflects low insulin demand from an insulin-sensitive body rather than any impairment of the pancreas. The pancreas is producing exactly what the body needs; the calculation simply underrepresents this when insulin demand is very low.","low_causes":"Low insulin demand due to high insulin sensitivity, lean body composition, low carbohydrate diet","high_causes":"Insulin resistance requiring higher insulin output, early compensatory phase of type 2 diabetes","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alt","name":"ALT/GPT","group":"LIVER & METABOLIC","result":"12","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2143","lower_normal":"0","upper_normal":"56","lower_optimal":"0","upper_optimal":"25","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.2232","units":"IU/l","description":"ALT, alanine aminotransferase, is an enzyme found primarily in liver cells. When liver cells are damaged or inflamed, ALT leaks into the blood, so elevated levels indicate liver stress. Jessie's result of 12 is well below the optimal female threshold of 25, indicating a liver under no metabolic strain whatsoever.","low_causes":"Normal finding, vitamin B6 deficiency (rare)","high_causes":"Liver inflammation, fatty liver disease, alcohol excess, medication effects, viral hepatitis","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ast","name":"AST/GOT","group":"LIVER & METABOLIC","result":"23","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4375","lower_normal":"13","upper_normal":"45","lower_optimal":"13","upper_optimal":"30","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5312","units":"IU/l","description":"AST, aspartate aminotransferase, is an enzyme found in the liver, heart, and muscles. Like ALT, it rises when these tissues are damaged. Jessie's result of 23 is comfortably within the optimal range, consistent with healthy liver and muscle tissue.","low_causes":"Normal finding, vitamin B6 deficiency","high_causes":"Liver damage, muscle injury, heart damage, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ggt","name":"Gamma GT","group":"LIVER & METABOLIC","result":"17","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2237","lower_normal":"4","upper_normal":"38","lower_optimal":"4","upper_optimal":"25","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5326","units":"IU/l","description":"Gamma GT, gamma-glutamyl transferase, is a liver enzyme particularly sensitive to alcohol consumption, bile duct problems, and metabolic liver stress. It is often the first liver marker to rise when the liver is under strain. Jessie's result of 17 is well within the optimal range, indicating a healthy liver with no signs of metabolic or toxic stress.","low_causes":"Normal finding","high_causes":"Alcohol excess, bile duct obstruction, fatty liver disease, medication effects","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"alp","name":"Alkaline Phosphatase","group":"LIVER & METABOLIC","result":"60","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4524","lower_normal":"46","upper_normal":"116","lower_optimal":"46","upper_optimal":"90","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5238","units":"IU/l","description":"ALP, alkaline phosphatase, is an enzyme found in the liver, bile ducts, and bones. Elevated levels can indicate bile duct obstruction or bone disease. Jessie's result of 60 is comfortably within range, supporting healthy liver and bone function.","low_causes":"Zinc deficiency, hypothyroidism, pernicious anaemia","high_causes":"Bile duct obstruction, bone disease, pregnancy, liver disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bilirubin","name":"Total Bilirubin","group":"LIVER & METABOLIC","result":"12","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4792","lower_normal":"5","upper_normal":"21","lower_optimal":"5","upper_optimal":"17","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5833","units":"umol/l","description":"Bilirubin is a yellow pigment produced when red blood cells are broken down. The liver processes bilirubin and excretes it in bile. Elevated levels can indicate liver disease or excessive red blood cell destruction. Jessie's result of 12 is within the optimal range, indicating normal red blood cell turnover and healthy liver processing.","low_causes":"Normal finding","high_causes":"Liver disease, bile duct obstruction, haemolysis, Gilbert's syndrome","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"total_protein","name":"Total Protein","group":"LIVER & METABOLIC","result":"69","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4800","lower_normal":"57","upper_normal":"82","lower_optimal":"62","upper_optimal":"78","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3667","upper_optimal_position":"0.6133","units":"g/l","description":"Total protein measures the combined amount of albumin and globulin in the blood. It provides a general overview of nutritional status and immune function. Jessie's result of 69 is within the optimal range, suggesting adequate protein intake and normal liver synthetic function despite her low diet volume.","low_causes":"Malnutrition, liver disease, kidney disease, malabsorption","high_causes":"Chronic inflammation, infection, dehydration, immune disorders","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"albumin","name":"Albumin","group":"LIVER & METABOLIC","result":"41","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4792","lower_normal":"34","upper_normal":"50","lower_optimal":"38","upper_optimal":"48","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3750","upper_optimal_position":"0.6250","units":"g/l","description":"Albumin is the most abundant protein in the blood, produced by the liver. It carries hormones, vitamins, and medications through the bloodstream and helps maintain fluid balance. It is also a useful marker of liver synthetic function and nutritional status. Jessie's result of 41 is within the optimal range.","low_causes":"Liver disease, malnutrition, kidney disease, inflammation","high_causes":"Dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"globulin","name":"Globulin","group":"LIVER & METABOLIC","result":"28","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5185","lower_normal":"18","upper_normal":"36","lower_optimal":"20","upper_optimal":"32","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3704","upper_optimal_position":"0.5926","units":"g/l","description":"Globulin is a group of proteins in the blood that includes antibodies and transport proteins. It reflects immune function and inflammatory status. Jessie's result of 28 is within the optimal range, indicating healthy immune protein production.","low_causes":"Immune deficiency, liver disease, malnutrition","high_causes":"Chronic infection, inflammation, liver disease, autoimmune conditions","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ag_ratio","name":"A/G Ratio","group":"LIVER & METABOLIC","result":"1.46","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4190","lower_normal":"1.1","upper_normal":"2.5","lower_optimal":"1.2","upper_optimal":"2.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3571","upper_optimal_position":"0.5476","units":"","description":"The albumin-to-globulin ratio compares the two main types of protein in the blood. It helps assess liver function, kidney function, and immune status. Jessie's calculated ratio of 1.46 is within the optimal range, reflecting a healthy balance between these protein groups.","low_causes":"Liver disease, autoimmune conditions, kidney disease","high_causes":"Immune deficiency (rare)","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fib4","name":"FIB-4 Score","group":"LIVER & METABOLIC","result":"1.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3793","lower_normal":"0","upper_normal":"1.45","lower_optimal":"0","upper_optimal":"1.3","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4483","units":"","description":"The FIB-4 score is a calculated index that estimates the degree of liver fibrosis, or scarring, using age, ALT, AST, and platelet count. A score below 1.3 in adults under 65 indicates a very low probability of significant liver fibrosis. Jessie's score of 1.1 is reassuring and consistent with her healthy liver enzyme results.","low_causes":"Normal finding, young age","high_causes":"Liver fibrosis, cirrhosis, older age, low platelets, low ALT","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"amylase","name":"Amylase","group":"LIVER & METABOLIC","result":"164","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6949","lower_normal":"30","upper_normal":"118","lower_optimal":"30","upper_optimal":"100","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6061","units":"IU/L","description":"Amylase is a digestive enzyme produced primarily by the pancreas and salivary glands. It breaks down starches into sugars. Elevated levels can indicate pancreatic inflammation (pancreatitis), salivary gland inflammation, or a blocked pancreatic duct. Jessie's result of 164 is significantly above the upper limit of 118. Combined with her elevated lipase, this warrants investigation by her GP to assess pancreatic health.","low_causes":"Chronic pancreatitis with pancreatic insufficiency, cystic fibrosis","high_causes":"Acute pancreatitis, salivary gland inflammation, pancreatic duct obstruction, kidney impairment","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lipase","name":"Lipase","group":"LIVER & METABOLIC","result":"79","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.7376","lower_normal":"13","upper_normal":"60","lower_optimal":"13","upper_optimal":"50","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5957","units":"U/L","description":"Lipase is a digestive enzyme produced almost exclusively by the pancreas. It breaks down fats. Because lipase is more specific to the pancreas than amylase, its elevation is a stronger indicator of pancreatic involvement. Jessie's result of 79 is above the upper limit of 60. The combination of elevated lipase and elevated amylase together increases the clinical significance and warrants GP investigation.","low_causes":"Chronic pancreatitis with loss of pancreatic function","high_causes":"Acute pancreatitis, pancreatic duct obstruction, gallstones, kidney impairment","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cholesterol","name":"Total Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"4.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4440","lower_normal":"0","upper_normal":"5.18","lower_optimal":"0","upper_optimal":"5.0","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4826","units":"mmol/l","description":"Total cholesterol is the sum of all cholesterol types in the blood, including HDL (protective), LDL (potentially harmful), and VLDL. On its own it provides limited information, as a high total cholesterol can be driven by healthy HDL. Jessie's result of 4.6 is within the desirable range, and her detailed breakdown shows an excellent composition with very high HDL and low LDL.","low_causes":"Malnutrition, hyperthyroidism, liver disease, malabsorption","high_causes":"Diet high in saturated fat, familial hypercholesterolaemia, hypothyroidism, kidney disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"triglycerides","name":"Triglycerides","group":"LIPIDS & CARDIOVASCULAR","result":"0.36","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1059","lower_normal":"0","upper_normal":"1.7","lower_optimal":"0","upper_optimal":"1.0","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.2941","units":"mmol/l","description":"Triglycerides are fats circulating in the blood, derived from dietary fat and excess calories. High triglycerides are associated with increased cardiovascular risk, insulin resistance, and metabolic syndrome. Jessie's result of 0.36 is exceptionally low and reflects her excellent metabolic health and insulin sensitivity.","low_causes":"Very low fat or calorie intake, hyperthyroidism, malabsorption","high_causes":"Excess calorie intake, high sugar/refined carbohydrate diet, alcohol, insulin resistance, obesity","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vldl","name":"VLDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.16","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1026","lower_normal":"0","upper_normal":"0.78","lower_optimal":"0","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.3205","units":"mmol/l","description":"VLDL, very low-density lipoprotein, carries triglycerides from the liver to tissues around the body. It is closely linked to triglyceride levels. Jessie's very low VLDL of 0.16 is consistent with her excellent triglyceride result and reflects efficient fat metabolism.","low_causes":"Low triglyceride levels, low caloric intake","high_causes":"High triglycerides, insulin resistance, obesity, excess alcohol","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdl","name":"HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.6250","lower_normal":"1.55","upper_normal":"3.2","lower_optimal":"1.6","upper_optimal":"3.2","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5161","upper_optimal_position":"1","units":"mmol/l","description":"HDL, high-density lipoprotein, is known as the protective cholesterol because it carries excess cholesterol away from artery walls back to the liver for disposal. Higher HDL levels are associated with lower cardiovascular risk. Jessie's result of 2.0 is excellent, well above the desirable threshold of 1.55 and the optimal female threshold of 1.6. This is one of the strongest markers in her cardiovascular profile.","low_causes":"Sedentary lifestyle, obesity, smoking, insulin resistance, high refined carbohydrate diet","high_causes":"Regular exercise, moderate alcohol intake, genetic factors, healthy diet","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"ldl","name":"LDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2.41","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4017","lower_normal":"0.5","upper_normal":"3","lower_optimal":"0.5","upper_optimal":"2.6","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5733","units":"mmol/l","description":"LDL, low-density lipoprotein, carries cholesterol from the liver to the tissues. When present in excess, it can deposit cholesterol in artery walls and contribute to plaque formation. Jessie's LDL of 2.41 is within the optimal range below 2.6, which combined with her low ApoB confirms that the number of potentially harmful cholesterol particles in her blood is low.","low_causes":"Hyperthyroidism, malnutrition, malabsorption, liver disease","high_causes":"High saturated fat diet, familial hypercholesterolaemia, hypothyroidism, obesity, sedentary lifestyle","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tc_hdl_ratio","name":"TC/HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"2.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2556","lower_normal":"0","upper_normal":"4.5","lower_optimal":"0","upper_optimal":"3.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.3889","units":"","description":"The total cholesterol to HDL ratio provides a quick snapshot of cardiovascular risk by comparing total cholesterol to the protective HDL fraction. A lower ratio indicates better cardiovascular health. Jessie's ratio of 2.3 is excellent, well below the upper limit of 4.5, reflecting her high HDL and healthy total cholesterol.","low_causes":"Very high HDL, low total cholesterol","high_causes":"Low HDL, high total cholesterol, poor diet, sedentary lifestyle","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hdl_percent","name":"HDL % of Total","group":"LIPIDS & CARDIOVASCULAR","result":"43.48","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5435","lower_normal":"20","upper_normal":"80","lower_optimal":"30","upper_optimal":"80","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.5000","upper_optimal_position":"0.6667","units":"%","description":"This shows what proportion of total cholesterol is made up of protective HDL. A higher percentage indicates that more of the circulating cholesterol is the beneficial kind. Jessie's HDL makes up 43.5% of her total cholesterol, which is an excellent proportion, well above the 20% minimum.","low_causes":"Low HDL relative to total cholesterol, metabolic syndrome","high_causes":"High HDL, low LDL, healthy metabolic profile","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"non_hdl","name":"Non-HDL Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"2.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3250","lower_normal":"0","upper_normal":"4","lower_optimal":"0","upper_optimal":"3.2","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4000","units":"mmol/l","description":"Non-HDL cholesterol includes all the potentially harmful cholesterol types: LDL, VLDL, and remnant particles. It is considered a better predictor of cardiovascular risk than LDL alone because it captures all atherogenic particles. Jessie's result of 2.6 is within the optimal range, confirming low cardiovascular risk.","low_causes":"Low LDL and VLDL, low caloric intake","high_causes":"High LDL, high triglycerides, obesity, insulin resistance","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apoa1","name":"Apolipoprotein A1","group":"LIPIDS & CARDIOVASCULAR","result":"1.44","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5143","lower_normal":"1.4","upper_normal":"2.8","lower_optimal":"1.4","upper_optimal":"2.8","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5","upper_optimal_position":"1","units":"g/L","description":"ApoA-I is the main protein component of HDL particles. It reflects the functional capacity of the HDL system to remove cholesterol from artery walls. Jessie's result of 1.44 is above the desirable threshold of 1.4, consistent with her excellent HDL level.","low_causes":"Genetic factors, smoking, sedentary lifestyle, obesity","high_causes":"Regular exercise, healthy diet, genetic factors","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"apob","name":"Apolipoprotein B","group":"LIPIDS & CARDIOVASCULAR","result":"0.64","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3556","lower_normal":"0","upper_normal":"0.9","lower_optimal":"0","upper_optimal":"0.8","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4444","units":"g/L","description":"ApoB is the protein carried by every LDL particle. Each LDL particle carries exactly one ApoB molecule, so the ApoB level directly reflects the number of LDL particles in the blood. Many experts consider this the single best blood marker of cardiovascular risk. Jessie's result of 0.64 is well below the optimal threshold of 0.8, meaning she has a low number of atherogenic particles.","low_causes":"Low LDL production, hyperthyroidism, malnutrition","high_causes":"High LDL particle number, familial hypercholesterolaemia, insulin resistance, hypothyroidism","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"apob_a1_ratio","name":"ApoB/A1 Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.44","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3667","lower_normal":"0","upper_normal":"0.6","lower_optimal":"0","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4167","units":"","description":"The ApoB to ApoA-I ratio compares the number of harmful cholesterol particles (ApoB) to the functional capacity of the protective HDL system (ApoA-I). It is considered one of the best summary metrics of cardiovascular risk. A ratio below 0.6 for women places Jessie in the lower risk category. Her ratio of 0.44 is excellent.","low_causes":"High HDL function, low LDL particle number","high_causes":"High LDL particle number, low HDL, metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"lpa","name":"Lipoprotein(a)","group":"LIPIDS & CARDIOVASCULAR","result":"25","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3906","lower_normal":"0","upper_normal":"32","lower_optimal":"0","upper_optimal":"32","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"nmol/l","description":"Lipoprotein(a), or Lp(a), is a genetically determined variant of LDL that carries additional risk for cardiovascular disease. Unlike other cholesterol markers, Lp(a) cannot be meaningfully changed through diet or lifestyle; it is inherited and largely fixed for life. Jessie's result below 25 is within the normal range, which is genuinely useful information because it rules out this inherited risk factor. This means any future changes in her lipid profile would be driven entirely by modifiable factors. This result only needs to be measured once in a lifetime.","low_causes":"Genetic factors (favourable)","high_causes":"Genetic inheritance (not modifiable by diet or exercise)","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"tg_hdl_ratio","name":"TG/HDL Ratio","group":"LIPIDS & CARDIOVASCULAR","result":"0.18","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0600","lower_normal":"0","upper_normal":"1.5","lower_optimal":"0","upper_optimal":"0.87","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.2900","units":"","description":"The triglyceride to HDL ratio is a calculated marker that serves as a proxy for insulin resistance and cardiovascular risk. A low ratio indicates excellent metabolic health and low levels of small, dense LDL particles. Jessie's ratio of 0.18 is exceptional, reflecting her excellent triglycerides and high HDL.","low_causes":"Excellent metabolic health, high insulin sensitivity","high_causes":"Insulin resistance, high triglycerides, low HDL, metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"remnant_cholesterol","name":"Remnant Cholesterol","group":"LIPIDS & CARDIOVASCULAR","result":"0.19","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1188","lower_normal":"0","upper_normal":"0.8","lower_optimal":"0","upper_optimal":"0.5","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.3125","units":"mmol/l","description":"Remnant cholesterol represents the cholesterol carried by triglyceride-rich lipoproteins (VLDL and intermediate-density particles). It is calculated as total cholesterol minus HDL minus LDL. Elevated remnant cholesterol is an independent risk factor for cardiovascular disease. Jessie's result of 0.19 is within the optimal range below 0.5, reflecting efficient clearance of triglyceride-rich particles.","low_causes":"Efficient lipid metabolism, low triglycerides","high_causes":"High triglycerides, insulin resistance, obesity, metabolic syndrome","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"hscrp","name":"hs-CRP","group":"INFLAMMATION","result":"0.4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.0400","lower_normal":"0","upper_normal":"5","lower_optimal":"0","upper_optimal":"1.0","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.1000","units":"mg/l","description":"High-sensitivity C-reactive protein (hs-CRP) is the most sensitive blood marker of systemic inflammation. It is produced by the liver in response to inflammatory signals from anywhere in the body. Levels below 1.0 are considered optimal and associated with low cardiovascular risk. Jessie's result of 0.4 indicates very low systemic inflammation, which is an excellent finding.","low_causes":"Low inflammation, healthy lifestyle","high_causes":"Infection, chronic inflammation, autoimmune disease, obesity, cardiovascular risk","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"esr","name":"ESR","group":"INFLAMMATION","result":"4","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1667","lower_normal":"0","upper_normal":"12","lower_optimal":"0","upper_optimal":"10","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4167","units":"mm/hour","description":"The erythrocyte sedimentation rate (ESR) measures how quickly red blood cells settle to the bottom of a test tube over one hour. Faster settling indicates more inflammation, as inflammatory proteins cause red cells to clump together. Jessie's ESR of 4 is low, confirming the absence of significant systemic inflammation alongside her low hs-CRP.","low_causes":"Low inflammation, polycythaemia","high_causes":"Infection, inflammation, autoimmune disease, anaemia, cancer","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"sodium","name":"Sodium","group":"ELECTROLYTES & MINERALS","result":"139","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4872","lower_normal":"133","upper_normal":"146","lower_optimal":"136","upper_optimal":"142","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3590","upper_optimal_position":"0.6026","units":"mmol/l","description":"Sodium is a key electrolyte that regulates fluid balance, blood pressure, and nerve and muscle function. It is tightly controlled by the kidneys. Jessie's result of 139 is within the optimal range, confirming normal fluid balance and kidney regulation.","low_causes":"Excess water intake, diuretics, heart failure, kidney disease, adrenal insufficiency","high_causes":"Dehydration, excess salt intake, diabetes insipidus","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"potassium","name":"Potassium","group":"ELECTROLYTES & MINERALS","result":"4.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5185","lower_normal":"3.5","upper_normal":"5.3","lower_optimal":"3.8","upper_optimal":"5.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3519","upper_optimal_position":"0.6111","units":"mmol/l","description":"Potassium is essential for normal heart rhythm, muscle contraction, and nerve signalling. Both high and low potassium can be dangerous, so the body maintains it within a tight range. Jessie's result of 4.5 is within the optimal range.","low_causes":"Diuretics, vomiting, diarrhoea, low dietary intake","high_causes":"Kidney disease, ACE inhibitors, potassium supplements, haemolysed sample","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"chloride","name":"Chloride","group":"ELECTROLYTES & MINERALS","result":"109","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6923","lower_normal":"95","upper_normal":"108","lower_optimal":"98","upper_optimal":"106","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3590","upper_optimal_position":"0.6154","units":"mmol/l","description":"Chloride is an electrolyte that works closely with sodium and bicarbonate to maintain fluid balance, acid-base balance, and electrical neutrality in the blood. Jessie's result of 109 is one point above the upper limit of 108. A marginally elevated chloride alongside a bicarbonate at the floor of its range (20.4) can suggest a mild tendency towards metabolic acidosis, though at this margin it is most likely related to hydration status at the time of sampling rather than any significant clinical issue.","low_causes":"Vomiting, diuretics, metabolic alkalosis, adrenal insufficiency","high_causes":"Dehydration, metabolic acidosis, kidney disease, excess saline intake","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bicarbonate","name":"Bicarbonate","group":"ELECTROLYTES & MINERALS","result":"20.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3697","lower_normal":"20","upper_normal":"31","lower_optimal":"22","upper_optimal":"28","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3515","upper_optimal_position":"0.5758","units":"mmol/l","description":"Bicarbonate is the body's main acid buffer in the blood. It helps maintain the blood's pH within a very narrow range. Jessie's result of 20.4 is at the lower end of the laboratory range, which in combination with the marginally elevated chloride could suggest mild acidosis. However, at this level it remains within the normal range and is most likely a hydration-related finding.","low_causes":"Metabolic acidosis, diarrhoea, kidney disease, diabetic ketoacidosis","high_causes":"Metabolic alkalosis, vomiting, diuretics, excess antacid use","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"calcium","name":"Calcium","group":"ELECTROLYTES & MINERALS","result":"2.47","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5614","lower_normal":"2.08","upper_normal":"2.65","lower_optimal":"2.2","upper_optimal":"2.55","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3544","upper_optimal_position":"0.6140","units":"mmol/l","description":"Calcium is essential for bone health, muscle contraction, nerve signalling, and blood clotting. The body tightly regulates blood calcium levels through parathyroid hormone and vitamin D. Jessie's result of 2.47 is within the optimal range, indicating healthy calcium regulation.","low_causes":"Vitamin D deficiency, parathyroid dysfunction, kidney disease, malabsorption","high_causes":"Hyperparathyroidism, excess vitamin D, cancer, dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"corrected_calcium","name":"Corrected Calcium","group":"ELECTROLYTES & MINERALS","result":"2.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5833","lower_normal":"2.2","upper_normal":"2.6","lower_optimal":"2.25","upper_optimal":"2.55","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3750","upper_optimal_position":"0.6250","units":"mmol/L","description":"Corrected calcium adjusts the calcium result for the albumin level, giving a more accurate picture of the physiologically active calcium in the blood. Because about half of blood calcium is bound to albumin, changes in albumin can make the raw calcium appear falsely low or high. Jessie's corrected calcium of 2.5 is within the optimal range, confirming healthy calcium status.","low_causes":"Vitamin D deficiency, hypoparathyroidism, kidney disease","high_causes":"Hyperparathyroidism, malignancy, excess vitamin D supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"phosphate","name":"Phosphate","group":"ELECTROLYTES & MINERALS","result":"1.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.6092","lower_normal":"0.78","upper_normal":"1.65","lower_optimal":"0.9","upper_optimal":"1.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3471","upper_optimal_position":"0.6207","units":"mmol/l","description":"Phosphate works alongside calcium for bone health and is essential for energy production in every cell. It is regulated by parathyroid hormone and vitamin D. Jessie's result of 1.5 is within the optimal range, supporting healthy bone mineral metabolism.","low_causes":"Hyperparathyroidism, vitamin D deficiency, malnutrition, refeeding syndrome","high_causes":"Kidney disease, hypoparathyroidism, excess vitamin D, cell breakdown","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"magnesium","name":"Magnesium","group":"ELECTROLYTES & MINERALS","result":"0.82","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4483","lower_normal":"0.53","upper_normal":"1.11","lower_optimal":"0.85","upper_optimal":"1.05","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4310","upper_optimal_position":"0.6264","units":"mmol/l","description":"Magnesium is involved in over 300 enzymatic reactions in the body, including energy production, muscle and nerve function, and blood sugar regulation. It plays a critical role in sleep quality, stress response, and anxiety management. Jessie's result of 0.82 is within the laboratory range but just below the optimal threshold of 0.85. Given her goals around reducing stress and anxiety, optimising magnesium through diet and supplementation could be beneficial.","low_causes":"Inadequate dietary intake, alcohol excess, diuretics, gastrointestinal losses","high_causes":"Kidney disease, excess supplementation, adrenal insufficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"uric_acid","name":"Uric Acid","group":"ELECTROLYTES & MINERALS","result":"296","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4667","lower_normal":"184","upper_normal":"464","lower_optimal":"160","upper_optimal":"320","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.2476","upper_optimal_position":"0.5619","units":"umol/l","description":"Uric acid is produced when the body breaks down purines, substances found in certain foods and in the body's own cells. Elevated levels can cause gout and are associated with cardiovascular and kidney disease. Jessie's result of 296 is within the optimal female range of 160 to 320, indicating normal purine metabolism.","low_causes":"Low purine diet, liver disease, some medications","high_causes":"High purine diet, kidney disease, gout, metabolic syndrome, excess alcohol","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"anion_gap","name":"Anion Gap","group":"ELECTROLYTES & MINERALS","result":"14.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5208","lower_normal":"8","upper_normal":"16","lower_optimal":"10","upper_optimal":"14","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3750","upper_optimal_position":"0.5833","units":"mmol/l","description":"The anion gap is a calculated value using sodium, potassium, chloride, and bicarbonate. It helps identify the type and cause of metabolic acidosis. Jessie's calculated anion gap of 14.1 (sodium 139 + potassium 4.5 minus chloride 109 minus bicarbonate 20.4) is within the normal range of 8 to 16, which is reassuring despite the marginal chloride elevation.","low_causes":"Laboratory error, hypoalbuminaemia","high_causes":"Diabetic ketoacidosis, lactic acidosis, kidney failure, toxic ingestion","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urea","name":"Urea","group":"KIDNEY FUNCTION","result":"3.5","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3534","lower_normal":"3.2","upper_normal":"8.2","lower_optimal":"3.5","upper_optimal":"6.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3400","upper_optimal_position":"0.5600","units":"mmol/l","description":"Urea is a waste product formed when the liver breaks down protein. It is filtered out of the blood by the kidneys and excreted in urine. Jessie's result of 3.5 is at the lower end of the laboratory range, which likely reflects her low diet volume and relatively modest protein intake. It is within the normal range and confirms normal kidney function.","low_causes":"Low protein diet, liver disease, overhydration","high_causes":"Kidney disease, dehydration, high protein diet, gastrointestinal bleeding","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatinine","name":"Creatinine","group":"KIDNEY FUNCTION","result":"65","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4634","lower_normal":"49","upper_normal":"90","lower_optimal":"55","upper_optimal":"80","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3821","upper_optimal_position":"0.5854","units":"umol/l","description":"Creatinine is a waste product from muscle metabolism, filtered by the kidneys. It provides a rough measure of kidney function. Jessie's result of 65 is within the optimal range, consistent with healthy kidney filtration.","low_causes":"Low muscle mass, malnutrition","high_causes":"Kidney disease, dehydration, high muscle mass, intense exercise","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"egfr","name":"Estimated GFR","group":"KIDNEY FUNCTION","result":"90","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5000","lower_normal":"60","upper_normal":"120","lower_optimal":"90","upper_optimal":"120","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5","upper_optimal_position":"1","units":"ml/min/1.73m2","description":"eGFR estimates how well the kidneys filter waste from the blood. A value above 90 is considered normal. Jessie's result is reported as above 90, and her Cystatin C-based eGFR of 107 provides a more precise measure confirming excellent kidney function.","low_causes":"Kidney disease, dehydration, certain medications","high_causes":"Hyperfiltration in early diabetes, pregnancy","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"cystatin_c","name":"Cystatin-C","group":"KIDNEY FUNCTION","result":"0.82","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3727","lower_normal":"0","upper_normal":"1.1","lower_optimal":"0","upper_optimal":"0.9","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4091","units":"mg/l","description":"Cystatin C is a protein produced by all cells at a constant rate and filtered by the kidneys. Unlike creatinine, it is not affected by muscle mass, making it a more accurate measure of kidney function in people with very high or very low muscle mass. Jessie's result of 0.82 is within the optimal range and confirms excellent kidney filtration.","low_causes":"Hyperthyroidism, corticosteroid use","high_causes":"Kidney disease, hypothyroidism, inflammation","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cystatin_egfr","name":"Cystatin C eGFR","group":"KIDNEY FUNCTION","result":"107","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5944","lower_normal":"60","upper_normal":"120","lower_optimal":"90","upper_optimal":"120","lower_normal_position":"0.5","upper_normal_position":"1","lower_optimal_position":"0.5","upper_optimal_position":"1","units":"","description":"The Cystatin C-based eGFR uses Cystatin C instead of creatinine to estimate kidney filtration rate. It is considered more accurate, particularly in individuals with low muscle mass. Jessie's result of 107 confirms excellent kidney function and is exactly where it should be at age 38.","low_causes":"Kidney disease, age-related decline","high_causes":"Hyperfiltration, pregnancy","padding":"1","one_sided":"0.5","range_type":"no upper"},{"key":"haemoglobin","name":"Haemoglobin","group":"HEMATOLOGY","result":"124","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3778","lower_normal":"120","upper_normal":"150","lower_optimal":"125","upper_optimal":"145","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.6111","units":"g/L","description":"Haemoglobin is the protein in red blood cells that carries oxygen from the lungs to every tissue in the body. It is the most fundamental measure of the blood's oxygen-carrying capacity. Jessie's result of 124 is within the laboratory range but sits near the lower boundary of 120 and below the optimal threshold of 125. In the context of her low ferritin and low transferrin saturation, this suggests the early stages of iron depletion are beginning to affect red blood cell production, though she has not yet developed anaemia.","low_causes":"Iron deficiency, B12 or folate deficiency, chronic disease, blood loss, bone marrow disorders","high_causes":"Dehydration, polycythaemia, chronic lung disease, living at altitude","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rbc","name":"Red Blood Count","group":"HEMATOLOGY","result":"3.89","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3630","lower_normal":"3.8","upper_normal":"4.8","lower_optimal":"4.0","upper_optimal":"4.7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4000","upper_optimal_position":"0.6333","units":"x10/12/l","description":"The red blood cell count measures the total number of red blood cells in the blood. Jessie's result of 3.89 is within the laboratory range but near the lower boundary, consistent with her other findings suggesting early iron-restricted red cell production.","low_causes":"Iron deficiency, B12 or folate deficiency, blood loss, chronic disease, bone marrow disorders","high_causes":"Dehydration, polycythaemia, chronic lung disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"hct","name":"Haematocrit","group":"HEMATOLOGY","result":"0.363","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3363","lower_normal":"0.36","upper_normal":"0.46","lower_optimal":"0.37","upper_optimal":"0.44","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3433","upper_optimal_position":"0.6133","units":"l/l","description":"Haematocrit measures the proportion of blood volume occupied by red blood cells. Jessie's result of 0.363 is at the floor of the laboratory range (0.36), consistent with her low-normal haemoglobin and red cell count. This further supports the picture of early iron depletion affecting red blood cell mass.","low_causes":"Iron deficiency, B12 or folate deficiency, blood loss, overhydration","high_causes":"Dehydration, polycythaemia, chronic lung disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mcv","name":"MCV","group":"HEMATOLOGY","result":"92","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4630","lower_normal":"83","upper_normal":"101","lower_optimal":"85","upper_optimal":"95","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3704","upper_optimal_position":"0.5556","units":"fl","description":"MCV, mean corpuscular volume, measures the average size of red blood cells. Small cells (low MCV) suggest iron deficiency, while large cells (high MCV) suggest B12 or folate deficiency. Jessie's MCV of 92 is within the optimal range, indicating her red cells are a normal size despite her early iron depletion, which means the iron restriction has not yet progressed to the point of producing small, iron-poor cells.","low_causes":"Iron deficiency, thalassaemia, chronic disease","high_causes":"B12 or folate deficiency, alcohol excess, liver disease, hypothyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mch","name":"MCH","group":"HEMATOLOGY","result":"31.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5667","lower_normal":"27","upper_normal":"32","lower_optimal":"28","upper_optimal":"32","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4000","upper_optimal_position":"0.6667","units":"pg","description":"MCH, mean corpuscular haemoglobin, measures the average amount of haemoglobin in each red blood cell. Jessie's result of 31.5 is within the optimal range, indicating each red cell is carrying a normal amount of haemoglobin.","low_causes":"Iron deficiency, thalassaemia","high_causes":"B12 or folate deficiency, macrocytosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mchc","name":"MCHC","group":"HEMATOLOGY","result":"342","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5667","lower_normal":"315","upper_normal":"345","lower_optimal":"320","upper_optimal":"345","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.6667","units":"g/L","description":"MCHC, mean corpuscular haemoglobin concentration, measures the average concentration of haemoglobin within each red blood cell. Jessie's result of 342 is within the optimal range, indicating her red cells are appropriately packed with haemoglobin.","low_causes":"Iron deficiency, thalassaemia","high_causes":"Spherocytosis, severe dehydration, laboratory artefact","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"rdw","name":"RDW","group":"HEMATOLOGY","result":"12.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4722","lower_normal":"11.6","upper_normal":"14","lower_optimal":"11.6","upper_optimal":"13.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6128","units":"%","description":"RDW, red cell distribution width, measures the variation in size among red blood cells. A high RDW means the cells vary more in size than normal, which can be an early sign of iron or vitamin deficiency. Jessie's result of 12.6 is within the optimal range, indicating uniform red cell production.","low_causes":"Normal finding","high_causes":"Iron deficiency, B12 or folate deficiency, mixed deficiency, recent blood loss","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"platelets","name":"Platelets","group":"HEMATOLOGY","result":"230","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4359","lower_normal":"150","upper_normal":"410","lower_optimal":"180","upper_optimal":"350","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3462","upper_optimal_position":"0.6026","units":"x10^9/L","description":"Platelets are small cell fragments that help the blood clot. Both very high and very low platelet counts can be problematic. Jessie's result of 230 is within the optimal range, indicating normal platelet production and no increased risk of bleeding or clotting.","low_causes":"Viral infections, autoimmune conditions, bone marrow disorders, alcohol excess","high_causes":"Iron deficiency, infection, inflammation, blood loss, bone marrow disorders","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"mpv","name":"MPV","group":"HEMATOLOGY","result":"10.3","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.5099","lower_normal":"7.1","upper_normal":"10.1","lower_optimal":"7.5","upper_optimal":"9.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3778","upper_optimal_position":"0.6000","units":"fL","description":"MPV, mean platelet volume, measures the average size of platelets. Larger platelets tend to be younger and more reactive. Jessie's result of 10.3 is marginally above the upper limit of 10.1. At this margin, the finding is not clinically significant and simply reflects that the bone marrow is producing a slightly higher proportion of younger, larger platelets. No action is needed.","low_causes":"Bone marrow suppression, inflammatory conditions consuming platelets","high_causes":"Increased platelet production, immune thrombocytopenia, iron deficiency","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"wbc","name":"White Blood Cell Count","group":"HEMATOLOGY","result":"5.27","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4450","lower_normal":"4","upper_normal":"10","lower_optimal":"4.5","upper_optimal":"8","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3611","upper_optimal_position":"0.5556","units":"x10^9/L","description":"The white blood cell count measures the total number of immune cells in the blood. It provides an overview of immune system activity. Jessie's result of 5.27 is within the optimal range, indicating a normally functioning immune system with no signs of infection or immune suppression.","low_causes":"Viral infection, bone marrow suppression, autoimmune conditions, nutritional deficiency","high_causes":"Infection, inflammation, stress, smoking, corticosteroid use","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"neutrophils","name":"Neutrophils","group":"HEMATOLOGY","result":"2.84","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4493","lower_normal":"2","upper_normal":"7","lower_optimal":"2.5","upper_optimal":"5.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3667","upper_optimal_position":"0.5667","units":"x10^9/L","description":"Neutrophils are the most abundant white blood cells and the body's first responders to bacterial infection. Jessie's result of 2.84 is within the optimal range, indicating adequate innate immune defence.","low_causes":"Viral infections, medications, bone marrow suppression, nutritional deficiency","high_causes":"Bacterial infection, inflammation, stress, smoking, corticosteroids","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lymphocytes","name":"Lymphocytes","group":"HEMATOLOGY","result":"1.89","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4817","lower_normal":"1","upper_normal":"3","lower_optimal":"1.2","upper_optimal":"2.8","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3667","upper_optimal_position":"0.6333","units":"x10^9/L","description":"Lymphocytes are white blood cells responsible for adaptive immunity, including producing antibodies and fighting viral infections. Jessie's result of 1.89 is within the optimal range, indicating healthy adaptive immune function.","low_causes":"Viral infection (acute phase), HIV, corticosteroids, autoimmune conditions","high_causes":"Viral infection, chronic infection, lymphocytic leukaemia","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"monocytes","name":"Monocytes","group":"HEMATOLOGY","result":"0.37","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4458","lower_normal":"0.2","upper_normal":"1","lower_optimal":"0.2","upper_optimal":"0.7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5417","units":"x10^9/L","description":"Monocytes are white blood cells that move into tissues and become macrophages, engulfing and destroying pathogens and dead cells. Jessie's result of 0.37 is within the optimal range.","low_causes":"Bone marrow disorders, glucocorticoid therapy","high_causes":"Chronic infection, autoimmune disease, inflammation, recovery from infection","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"eosinophils","name":"Eosinophils","group":"HEMATOLOGY","result":"0.12","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4028","lower_normal":"0.02","upper_normal":"0.5","lower_optimal":"0.02","upper_optimal":"0.3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5278","units":"x10^9/L","description":"Eosinophils are white blood cells involved in fighting parasites and in allergic responses. Jessie's result of 0.12 is within the optimal range, with no indication of parasitic infection or significant allergic activity.","low_causes":"Acute stress, corticosteroid use","high_causes":"Allergies, asthma, parasitic infection, eczema, autoimmune conditions","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"basophils","name":"Basophils","group":"HEMATOLOGY","result":"0.05","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4583","lower_normal":"0.02","upper_normal":"0.1","lower_optimal":"0.02","upper_optimal":"0.08","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5833","units":"x10^9/L","description":"Basophils are the least common white blood cells, involved in allergic responses and inflammation. Jessie's result of 0.05 is within the optimal range.","low_causes":"Acute allergic reaction, hyperthyroidism, corticosteroid use","high_causes":"Allergic reactions, hypothyroidism, chronic inflammation, myeloproliferative disorders","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocytes_percent","name":"Reticulocyte Count (%)","group":"HEMATOLOGY","result":"0.69","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3650","lower_normal":"0.5","upper_normal":"2.5","lower_optimal":"0.8","upper_optimal":"2.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3833","upper_optimal_position":"0.5833","units":"%","description":"Reticulocytes are immature red blood cells freshly released from the bone marrow. The percentage reflects how actively the bone marrow is producing new red cells. Jessie's result of 0.69% is within the laboratory range but at the lower end. The absolute reticulocyte count provides a more precise measure.","low_causes":"Iron deficiency, B12 or folate deficiency, bone marrow suppression, chronic disease","high_causes":"Recovery from blood loss or anaemia, haemolytic anaemia","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"reticulocytes_absolute","name":"Reticulocytes Absolute","group":"HEMATOLOGY","result":"26.841","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.2042","lower_normal":"50","upper_normal":"100","lower_optimal":"50","upper_optimal":"100","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6667","units":"x10^9/L","description":"The absolute reticulocyte count gives the actual number of new red blood cells being released into the blood. Jessie's result of 26.8 is significantly below the lower limit of 50, indicating that the bone marrow is producing new red cells at a reduced rate. In the context of her low transferrin saturation (14.37%), low ferritin (35), and haemoglobin at the lower boundary, this confirms that iron supply is insufficient to support full-rate red cell production. The bone marrow is being held back by a shortage of the iron it needs to build new haemoglobin molecules.","low_causes":"Iron deficiency, B12 or folate deficiency, bone marrow suppression, chronic disease, aplastic anaemia","high_causes":"Recovery from blood loss, haemolytic anaemia, response to erythropoietin","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"nlr","name":"NLR","group":"HEMATOLOGY","result":"1.50","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5000","lower_normal":"1","upper_normal":"3","lower_optimal":"1.0","upper_optimal":"2.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5000","units":"","description":"The neutrophil-to-lymphocyte ratio (NLR) is calculated by dividing neutrophils by lymphocytes. It is a marker of systemic inflammation and immune balance. Jessie's calculated NLR of 1.50 (2.84 divided by 1.89) is within the optimal range of 1.0 to 2.0, confirming a well-balanced immune response with no evidence of chronic inflammation or immune stress.","low_causes":"Relative lymphocytosis, very low neutrophils","high_causes":"Bacterial infection, systemic inflammation, physiological stress, chronic disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"serum_iron","name":"Serum Iron","group":"IRON STUDIES","result":"9.2","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3422","lower_normal":"9","upper_normal":"30.4","lower_optimal":"12","upper_optimal":"25","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3714","upper_optimal_position":"0.5810","units":"umol/l","description":"Serum iron measures the amount of iron circulating in the blood bound to transferrin. It fluctuates throughout the day and with meals, so it is best interpreted alongside other iron markers. Jessie's result of 9.2 is at the very floor of the laboratory range (9.0), confirming low circulating iron availability, consistent with her low transferrin saturation.","low_causes":"Iron deficiency, chronic inflammation, blood loss, inadequate dietary intake","high_causes":"Haemochromatosis, iron supplementation, liver disease, haemolytic anaemia","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrin","name":"Transferrin","group":"IRON STUDIES","result":"2.55","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3462","lower_normal":"2.5","upper_normal":"3.8","lower_optimal":"2.7","upper_optimal":"3.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3590","upper_optimal_position":"0.6154","units":"g/L","description":"Transferrin is the main protein that transports iron in the blood. The body typically increases transferrin production when iron stores are low, to maximise iron capture from the diet. Jessie's transferrin at 2.55 is near the lower end of its range. In true iron deficiency, transferrin is usually elevated as the body compensates, so a low-normal transferrin alongside low iron could suggest that low protein intake is limiting transferrin production, or that the depletion is still early.","low_causes":"Chronic inflammation, liver disease, malnutrition, iron overload","high_causes":"Iron deficiency, pregnancy, oral contraceptive use","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"transferrin_saturation","name":"Transferrin Saturation","group":"IRON STUDIES","result":"14.37","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.3105","lower_normal":"18","upper_normal":"55","lower_optimal":"25","upper_optimal":"40","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3892","upper_optimal_position":"0.5270","units":"%","description":"Transferrin saturation indicates what percentage of the body's iron-carrying capacity is actually being used. At 14.37%, Jessie's iron transport system is significantly underfilled, below the lower limit of 18% and well below the optimal range of 25 to 40%. This is the clearest single marker of inadequate iron supply in her results and directly explains why her bone marrow has slowed red blood cell production.","low_causes":"Iron deficiency, chronic inflammation, inadequate dietary iron, blood loss","high_causes":"Haemochromatosis, iron supplementation, liver disease, haemolytic anaemia","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tibc","name":"Total Iron Binding Capacity","group":"IRON STUDIES","result":"60.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5076","lower_normal":"44","upper_normal":"76.1","lower_optimal":"48","upper_optimal":"70","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3579","upper_optimal_position":"0.5945","units":"umol/l","description":"TIBC measures the blood's total capacity to bind and transport iron. It reflects transferrin availability. In iron deficiency, TIBC typically rises as the body tries to capture more iron. Jessie's TIBC of 60.8 is within the optimal range, which alongside her low-normal transferrin suggests the iron depletion is at an early stage.","low_causes":"Chronic inflammation, liver disease, iron overload, malnutrition","high_causes":"Iron deficiency, pregnancy, oral contraceptive use","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ferritin","name":"Ferritin","group":"IRON STUDIES","result":"35","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3625","lower_normal":"10","upper_normal":"291","lower_optimal":"40","upper_optimal":"150","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3690","upper_optimal_position":"0.5000","units":"ng/ml","description":"Ferritin reflects the body's stored iron reserves. It is the most useful single marker for assessing whether the body has enough iron in reserve. Jessie's result of 35 is within the wide laboratory range of 10 to 291 but below the optimal female threshold of 40. At this level, iron stores are thin and vulnerable to further depletion through menstrual losses. Ferritin below 40 is strongly associated with fatigue and hair thinning in women, both of which Jessie reports.","low_causes":"Iron deficiency, blood loss, inadequate dietary iron, malabsorption","high_causes":"Iron overload, haemochromatosis, inflammation, liver disease, infection","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft4","name":"Free Thyroxine (FT4)","group":"THYROID","result":"17.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5149","lower_normal":"11.5","upper_normal":"22.7","lower_optimal":"14","upper_optimal":"20","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3869","upper_optimal_position":"0.5893","units":"pmol/l","description":"Free T4, or free thyroxine, is the main hormone produced by the thyroid gland. It circulates in the blood and is converted into the more active T3 in the tissues. Jessie's result of 17.6 is within the optimal range of 14 to 20, indicating healthy thyroid output.","low_causes":"Hypothyroidism, pituitary disease, severe illness","high_causes":"Hyperthyroidism, thyroiditis, excess thyroid medication","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tsh","name":"TSH","group":"THYROID","result":"2.22","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4652","lower_normal":"0.55","upper_normal":"4.78","lower_optimal":"1.0","upper_optimal":"2.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3727","upper_optimal_position":"0.4963","units":"mIU/l","description":"TSH, thyroid stimulating hormone, is produced by the pituitary gland to tell the thyroid how much hormone to make. A high TSH suggests the thyroid is underperforming; a low TSH suggests it is overactive. Jessie's TSH of 2.22 is within the optimal range of 1.0 to 2.5, indicating well-regulated thyroid function. The pituitary is not having to push the thyroid to produce adequate hormone.","low_causes":"Hyperthyroidism, excess thyroid medication, pituitary disease","high_causes":"Hypothyroidism, thyroiditis, iodine deficiency, recovery from illness","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ft3","name":"Free T3","group":"THYROID","result":"4.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4815","lower_normal":"2.6","upper_normal":"7.1","lower_optimal":"4.5","upper_optimal":"6.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4741","upper_optimal_position":"0.5926","units":"pmol/L","description":"Free T3 is the active thyroid hormone that directly regulates metabolism, energy, and body temperature. It is converted from T4 in the tissues. Jessie's result of 4.6 is at the lower edge of the optimal range of 4.5 to 6.5. While within optimal bounds, a Free T3 at this level combined with insufficient caloric intake may be contributing to her fatigue, as the body can reduce T4-to-T3 conversion when energy availability is low as a protective mechanism.","low_causes":"Low calorie intake, severe illness, selenium deficiency, ageing","high_causes":"Hyperthyroidism, thyroiditis, excess T3 medication","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"tpo_antibodies","name":"Thyroid Peroxidase Antibodies","group":"THYROID","result":"6.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2391","lower_normal":"0","upper_normal":"13.8","lower_optimal":"0","upper_optimal":"13.8","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"U/ml","description":"Thyroid peroxidase antibodies (TPO antibodies) are produced by the immune system when it mistakenly attacks the thyroid gland. Their presence suggests autoimmune thyroid disease, most commonly Hashimoto's thyroiditis. Jessie's result is below 6.6, well within the normal range, which rules out autoimmune thyroid disease as a cause of her symptoms.","low_causes":"Normal finding, no autoimmune thyroid disease","high_causes":"Hashimoto's thyroiditis, Graves' disease, autoimmune thyroid disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"thyroglobulin_antibodies","name":"Thyroglobulin Antibodies","group":"THYROID","result":"1.3","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1478","lower_normal":"0","upper_normal":"4.4","lower_optimal":"0","upper_optimal":"4.4","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"U/ml","description":"Thyroglobulin antibodies target thyroglobulin, a protein used by the thyroid to make thyroid hormones. Like TPO antibodies, their presence can indicate autoimmune thyroid disease. Jessie's result is below 1.3, well within the normal range and consistent with the absence of autoimmune thyroid activity.","low_causes":"Normal finding","high_causes":"Hashimoto's thyroiditis, thyroid cancer follow-up interference","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"vitamin_d","name":"Vitamin D 25(OH)","group":"VITAMINS & NUTRIENTS","result":"96","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4000","lower_normal":"50","upper_normal":"120","lower_optimal":"75","upper_optimal":"120","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4762","upper_optimal_position":"0.6667","units":"nmol/L","description":"Vitamin D is essential for calcium absorption, bone health, immune function, and mood regulation. It is primarily produced by the skin in response to sunlight. Jessie's result of 96 is within the optimal range of 75 to 120. This is a good level, particularly as the sample was taken in late August when sun exposure is at its peak. A maintenance dose of vitamin D3 through autumn and winter will help prevent the seasonal decline that typically occurs in UK latitudes.","low_causes":"Insufficient sun exposure, dark skin, obesity, malabsorption, indoor lifestyle","high_causes":"Excess supplementation, granulomatous disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"vitamin_b12","name":"Vitamin B12","group":"VITAMINS & NUTRIENTS","result":"630","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5169","lower_normal":"193","upper_normal":"982","lower_optimal":"500","upper_optimal":"900","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4556","upper_optimal_position":"0.6126","units":"pg/ml","description":"Vitamin B12 is essential for nerve function, red blood cell production, and DNA synthesis. Deficiency can cause fatigue, brain fog, and neurological symptoms. Jessie's result of 630 is within the optimal range of 500 to 900, indicating adequate B12 status. This helps rule out B12 deficiency as a contributor to her fatigue and brain fog.","low_causes":"Vegetarian or vegan diet, pernicious anaemia, malabsorption, metformin use","high_causes":"Supplementation, liver disease, myeloproliferative disorders","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"folate","name":"Serum Folate (Vitamin B9)","group":"VITAMINS & NUTRIENTS","result":"16","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5952","lower_normal":"3","upper_normal":"17","lower_optimal":"8","upper_optimal":"17","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4524","upper_optimal_position":"0.6667","units":"ng/ml","description":"Folate, or vitamin B9, works alongside B12 in red blood cell production and DNA synthesis. It is found abundantly in leafy green vegetables, legumes, and fortified foods. Jessie's result of 16 is excellent, near the top of the range, reflecting the quality of her Mediterranean diet despite its low volume.","low_causes":"Poor diet, malabsorption, alcohol excess, certain medications, increased demand in pregnancy","high_causes":"Supplementation, high intake of fortified foods","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"pth","name":"Intact Parathyroid Hormone","group":"VITAMINS & NUTRIENTS","result":"2.5","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4693","lower_normal":"0.98","upper_normal":"4.73","lower_optimal":"1.5","upper_optimal":"4.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3805","upper_optimal_position":"0.6140","units":"pmol/L","description":"PTH, parathyroid hormone, regulates calcium and phosphate balance by controlling how much calcium is absorbed from food, retained by the kidneys, and released from bones. Jessie's result of 2.5 is within the optimal range and, alongside her normal calcium and phosphate, confirms that her bone mineral regulation is functioning well.","low_causes":"Hypoparathyroidism, excess calcium, excess vitamin D, magnesium deficiency","high_causes":"Vitamin D deficiency, calcium deficiency, kidney disease, hyperparathyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"cortisol","name":"Cortisol","group":"HORMONES","result":"268","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4312","lower_normal":"145.4","upper_normal":"619.4","lower_optimal":"200","upper_optimal":"500","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3718","upper_optimal_position":"0.5821","units":"nmol/l","description":"Cortisol is the body's primary stress hormone, produced by the adrenal glands. It follows a natural daily rhythm, peaking in the morning and declining throughout the day. Jessie's result of 268, taken in the morning, is within the optimal range. This suggests her adrenal response is appropriate, though it is worth noting that a single morning cortisol is a snapshot and does not capture the full daily pattern. For her goals around stress and anxiety, lifestyle measures such as sleep quality, magnesium, and breathing practices may be more impactful than what this single value can show.","low_causes":"Adrenal insufficiency, pituitary disease, chronic stress burnout","high_causes":"Acute stress, Cushing's syndrome, corticosteroid medication, depression","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"oestradiol","name":"Oestradiol","group":"HORMONES","result":"218","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4573","lower_normal":"71.6","upper_normal":"529.2","lower_optimal":"100","upper_optimal":"400","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3541","upper_optimal_position":"0.5735","units":"pmol/L","description":"Oestradiol is the most potent form of oestrogen, essential for the menstrual cycle, bone health, cardiovascular protection, skin health, and brain function. Jessie's result of 218 is consistent with the follicular or early luteal phase of the menstrual cycle and falls within a healthy range. It does not suggest oestrogen deficiency or excess.","low_causes":"Menopause, low body weight, excessive exercise, hypothalamic dysfunction","high_causes":"Ovulation, pregnancy, oestrogen-producing tumour, HRT","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"progesterone","name":"Progesterone","group":"HORMONES","result":"2.1","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4719","lower_normal":"0","upper_normal":"4.45","lower_optimal":"0","upper_optimal":"4.45","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"nmol/L","description":"Progesterone is a hormone that rises significantly after ovulation to prepare the uterus for potential pregnancy. In the follicular phase (before ovulation), progesterone is naturally low. Jessie's result of 2.1 is consistent with the follicular phase (reference 0 to 4.45). If this blood sample was taken in the luteal phase (after ovulation), this level would be lower than expected, but the most likely explanation is simply that it was drawn before ovulation occurred.","low_causes":"Follicular phase of cycle (normal), anovulation, luteal phase deficiency","high_causes":"Luteal phase (normal), pregnancy, ovarian cyst, supplementation","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"lh","name":"Luteinising Hormone","group":"HORMONES","result":"9.28","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4977","lower_normal":"1.9","upper_normal":"12.5","lower_optimal":"2.5","upper_optimal":"12.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3524","upper_optimal_position":"0.6667","units":"mIU/ml","description":"LH, luteinising hormone, is produced by the pituitary gland and triggers ovulation. In the follicular phase, LH is relatively low, then surges to trigger egg release. Jessie's result of 9.28 falls within the follicular reference range (1.9 to 12.5), consistent with a normally functioning reproductive axis.","low_causes":"Hypothalamic dysfunction, pituitary disease, low body weight, excessive exercise","high_causes":"Midcycle surge (normal), menopause, PCOS, pituitary tumour","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"fsh","name":"Follicle Stimulating Hormone","group":"HORMONES","result":"9.19","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5405","lower_normal":"2.5","upper_normal":"10.2","lower_optimal":"3","upper_optimal":"10","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3541","upper_optimal_position":"0.6580","units":"mIU/ml","description":"FSH, follicle stimulating hormone, drives the development of egg-containing follicles in the ovaries. Rising FSH is one of the earliest signs of diminishing ovarian reserve and approaching menopause. Jessie's FSH of 9.19 is within the follicular range and well below the levels (above 23) that would suggest perimenopause. This is reassuring at age 38.","low_causes":"Hypothalamic dysfunction, pituitary disease, pregnancy, low body weight","high_causes":"Menopause, diminished ovarian reserve, premature ovarian failure","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"testosterone","name":"Testosterone","group":"HORMONES","result":"0.7","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3651","lower_normal":"0.5","upper_normal":"2.6","lower_optimal":"0.8","upper_optimal":"2.0","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3810","upper_optimal_position":"0.5714","units":"nmol/L","description":"Testosterone in women plays important roles in maintaining libido, energy, muscle mass, bone density, and mood. Jessie's result of 0.7 is within the laboratory range but below the optimal threshold of 0.8. At her low body weight and with insufficient calorie intake, the body may be downregulating testosterone production slightly as a protective energy-conservation measure. This is worth monitoring.","low_causes":"Low body weight, insufficient caloric intake, adrenal insufficiency, ageing, oral contraceptives","high_causes":"PCOS, adrenal hyperplasia, ovarian tumour, anabolic steroid use","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"free_androgen_index","name":"Free Androgen Index","group":"HORMONES","result":"1","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.3889","lower_normal":"0.5","upper_normal":"6.5","lower_optimal":"1.5","upper_optimal":"5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3889","upper_optimal_position":"0.5833","units":"","description":"The free androgen index (FAI) estimates the proportion of testosterone that is biologically active and not bound to SHBG. With her SHBG at 70, a larger proportion of Jessie's already low testosterone is being bound and made unavailable. Her FAI of 1.0 is within the laboratory range but below the optimal threshold. This may be contributing subtly to her low energy and hair thinning.","low_causes":"Low testosterone, high SHBG, oral contraceptives, low body weight","high_causes":"PCOS, high testosterone, low SHBG, insulin resistance","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"shbg","name":"Sex Hormone Binding Globulin","group":"HORMONES","result":"70","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.4525","lower_normal":"27.8","upper_normal":"146","lower_optimal":"40","upper_optimal":"100","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3611","upper_optimal_position":"0.5269","units":"nmol/l","description":"SHBG, sex hormone binding globulin, is a protein produced by the liver that binds to sex hormones, including testosterone and oestradiol, reducing their biological availability. Higher SHBG means less free hormone is available to tissues. Jessie's SHBG of 70 is within the optimal range, though its position in the upper half means a larger fraction of her testosterone is bound.","low_causes":"Obesity, insulin resistance, hypothyroidism, PCOS","high_causes":"Low body weight, hyperthyroidism, oral contraceptives, liver disease, ageing","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"dhea_s","name":"DHEA Sulphate","group":"HORMONES","result":"5.9","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5060","lower_normal":"0.26","upper_normal":"11","lower_optimal":"3","upper_optimal":"8","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3589","upper_optimal_position":"0.5556","units":"umol/L","description":"DHEA-S is a hormone produced by the adrenal glands that serves as a precursor to both testosterone and oestrogen. It reflects adrenal function and typically declines with age. Jessie's result of 5.9 umol/L (approximately 2,174 ug/dL) is within the optimal range and indicates healthy adrenal function for her age.","low_causes":"Adrenal insufficiency, chronic stress, ageing, corticosteroid use","high_causes":"Adrenal hyperplasia, PCOS, adrenal tumour","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"prolactin","name":"Prolactin","group":"HORMONES","result":"143","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.3000","lower_normal":"59","upper_normal":"619","lower_optimal":"59","upper_optimal":"400","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.5381","units":"uIU/ml","description":"Prolactin is a hormone primarily involved in breast milk production, but it also affects the menstrual cycle and mood. Elevated prolactin can suppress ovulation and cause menstrual irregularity. Jessie's result of 143 is within the normal range for a nonpregnant female, ruling out prolactin excess as a contributor to any hormonal symptoms.","low_causes":"Dopamine agonist medication, pituitary insufficiency","high_causes":"Pituitary adenoma (prolactinoma), stress, medications (antipsychotics, SSRIs), hypothyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"free_testosterone","name":"Free Testosterone (Calculated)","group":"HORMONES","result":"0.008","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4000","lower_normal":"0.003","upper_normal":"0.03","lower_optimal":"0.01","upper_optimal":"0.025","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.4111","upper_optimal_position":"0.5778","units":"nmol/l","description":"Free testosterone is the fraction of total testosterone not bound to SHBG or albumin, and therefore available to act on tissues. Jessie's calculated free testosterone of 0.008 is within the laboratory range but below the optimal threshold of 0.01. This is consistent with her borderline-low total testosterone and upper-half SHBG, and may be contributing to her fatigue and hair thinning.","low_causes":"Low total testosterone, high SHBG, low body weight, oral contraceptives","high_causes":"PCOS, low SHBG, insulin resistance, exogenous testosterone","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"creatine_kinase","name":"Creatine Kinase","group":"SPECIALIZED TESTS","result":"128","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.5295","lower_normal":"25","upper_normal":"200","lower_optimal":"40","upper_optimal":"170","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3619","upper_optimal_position":"0.6095","units":"U/L","description":"Creatine kinase (CK) is an enzyme found in muscle tissue. It rises after exercise or muscle damage. Jessie's result of 128 is within the optimal range and appropriate for someone training four times per week, indicating her muscles are recovering well from training.","low_causes":"Low muscle mass, sedentary lifestyle","high_causes":"Intense exercise, muscle injury, rhabdomyolysis, statin medication, hypothyroidism","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"taa","name":"Total Antioxidant Activity","group":"SPECIALIZED TESTS","result":"1.38","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4043","lower_normal":"1.3","upper_normal":"1.77","lower_optimal":"1.4","upper_optimal":"1.7","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3809","upper_optimal_position":"0.6190","units":"mmol/l","description":"Total antioxidant activity measures the blood's overall capacity to neutralise free radicals and oxidative stress. It reflects dietary antioxidant intake and the body's own antioxidant production. Jessie's result of 1.38 is within the laboratory range but just below the optimal threshold of 1.4. Her excellent diet quality likely supports antioxidant capacity, but the low diet volume may be limiting total antioxidant intake.","low_causes":"Poor diet quality, oxidative stress, chronic inflammation, smoking","high_causes":"High fruit and vegetable intake, antioxidant supplementation, polyphenol-rich diet","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igg","name":"IgG","group":"IMMUNOLOGY","result":"10.8","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4842","lower_normal":"6.5","upper_normal":"16","lower_optimal":"6.5","upper_optimal":"16","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6667","units":"g/l","description":"IgG is the most abundant antibody in the blood, responsible for long-term immune protection against previously encountered infections. Jessie's result of 10.8 is within the normal range, indicating a healthy humoral immune response.","low_causes":"Immune deficiency, certain medications, chronic lymphocytic leukaemia","high_causes":"Chronic infection, autoimmune disease, liver disease, myeloma","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"igm","name":"IgM","group":"IMMUNOLOGY","result":"1.4","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.4533","lower_normal":"0.5","upper_normal":"3","lower_optimal":"0.5","upper_optimal":"3","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6667","units":"g/l","description":"IgM is the first antibody produced in response to a new infection. It provides early immune defence before the more targeted IgG response develops. Jessie's result of 1.4 is within the normal range.","low_causes":"Immune deficiency, chronic lymphocytic leukaemia","high_causes":"Acute infection, Waldenstrom's macroglobulinaemia, autoimmune disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"iga","name":"IgA","group":"IMMUNOLOGY","result":"2.1","within_normal":"TRUE","within_optimal":"FALSE","result_position":"0.5161","lower_normal":"0.4","upper_normal":"3.5","lower_optimal":"0.4","upper_optimal":"3.5","lower_normal_position":"0.3333","upper_normal_position":"0.6667","lower_optimal_position":"0.3333","upper_optimal_position":"0.6667","units":"g/l","description":"IgA is the antibody that protects mucosal surfaces, including the gut, respiratory tract, and urogenital tract. It is the body's first line of immune defence at entry points. Jessie's result of 2.1 is within the normal range. A normal IgA also confirms that the coeliac screen (tissue transglutaminase IgA) is reliable, as IgA deficiency can produce false negative coeliac results.","low_causes":"Selective IgA deficiency (most common immune deficiency, usually benign)","high_causes":"Chronic infection, liver disease, IgA nephropathy, coeliac disease","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"ige","name":"IgE","group":"IMMUNOLOGY","result":"25.6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1280","lower_normal":"0","upper_normal":"100","lower_optimal":"0","upper_optimal":"80","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.4000","units":"IU/ml","description":"IgE is the antibody most associated with allergic responses and parasitic infections. Elevated IgE can indicate allergies, asthma, or eczema. Jessie's result of 25.6 is low, indicating no significant allergic or parasitic immune activation.","low_causes":"Normal finding, immune deficiency (rare)","high_causes":"Allergies, asthma, eczema, parasitic infection, drug reactions","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"rheumatoid_factor","name":"Rheumatoid Factor","group":"IMMUNOLOGY","result":"6","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2143","lower_normal":"0","upper_normal":"14","lower_optimal":"0","upper_optimal":"14","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"IU/ml","description":"Rheumatoid factor is an antibody that can be elevated in rheumatoid arthritis and other autoimmune conditions. Jessie's result of 6 is well within the normal range, which helps rule out rheumatoid arthritis as a cause of any joint symptoms.","low_causes":"Normal finding","high_causes":"Rheumatoid arthritis, Sjogren's syndrome, chronic infections, liver disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ttg_iga","name":"Tissue Transglutaminase IgA","group":"AUTOIMMUNE & CELIAC","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"7.19","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"CU","description":"Tissue transglutaminase IgA (tTG-IgA) is the primary screening test for coeliac disease, an autoimmune condition triggered by gluten that damages the small intestine. Jessie's result is negative (0.251 CU, well below the 7.19 threshold), which effectively rules out coeliac disease as a cause of her fatigue, brain fog, or any malabsorption. This is particularly reliable because her IgA level is normal.","low_causes":"Normal finding, no coeliac disease","high_causes":"Coeliac disease, dermatitis herpetiformis","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca125","name":"CA-125","group":"TUMOR MARKERS","result":"42.4","within_normal":"FALSE","within_optimal":"FALSE","result_position":"0.6057","lower_normal":"0","upper_normal":"35","lower_optimal":"0","upper_optimal":"35","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"U/ml","description":"CA-125 is a protein that can be elevated in ovarian cancer, but it is also raised in many benign gynaecological conditions including endometriosis, ovarian cysts, fibroids, and pelvic inflammatory disease. Menstruation itself can cause a transient rise. Jessie's result of 42.4 is above the upper limit of 35. At age 38, a mildly elevated CA-125 is statistically far more likely to be caused by a benign condition than malignancy. However, per NICE NG12 guidelines, any CA-125 above 35 should be followed up with a pelvic ultrasound, and her GP should arrange this.","low_causes":"Normal finding","high_causes":"Ovarian cancer, endometriosis, ovarian cysts, fibroids, pelvic inflammatory disease, menstruation, pregnancy","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca153","name":"CA 15-3","group":"TUMOR MARKERS","result":"14.8","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2467","lower_normal":"0","upper_normal":"30","lower_optimal":"0","upper_optimal":"30","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"U/ml","description":"CA 15-3 is a tumour marker most commonly used in monitoring breast cancer. In screening, it provides baseline data. Jessie's result of 14.8 is within the normal range, which is reassuring.","low_causes":"Normal finding","high_causes":"Breast cancer, ovarian cancer, lung cancer, liver disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"ca199","name":"CA 19-9","group":"TUMOR MARKERS","result":"18.26","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.2467","lower_normal":"0","upper_normal":"37","lower_optimal":"0","upper_optimal":"37","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"U/ml","description":"CA 19-9 is a tumour marker associated with pancreatic and gastrointestinal cancers. In the context of Jessie's elevated amylase and lipase, a normal CA 19-9 is reassuring because it makes a pancreatic malignancy very unlikely as the cause of the enzyme elevation.","low_causes":"Normal finding, Lewis antigen negative blood type (unable to produce CA 19-9)","high_causes":"Pancreatic cancer, bile duct cancer, gastric cancer, pancreatitis, bile duct obstruction","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"cea","name":"CEA Marker","group":"TUMOR MARKERS","result":"0.79","within_normal":"TRUE","within_optimal":"TRUE","result_position":"0.1717","lower_normal":"0","upper_normal":"2.3","lower_optimal":"0","upper_optimal":"2.3","lower_normal_position":"0","upper_normal_position":"0.5","lower_optimal_position":"0","upper_optimal_position":"0.5","units":"ng/ml","description":"CEA, carcinoembryonic antigen, is a tumour marker most commonly associated with colorectal cancer but also used as a baseline in screening. Jessie's result of 0.79 is within the normal non-smoker range of 0 to 2.3, which is reassuring.","low_causes":"Normal finding","high_causes":"Colorectal cancer, pancreatic cancer, lung cancer, smoking, inflammatory bowel disease","padding":"1","one_sided":"0.5","range_type":"no lower"},{"key":"urine_ph","name":"Urine pH","group":"URINALYSIS","result":"6","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Urine pH measures the acidity or alkalinity of the urine. A pH of 6 is mildly acidic, which is typical for a normal mixed diet. Values between 4.5 and 8 are considered normal.","low_causes":"High protein diet, metabolic acidosis, dehydration","high_causes":"Vegetarian diet, urinary tract infection, metabolic alkalosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_protein","name":"Urine Protein","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"mg/l","description":"Urine protein tests for the presence of protein in the urine. Healthy kidneys retain protein in the blood, so its absence in urine confirms normal kidney filtration and no sign of kidney damage.","low_causes":"","high_causes":"Kidney disease, urinary tract infection, fever, intense exercise, heart failure","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_ketones","name":"Urine Ketones","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Urine ketones appear when the body burns fat for fuel instead of glucose. They can be present during fasting, low-carb diets, or diabetic ketoacidosis. Jessie's negative result is consistent with her normal blood sugar and confirms she is not in ketosis.","low_causes":"","high_causes":"Fasting, ketogenic diet, diabetic ketoacidosis, prolonged vomiting","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_glucose","name":"Urine Glucose","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Glucose should not normally be present in urine. Its absence confirms that blood sugar levels are not exceeding the kidney's reabsorption threshold, consistent with Jessie's excellent blood glucose and HbA1c results.","low_causes":"","high_causes":"Diabetes, renal glycosuria, pregnancy","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"specific_gravity","name":"Specific Gravity","group":"URINALYSIS","result":"1.01","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Specific gravity measures the concentration of urine. A value of 1.01 indicates mildly dilute urine, suggesting good hydration at the time of sampling. Normal range is 1.005 to 1.030.","low_causes":"Excess water intake, diabetes insipidus","high_causes":"Dehydration, heart failure, renal artery stenosis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urobilinogen","name":"Urobilinogen","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Urobilinogen is a by-product of bilirubin breakdown in the gut. Small amounts are normal in urine, and elevated levels can indicate liver disease or haemolysis. A negative result is normal.","low_causes":"Bile duct obstruction, broad-spectrum antibiotics","high_causes":"Liver disease, haemolytic anaemia, excess red blood cell breakdown","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_casts","name":"Urine Casts","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Urine casts are cylindrical structures formed in the kidney tubules. Their presence can indicate kidney disease. Jessie's negative result confirms healthy kidney tubules with no sign of kidney inflammation or damage.","low_causes":"","high_causes":"Kidney disease, glomerulonephritis, pyelonephritis, dehydration","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_wbc","name":"Urine WBCs","group":"URINALYSIS","result":"< 1","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"wbc/ul","description":"White blood cells in the urine indicate infection or inflammation in the urinary tract. Jessie's result of less than 1 per microlitre is well below the significance threshold of 10, confirming no urinary tract infection or inflammation.","low_causes":"","high_causes":"Urinary tract infection, kidney infection, interstitial cystitis","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_rbc","name":"Urine RBCs","group":"URINALYSIS","result":"< 1","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"rbc/ul","description":"Red blood cells in the urine can indicate kidney disease, urinary tract infection, stones, or bladder pathology. Jessie's result of less than 1 per microlitre is well below the significance threshold of 25, confirming no blood in the urine.","low_causes":"","high_causes":"Kidney stones, urinary tract infection, glomerulonephritis, bladder cancer, menstrual contamination","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_nitrites","name":"Urinary Nitrites","group":"URINALYSIS","result":"Negative","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Nitrites in urine are produced by bacteria that convert nitrates to nitrites. A positive result suggests bacterial urinary tract infection. Jessie's negative result, combined with negative WBCs and no growth on culture, confirms the absence of urinary infection.","low_causes":"","high_causes":"Bacterial urinary tract infection (particularly E. coli)","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"bacterial_count","name":"Bacterial Count","group":"URINALYSIS","result":"< 1","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"CFU/ml","description":"The bacterial count measures the number of bacteria present in the urine sample. Jessie's result of less than 1 CFU/ml indicates no significant bacterial presence, consistent with a clean urinary tract.","low_causes":"","high_causes":"Urinary tract infection, contamination during collection","padding":"1","one_sided":"0.5","range_type":"normal"},{"key":"urine_culture","name":"Urine Culture","group":"URINALYSIS","result":"No growth","within_normal":"","within_optimal":"","result_position":"","lower_normal":"","upper_normal":"","lower_optimal":"","upper_optimal":"","lower_normal_position":"","upper_normal_position":"","lower_optimal_position":"","upper_optimal_position":"","units":"","description":"Urine culture involves incubating the urine sample to check for bacterial growth. No growth confirms the absence of urinary tract infection. Jessie's clean midstream urine sample with no growth is an entirely normal finding.","low_causes":"","high_causes":"Urinary tract infection, pyelonephritis","padding":"1","one_sided":"0.5","range_type":"normal"}]};
+
+// ============================================================
+//  TrueVitals report engine — builds everything from REPORT_DATA
+// ============================================================
+const data = REPORT_DATA;
+const bms = (data.biomarkers || []).map(b => ({ ...b }));
+
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// ---- helpers -------------------------------------------------
+function statusOf(b) {
+  if (b.within_normal === 'FALSE') return 'flag';
+  if (b.within_optimal === 'TRUE') return 'optimal';
+  if (b.within_normal === 'TRUE') return 'range';
+  return 'qual'; // qualitative (Negative etc.)
+}
+const num = (v) => (v === '' || v == null ? null : parseFloat(v));
+
+// ---- global stats -------------------------------------------
+const assessable = bms.filter(b => b.within_optimal === 'TRUE' || b.within_optimal === 'FALSE');
+const totalTested = bms.length;
+const flaggedCount = bms.filter(b => b.within_normal === 'FALSE').length;
+const optimalCount = bms.filter(b => b.within_optimal === 'TRUE').length;
+const rangeCount = bms.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+const healthPct = assessable.length ? Math.round((optimalCount / assessable.length) * 100) : 0;
+
+// ---- groups --------------------------------------------------
+const groupOrder = ['LIVER & METABOLIC','LIPIDS & CARDIOVASCULAR','GLUCOSE & INSULIN','INFLAMMATION','ELECTROLYTES & MINERALS','KIDNEY FUNCTION','HEMATOLOGY','IRON STUDIES','HORMONES','THYROID','VITAMINS & NUTRIENTS','CARDIAC MARKERS','DIGESTIVE','IMMUNOLOGY','PROSTATE','TUMOR MARKERS','SPECIALIZED TESTS','AUTOIMMUNE & CELIAC','URINALYSIS'];
+const groups = {};
+bms.forEach(b => { (groups[b.group] = groups[b.group] || []).push(b); });
+
+function groupStatus(names) {
+  let markers = [];
+  names.forEach(n => { if (groups[n]) markers = markers.concat(groups[n]); });
+  if (!markers.length) return null;
+  const flagged = markers.filter(b => b.within_normal === 'FALSE').length;
+  if (flagged) return { s: 'flag', flagged, total: markers.length, optimal: markers.filter(b => b.within_optimal === 'TRUE').length };
+  const nonOpt = markers.filter(b => b.within_normal === 'TRUE' && b.within_optimal !== 'TRUE').length;
+  const optimal = markers.filter(b => b.within_optimal === 'TRUE').length;
+  return { s: nonOpt ? 'amber' : 'optimal', flagged: 0, total: markers.length, optimal };
+}
+
+// ---- body-system map (the signature element) ----------------
+// organ = sits on the silhouette; satellite = flanking node with a leader line
+const SYSTEMS = [
+  { id:'thyroid',  label:'Thyroid',        groups:['THYROID'],                               type:'organ', x:190, y:96,  icon:'thyroid' },
+  { id:'cardio',   label:'Heart & Vessels',groups:['LIPIDS & CARDIOVASCULAR','CARDIAC MARKERS'], type:'organ', x:206, y:142, icon:'heart' },
+  { id:'liver',    label:'Liver',          groups:['LIVER & METABOLIC'],                     type:'organ', x:166, y:188, icon:'liver' },
+  { id:'gut',      label:'Metabolic & Gut',groups:['GLUCOSE & INSULIN','DIGESTIVE'],         type:'organ', x:190, y:206, icon:'gut' },
+  { id:'kidney',   label:'Kidneys',        groups:['KIDNEY FUNCTION'],                       type:'organ', x:216, y:214, icon:'kidney' },
+  { id:'hormones', label:'Hormones',       groups:['HORMONES'],                              type:'organ', x:170, y:232, icon:'hormone' },
+  { id:'urinary',  label:'Urinary',        groups:['URINALYSIS'],                            type:'organ', x:190, y:256, icon:'drop' },
+  { id:'prostate', label:'Prostate',       groups:['PROSTATE'],                              type:'organ', x:206, y:270, icon:'shield' },
+  // satellites — left
+  { id:'blood',    label:'Blood & Iron',   groups:['HEMATOLOGY','IRON STUDIES','INFLAMMATION'], type:'sat', side:'l', x:64, y:150, tx:120, ty:150, icon:'drop' },
+  { id:'immune',   label:'Immune',         groups:['IMMUNOLOGY','AUTOIMMUNE & CELIAC'],      type:'sat', side:'l', x:64, y:224, tx:150, ty:200, icon:'shield' },
+  { id:'vitamins', label:'Vitamins',       groups:['VITAMINS & NUTRIENTS'],                  type:'sat', side:'l', x:64, y:298, tx:162, ty:290, icon:'leaf' },
+  // satellites — right
+  { id:'minerals', label:'Bone & Minerals',groups:['ELECTROLYTES & MINERALS'],               type:'sat', side:'r', x:316, y:150, tx:260, ty:150, icon:'bone' },
+  { id:'screening',label:'Screening',      groups:['TUMOR MARKERS'],                         type:'sat', side:'r', x:316, y:224, tx:230, ty:200, icon:'scan' },
+  { id:'special',  label:'Specialist',     groups:['SPECIALIZED TESTS'],                     type:'sat', side:'r', x:316, y:298, tx:218, ty:290, icon:'flask' },
+];
+
+const ICONS = {
+  thyroid:'<path d="M8 7c1.5 2 2.5 2 4 2s2.5 0 4-2M9 9c-1 3-1 6 3 6s4-3 3-6"/>',
+  heart:'<path d="M12 20s-7-4.6-7-9.6A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7-.2c0 5-7 9.6-7 9.6z"/>',
+  liver:'<path d="M4 8c5-2 11-2 16 0 0 5-3 9-8 9-3 0-4-2-5-4s-2-3-3-5z"/>',
+  gut:'<path d="M6 5v4a3 3 0 0 0 6 0 3 3 0 0 1 6 0v3a3 3 0 0 1-6 0"/>',
+  kidney:'<path d="M9 5c-3 0-4 3-4 6s2 8 4 8 2-3 2-5-1-4 1-6c-1-2-2-3-3-3z"/>',
+  hormone:'<circle cx="9" cy="15" r="4"/><path d="M12 12l6-6M14 6h4v4"/>',
+  drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+  shield:'<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
+  leaf:'<path d="M5 19c8 1 14-4 14-13-8-1-15 4-14 13zM5 19c3-4 6-6 9-7"/>',
+  bone:'<path d="M8 8a2 2 0 1 0-2 2l6 6a2 2 0 1 0 2 2 2 2 0 1 0 2-2l-6-6a2 2 0 1 0-2-2z"/>',
+  scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3M4 12h16"/>',
+  flask:'<path d="M9 3h6M10 3v6l-4 8a2 2 0 0 0 2 3h8a2 2 0 0 0 2-3l-4-8V3"/>',
+};
+
+// ============================================================
+//  BUILD
+// ============================================================
+const app = document.getElementById('app');
+const patientName = data.patient_name || 'Your';
+const firstName = patientName.split(' ')[0];
+document.getElementById('nav-patient').textContent = patientName + ' · ' + (data.report_date || '');
+
+let out = '';
+
+// ---------- PRIORITY BANNER ----------
+const summaryRaw = data.summary || '';
+const priority = /\b(important|priority|gp)\b/i.test(summaryRaw);
+if (priority) {
+  out += `<div class="alert" id="alert">
+    <div class="alert-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+    <div class="alert-body">
+      <div class="alert-title">A few results need a conversation with your GP</div>
+      <div class="alert-text">We have flagged findings in this report that are worth raising with your doctor. Bring this report to your appointment.</div>
+    </div>
+    <button class="alert-btn" onclick="goTo('flags')">See the flags</button>
+  </div>`;
+}
+
+// ---------- HERO ----------
+out += `<section id="overview" class="reveal">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">TrueVitals Report · ${esc(data.report_date || '')}</div>
+      <h1 class="hero-name">${esc(firstName)}<span class="hero-name-sub">Your complete blood analysis</span></h1>
+      <p class="hero-lede">${totalTested} biomarkers measured across ${Object.keys(groups).length} body systems. Here is the whole picture, from a single blood draw.</p>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-n">${totalTested}</span><span class="hstat-l">Measured</span></div>
+        <div class="hstat"><span class="hstat-n c-green">${optimalCount}</span><span class="hstat-l">Optimal</span></div>
+        <div class="hstat"><span class="hstat-n c-amber">${rangeCount}</span><span class="hstat-l">In range</span></div>
+        <div class="hstat"><span class="hstat-n c-red">${flaggedCount}</span><span class="hstat-l">Flagged</span></div>
+      </div>
+    </div>
+    <div class="hero-ring">
+      <svg viewBox="0 0 220 220" class="ring-svg" aria-hidden="true">
+        <circle cx="110" cy="110" r="94" class="ring-track"/>
+        <circle cx="110" cy="110" r="94" class="ring-fill" id="ringFill"
+          transform="rotate(-90 110 110)"/>
+        <circle cx="110" cy="110" r="72" class="ring-track2"/>
+        <circle cx="110" cy="110" r="72" class="ring-fill2" id="ringFill2" transform="rotate(-90 110 110)"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ringPct">0<span>%</span></div>
+        <div class="ring-cap">in optimal range</div>
+      </div>
+    </div>
+  </div>
+</section>`;
+
+// ---------- BODY MAP ----------
+const systemsWith = SYSTEMS.filter(sys => sys.groups.some(g => groups[g] && groups[g].length));
+function statusColor(s, st) {
+  // Calculate a 0-1 health score for this system
+  if (!st || !st.total) return 'green';
+  var optPct = st.optimal / st.total;
+  var flagPct = st.flagged / st.total;
+  // Score: 1.0 = all optimal, 0.0 = all flagged
+  var score = optPct - flagPct;
+  score = Math.max(0, Math.min(1, (score + 1) / 2)); // normalise to 0-1
+  return score;
+}
+// Map score to colour on a 5-stop gradient: red -> orange -> yellow -> light teal -> bright teal
+function scoreToColor(score) {
+  var stops = [
+    [0.0, [255, 90, 95]],    // --red
+    [0.25, [232, 160, 70]],  // orange
+    [0.5, [232, 193, 90]],   // --amber/yellow
+    [0.75, [100, 200, 180]], // light teal
+    [1.0, [44, 228, 173]]    // --green (bright teal)
+  ];
+  for (var i = 0; i < stops.length - 1; i++) {
+    if (score <= stops[i+1][0]) {
+      var t = (score - stops[i][0]) / (stops[i+1][0] - stops[i][0]);
+      var r = Math.round(stops[i][1][0] + t * (stops[i+1][1][0] - stops[i][1][0]));
+      var g = Math.round(stops[i][1][1] + t * (stops[i+1][1][1] - stops[i][1][1]));
+      var b = Math.round(stops[i][1][2] + t * (stops[i+1][1][2] - stops[i][1][2]));
+      return 'rgb('+r+','+g+','+b+')';
+    }
+  }
+  return 'rgb(44,228,173)';
+}
+
+let nodesSvg = '', linesSvg = '', pillsHtml = '';
+systemsWith.forEach(sys => {
+  const st = groupStatus(sys.groups); if (!st) return;
+  const rawScore = statusColor(st.s, st);
+  const col = typeof rawScore === "number" ? scoreToColor(rawScore) : rawScore;
+  const colClass = typeof rawScore === "number" ? "gradient" : rawScore;
+  sys._st = st; sys._col = col;
+  if (sys.type === 'sat') {
+    linesSvg += `<line class="leader" x1="${sys.x}" y1="${sys.y}" x2="${sys.tx}" y2="${sys.ty}"/>`;
+  }
+  const r = sys.type === 'organ' ? 9 : 11;
+  nodesSvg += `<g class="node node-gradient" data-sys="${sys.id}" tabindex="0" role="button"
+      aria-label="${esc(sys.label)}: ${st.flagged?st.flagged+' flagged':'clear'}"
+      onclick="pickSystem('${sys.id}')" onmouseenter="tip(event,'${sys.id}')" onmousemove="tipMove(event)" onmouseleave="tipHide()"
+      onfocus="tip(event,'${sys.id}')" onblur="tipHide()">
+      <circle class="node-halo" cx="${sys.x}" cy="${sys.y}" r="${r+9}" fill="${col}" style="opacity:.16;animation:halo 3s ease-in-out infinite"/>
+      <circle class="node-dot" cx="${sys.x}" cy="${sys.y}" r="${r}" fill="${col}"/>
+      <g class="node-ic" transform="translate(${sys.x-7},${sys.y-7}) scale(0.58)" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</g>
+    </g>`;
+  pillsHtml += `<button class="mpill" style="--pill-c:${col}" onclick="pickSystem('${sys.id}')">
+      <span class="mpill-dot"></span>${esc(sys.label)}${st.flagged?` · ${st.flagged}`:''}</button>`;
+});
+
+out += `<section id="body" class="reveal">
+  <div class="eyebrow">Body map</div>
+  <h2 class="sec-title">Where your results land</h2>
+  <p class="sec-sub">Each system is coloured by its results. Tap any point to jump to those biomarkers.</p>
+  <div class="bodywrap">
+    <svg viewBox="0 0 380 400" class="bodysvg" id="bodysvg" aria-label="Interactive body map">
+      <defs>
+        <linearGradient id="silh" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--silh-top)"/><stop offset="1" stop-color="var(--silh-bot)"/>
+        </linearGradient>
+      </defs>
+      <g class="scan" id="scan"><rect x="120" y="0" width="140" height="8"/></g>
+      <g class="silhouette" fill="url(#silh)" stroke="var(--silh-stroke)" stroke-width="1">
+        <circle cx="190" cy="60" r="28"/>
+        <rect x="180" y="84" width="20" height="16" rx="7"/>
+        <rect x="150" y="96" width="80" height="170" rx="36"/>
+        <rect x="118" y="100" width="22" height="150" rx="11"/>
+        <rect x="240" y="100" width="22" height="150" rx="11"/>
+        <rect x="158" y="258" width="26" height="132" rx="13"/>
+        <rect x="196" y="258" width="26" height="132" rx="13"/>
+      </g>
+      ${linesSvg}
+      ${nodesSvg}
+    </svg>
+    <div class="mpills">${pillsHtml}</div>
+  </div>
+</section>`;
+
+// ---------- SYSTEM GRID ----------
+let gridHtml = '';
+systemsWith.forEach(sys => {
+  const st = sys._st, col = sys._col;
+  const badge = st.flagged ? `${st.flagged} flagged` : (st.s === 'amber' ? 'In range' : 'All optimal');
+  gridHtml += `<button class="scard" style="--sc:${col}" onclick="pickSystem('${sys.id}')">
+    <span class="scard-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[sys.icon]||''}</svg></span>
+    <span class="scard-body"><span class="scard-name">${esc(sys.label)}</span>
+      <span class="scard-meta">${st.total} marker${st.total!==1?'s':''}</span></span>
+    <span class="scard-badge" style="background:color-mix(in srgb,${col} 15%,transparent);color:${col}">${badge}</span>
+  </button>`;
+});
+out += `<section id="systems" class="reveal">
+  <div class="eyebrow">Systems</div>
+  <h2 class="sec-title">A breakdown by area</h2>
+  <p class="sec-sub">A snapshot of every system tested. Tap through to the detail.</p>
+  <div class="sgrid">${gridHtml}</div>
+</section>`;
+
+// ---------- TOP FINDINGS ----------
+const scored = bms.filter(b => num(b.result_position) != null &&
+    (num(b.lower_optimal_position) != null || num(b.upper_optimal_position) != null))
+  .map(b => {
+    const lo = num(b.lower_optimal_position), uo = num(b.upper_optimal_position);
+    let mid;
+    if (lo != null && uo != null) mid = (lo + uo) / 2;
+    else if (lo != null) mid = lo; else mid = uo;
+    return { b, dev: Math.abs(num(b.result_position) - mid) };
+  })
+  .sort((a, z) => z.dev - a.dev).slice(0, 5).map(x => x.b);
+
+if (scored.length) {
+  let tf = '';
+  scored.forEach(b => {
+    const st = statusOf(b);
+    const first = (b.description || '').split(/(?<=\.)\s/)[0];
+    tf += `<div class="find find-${st==='flag'?'red':st==='optimal'?'green':'amber'}">
+      <div class="find-top">
+        <div><div class="find-name">${esc(b.name)}</div>
+          <div class="find-val">${esc(b.result)} <span>${esc(b.units||'')}</span></div></div>
+        <span class="chip chip-${st}">${st==='flag'?'Outside range':st==='optimal'?'Optimal':'In range'}</span>
+      </div>
+      ${rangeBar(b, true)}
+      <p class="find-desc">${esc(first)}</p>
+    </div>`;
+  });
+  out += `<section id="findings" class="reveal">
+    <div class="eyebrow">Highlights</div>
+    <h2 class="sec-title">Key findings at a glance</h2>
+    <p class="sec-sub">The five results that sit furthest from their optimal window.</p>
+    <div class="finds">${tf}</div>
+  </section>`;
+}
+
+// ---------- ANALYSIS SECTIONS ----------
+function analysisBlock(title, body, accent) {
+  if (!body) return '';
+  return `<div class="acard acard-${accent}">
+    <div class="acard-h"><span class="acard-dot dot-${accent}"></span>${esc(title)}</div>
+    <div class="acard-c">${esc(body)}</div></div>`;
+}
+function splitItems(text){
+  if(!text) return [];
+  return text.split('\n').map(s=>s.trim()).filter(s=>s.length>2).map(s=>s.replace(/^[•\-\u2022]\s*/,''));
+}
+
+// summary: lift priority first-paragraph out
+let summaryText = summaryRaw, leadPara = '';
+if (priority) {
+  const parts = summaryRaw.split('\n\n');
+  if (/\b(important|priority|gp)\b/i.test(parts[0])) { leadPara = parts[0]; summaryText = parts.slice(1).join('\n\n').trim(); }
+}
+out += `<section id="summary" class="reveal">
+  <div class="eyebrow">The picture</div>
+  <h2 class="sec-title">Your summary</h2>
+  <p class="sec-sub">What the numbers say, in plain terms.</p>
+  <div class="acard acard-green">
+    ${leadPara ? `<div class="lead-warn">${esc(leadPara)}</div>` : ''}
+    <div class="acard-c">${esc(summaryText)}</div>
+  </div>
+  ${data.links ? `<div class="acard acard-green"><div class="acard-h"><span class="acard-dot dot-green"></span>Lifestyle recommendations</div><div class="acard-c">${esc(data.links)}</div></div>` : ''}
+</section>`;
+
+// flags
+const flags = splitItems(data.flags);
+if (flags.length){
+  let fh='';
+  flags.forEach((f,i)=>{ fh += `<div class="acard acard-red numbered"><div class="num num-red">${String(i+1).padStart(2,'0')}</div><div class="acard-c">${esc(f)}</div></div>`; });
+  out += `<section id="flags" class="reveal"><div class="eyebrow">Attention</div><h2 class="sec-title">Findings to act on</h2><p class="sec-sub">${flags.length} item${flags.length!==1?'s':''} worth a closer look.</p>${fh}</section>`;
+}
+// recommendations
+const recs = splitItems(data.recommendations);
+if (recs.length){
+  let rh='';
+  recs.forEach((r,i)=>{ rh += `<div class="acard acard-blue numbered"><div class="num num-blue">${String(i+1).padStart(2,'0')}</div><div class="acard-c">${esc(r)}</div></div>`; });
+  out += `<section id="clinical" class="reveal"><div class="eyebrow">Clinical</div><h2 class="sec-title">To discuss with your GP</h2><p class="sec-sub">Bring these points to your appointment.</p>${rh}</section>`;
+}
+// supplements
+const supps = splitItems(data.supplementation);
+if (supps.length){
+  let sh='';
+  supps.forEach(s=>{ const warn=/^do not/i.test(s); sh += `<div class="acard acard-${warn?'red':'green'}"><div class="acard-c">${esc(s)}</div></div>`; });
+  out += `<section id="supplements" class="reveal"><div class="eyebrow">Support</div><h2 class="sec-title">Supplement guidance</h2><p class="sec-sub">Tailored to your specific results.</p>${sh}</section>`;
+}
+
+// ---------- FULL RESULTS ----------
+out += `<section id="results" class="reveal">
+  <div class="eyebrow">Full results</div>
+  <h2 class="sec-title">Every biomarker</h2>
+  <p class="sec-sub">Search, filter, and tap any marker for the detail.</p>
+  <div class="controls">
+    <input class="search" id="search" placeholder="Search biomarkers…" oninput="applyFilter()">
+    <button class="fbtn active" data-f="all" onclick="setFilter(this)">All</button>
+    <button class="fbtn" data-f="flag" onclick="setFilter(this)">Flagged</button>
+    <button class="fbtn" data-f="optimal" onclick="setFilter(this)">Optimal</button>
+  </div>`;
+
+groupOrder.forEach(gName => {
+  const g = groups[gName]; if (!g) return;
+  const gFlag = g.filter(b => b.within_normal === 'FALSE').length;
+  out += `<div class="grp" data-group="${esc(gName)}" id="grp-${slug(gName)}">
+    <div class="grp-h" onclick="toggleGrp(this.parentElement)">
+      <span class="grp-name">${esc(gName)}</span>
+      <span class="grp-meta">${g.length} markers ${gFlag?`<span class="grp-flag">${gFlag} flagged</span>`:''}
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </div>
+    <div class="grp-body">`;
+  g.forEach(b => { out += bioCard(b); });
+  out += `</div></div>`;
+});
+out += `</section>`;
+
+// ---------- FOOTER ----------
+out += `<footer class="foot">
+  <img class="foot-logo inv" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
+  <img class="foot-logo std" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals">
+  <p>Report generated ${esc(data.report_date || '')} · TrueVitals Group Ltd · Company No. 16449605</p>
+  <p>This report is for informational purposes only and does not constitute medical advice.</p>
+  <p style="margin-top:16px;margin-bottom:12px"><a href="https://www.trustpilot.com/evaluate/truevitals.co.uk" style="color:var(--green);text-decoration:none;font-weight:600;font-size:13px">Found this report helpful? Leave us a review on Trustpilot</a></p>
+  <p><a href="https://www.truevitals.co.uk">truevitals.co.uk</a></p>
+</footer>`;
+
+app.innerHTML = out;
+
+// ============================================================
+//  COMPONENT BUILDERS
+// ============================================================
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+
+function rangeBar(b, big){
+  const rp = num(b.result_position); if (rp == null) return '';
+  const lnp = num(b.lower_normal_position), unp = num(b.upper_normal_position);
+  if (lnp == null && unp == null) return '';
+  const lo = num(b.lower_optimal_position), uo = num(b.upper_optimal_position);
+  const st = statusOf(b);
+  const dotc = st==='flag'?'red':st==='optimal'?'green':'amber';
+  const L = (lnp==null?0:lnp)*100, U=(unp==null?1:unp)*100;
+  const oL = (lo==null?L/100:lo)*100, oU=(uo==null?U/100:uo)*100;
+  const pos = Math.max(2, Math.min(98, rp*100));
+  return `<div class="rbar-wrap ${big?'rbar-big':''}">
+    <div class="rbar">
+      <div class="rbar-normal" style="left:${L}%;width:${Math.max(0,U-L)}%"></div>
+      <div class="rbar-opt" style="left:${oL}%;width:${Math.max(0,oU-oL)}%"></div>
+      <div class="rbar-dot dot-${dotc}" style="--x:${pos}%" data-x="${pos}"></div>
+    </div>
+  </div>`;
+}
+
+function bioCard(b){
+  const st = statusOf(b);
+  const col = st==='flag'?'red':st==='optimal'?'green':st==='qual'?'blue':'amber';
+  const badge = st==='flag'?'Outside range':st==='optimal'?'Optimal':st==='qual'?esc(b.result||'—'):'In range';
+  const bar = rangeBar(b, false);
+  // detail
+  let detail = '';
+  if (b.description){
+    const parts = (b.description||'').split(/(?<=\.)\s/);
+    const head = parts.shift(); const rest = parts.join(' ');
+    detail += `<p class="bc-desc"><strong>${esc(head)}</strong>${rest?' '+esc(rest):''}</p>`;
+  }
+  const ranges = [];
+  if (b.lower_optimal!=='') ranges.push(`<span><em>Optimal low</em>${esc(b.lower_optimal)}</span>`);
+  if (b.upper_optimal!=='') ranges.push(`<span><em>Optimal high</em>${esc(b.upper_optimal)}</span>`);
+  if (b.lower_normal!=='') ranges.push(`<span><em>Normal low</em>${esc(b.lower_normal)}</span>`);
+  if (b.upper_normal!=='') ranges.push(`<span><em>Normal high</em>${esc(b.upper_normal)}</span>`);
+  if (ranges.length) detail += `<div class="bc-ranges">${ranges.join('')}</div>`;
+  if (b.low_causes || b.high_causes){
+    detail += `<div class="bc-causes">`;
+    if (b.low_causes) detail += `<p><em>If low</em> ${esc(b.low_causes)}</p>`;
+    if (b.high_causes) detail += `<p><em>If high</em> ${esc(b.high_causes)}</p>`;
+    detail += `</div>`;
+  }
+  return `<div class="bc bc-${col}" data-status="${st}" data-name="${esc((b.name||'').toLowerCase())}">
+    <div class="bc-main" onclick="toggleCard(this.parentElement)">
+      <span class="bc-tick tick-${col}"></span>
+      <div class="bc-info"><div class="bc-name">${esc(b.name)}</div><div class="bc-res">${esc(b.result)} ${esc(b.units||'')}</div></div>
+      ${bar}
+      <span class="chip chip-${st}">${badge}</span>
+      <svg class="bc-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="bc-detail"><div class="bc-detail-in">${detail||'<p class="bc-desc">No additional detail for this marker.</p>'}</div></div>
+  </div>`;
+}
+
+// ============================================================
+//  INTERACTIONS
+// ============================================================
+function toggleGrp(el){ el.classList.toggle('open'); animateBarsIn(el); }
+function toggleCard(el){
+  const open = el.classList.toggle('open');
+  const d = el.querySelector('.bc-detail');
+  d.style.maxHeight = open ? d.firstElementChild.scrollHeight + 24 + 'px' : '0px';
+}
+function goTo(id){ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function pickSystem(sysId){
+  const sys = SYSTEMS.find(s=>s.id===sysId); if(!sys) return;
+  // open matching groups, close others, scroll to first
+  document.querySelectorAll('.grp').forEach(g=>{
+    const on = sys.groups.includes(g.dataset.group);
+    g.classList.toggle('open', on);
+    if(on) animateBarsIn(g);
+  });
+  const first = sys.groups.map(g=>document.getElementById('grp-'+slug(g))).find(Boolean);
+  if(first){
+    // reset filters so the group is visible
+    document.getElementById('search').value=''; setActiveFilter('all'); applyFilter();
+    setTimeout(()=>first.scrollIntoView({behavior:'smooth',block:'start'}),60);
+    first.classList.add('grp-flash'); setTimeout(()=>first.classList.remove('grp-flash'),1200);
+  }
+}
+
+// tooltip for body map
+const tipEl = document.createElement('div'); tipEl.className='bodytip'; document.body.appendChild(tipEl);
+function tip(e,sysId){
+  const sys=SYSTEMS.find(s=>s.id===sysId); const st=sys&&sys._st; if(!st) return;
+  tipEl.innerHTML = `<strong>${esc(sys.label)}</strong>${st.optimal} of ${st.total} optimal${st.flagged?` · <span class="tip-red">${st.flagged} flagged</span>`:''}`;
+  tipEl.classList.add('show'); tipMove(e);
+}
+function tipMove(e){ const t=(e&&e.touches&&e.touches[0])||e; if(!t||t.clientX==null){ tipHide(); return; } tipEl.style.left=t.clientX+'px'; tipEl.style.top=(t.clientY-14)+'px'; }
+function tipHide(){ tipEl.classList.remove('show'); }
+
+// filters
+function setFilter(btn){ document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); applyFilter(); }
+function setActiveFilter(f){ document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('active', b.dataset.f===f)); }
+function applyFilter(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const f=document.querySelector('.fbtn.active').dataset.f;
+  document.querySelectorAll('.bc').forEach(c=>{
+    let show=true;
+    if(q && !c.dataset.name.includes(q)) show=false;
+    if(f==='flag' && c.dataset.status!=='flag') show=false;
+    if(f==='optimal' && c.dataset.status!=='optimal') show=false;
+    c.style.display=show?'':'none';
+  });
+  document.querySelectorAll('.grp').forEach(g=>{
+    const vis=[...g.querySelectorAll('.bc')].some(c=>c.style.display!=='none');
+    g.style.display=vis?'':'none';
+    if((q||f!=='all')&&vis) g.classList.add('open');
+  });
+}
+window.setFilter=setFilter; window.applyFilter=applyFilter;
+
+// range bar fill on reveal
+function animateBarsIn(scope){
+  (scope||document).querySelectorAll('.rbar-dot:not(.lit)').forEach(d=>{
+    d.classList.add('lit'); requestAnimationFrame(()=>{ d.style.left=d.dataset.x+'%'; });
+  });
+}
+
+// theme toggle
+function toggleTheme(){
+  const b=document.body; const light=b.getAttribute('data-theme')==='light';
+  b.setAttribute('data-theme', light?'dark':'light');
+  document.getElementById('themeLabel').textContent = light?'Light':'Dark';
+}
+window.toggleTheme=toggleTheme;
+
+// print
+function printReport(){
+  document.querySelectorAll('.grp,.bc').forEach(el=>el.classList.add('open'));
+  document.querySelectorAll('.bc-detail').forEach(d=>{ d.style.maxHeight='none'; });
+  window.print();
+}
+window.printReport=printReport;
+
+// scroll reveal + active nav
+const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+const navSections=['overview','body','findings','flags','results'];
+const navObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    document.querySelectorAll('.nav-links a,.mnav a').forEach(a=>a.classList.toggle('active', a.dataset.t===e.target.id));
+  }});
+},{rootMargin:'-45% 0px -50% 0px'});
+navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.observe(el); });
+
+// ============================================================
+//  GATE + LAUNCH ANIMATION
+// ============================================================
+function runIntro(){
+  // ring count-up
+  const R=94, C=2*Math.PI*R; const fill=document.getElementById('ringFill');
+  const R2=72, C2=2*Math.PI*R2; const fill2=document.getElementById('ringFill2');
+  fill.style.strokeDasharray=C; fill.style.strokeDashoffset=C;
+  fill2.style.strokeDasharray=C2; fill2.style.strokeDashoffset=C2;
+  const optFrac=assessable.length?optimalCount/assessable.length:0;
+  const flagFrac=totalTested?flaggedCount/totalTested:0;
+  const t0=performance.now(), dur=1400;
+  const pctEl=document.getElementById('ringPct');
+  function step(t){
+    const k=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-k,3);
+    fill.style.strokeDashoffset=C*(1-optFrac*e);
+    fill2.style.strokeDashoffset=C2*(1-flagFrac*e);
+    pctEl.innerHTML=Math.round(healthPct*e)+'<span>%</span>';
+    if(k<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+  // scan sweep + node pop
+  const scan=document.getElementById('scan'); if(scan) scan.classList.add('run');
+  document.querySelectorAll('.node').forEach((n,i)=>{ setTimeout(()=>n.classList.add('on'), 300+i*70); });
+  // first-visible bars
+  setTimeout(()=>animateBarsIn(document), 200);
+}
+
+const dob=document.getElementById('gate-dob');
+const gerr=document.getElementById('gate-error');
+dob.addEventListener('input',function(){
+  let v=this.value.replace(/[^\d]/g,'').slice(0,8), f='';
+  if(v.length>0)f=v.slice(0,2); if(v.length>2)f+=' / '+v.slice(2,4); if(v.length>4)f+=' / '+v.slice(4);
+  this.value=f;
+});
+dob.addEventListener('keydown',e=>{ if(e.key==='Enter') verifyDob(); });
+function verifyDob(){
+  const norm=d=>{ let c=String(d).replace(/\s/g,''); if(/^\d{4}-\d{2}-\d{2}/.test(c)){ const p=c.split(/[-T]/); return p[2]+'/'+p[1]+'/'+p[0]; } return c; };
+  if(norm(dob.value)===norm(data.dob)){
+    document.getElementById('gate').classList.add('gate-out');
+    setTimeout(()=>{ document.getElementById('gate').style.display='none'; },550);
+    document.getElementById('app-nav').classList.remove('hide');
+    document.getElementById('app-mnav').classList.remove('hide');
+    app.classList.remove('hide');
+    document.body.classList.add('unlocked');
+    runIntro();
+  } else {
+    gerr.style.display='block'; dob.classList.add('shake');
+    setTimeout(()=>dob.classList.remove('shake'),500);
+  }
+}
+window.verifyDob=verifyDob;
+dob.focus();
+
+// print header fill
+try{ document.getElementById('print-meta').innerHTML = (REPORT_DATA.patient_name||'')+'<br>Report date: '+(REPORT_DATA.report_date||'')+'<br>For informational purposes only'; }catch(e){}
+</script>
+<script>(function(){var app=document.getElementById("app");if(!app)return;app.insertAdjacentHTML("afterbegin","<div class=\"tvp\"><span>Found this useful? <a href=\"https://uk.trustpilot.com/evaluate/truevitals.co.uk\" target=\"_blank\" rel=\"noopener\">Leave a review</a></span><span class=\"tvp-d\">&middot;</span><span>Refer someone and you both get &pound;30 off<button class=\"tvp-code\" id=\"tvRef\">MJ6T9K</button></span></div>");var c=document.getElementById("tvRef");if(!c)return;c.addEventListener("click",function(){var o=c.textContent,done=function(){c.textContent="Copied";setTimeout(function(){c.textContent=o},1600)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText("MJ6T9K").then(done,done)}else{var t=document.createElement("textarea");t.value="MJ6T9K";document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(t);done()}})})();</script></body>
+</html>
