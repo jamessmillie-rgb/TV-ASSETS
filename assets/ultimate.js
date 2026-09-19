@@ -210,3 +210,12 @@
 
   toggle.textContent=isMobile?'Expand all':'Collapse all';
 })();
+
+// Clinic map (compact) inside the coverage section. Component lives at /assets/clinic-map.{css,js}
+(function(){
+  var sec=document.querySelector('.tv-ult .tu-cov .tu-inner'); if(!sec) return;
+  var host=document.createElement('div'); host.setAttribute('data-tv-clinic-map',''); host.dataset.mode='compact'; host.dataset.embed='1'; host.dataset.panel='ultimate'; host.style.marginTop='28px';
+  sec.appendChild(host);
+  var l=document.createElement('link'); l.rel='stylesheet'; l.href='https://results.truevitals.co.uk/assets/clinic-map.css?v=1'; document.head.appendChild(l);
+  var s=document.createElement('script'); s.src='https://results.truevitals.co.uk/assets/clinic-map.js?v=1'; s.defer=true; document.body.appendChild(s);
+})();
