@@ -394,8 +394,8 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
 .pg-pct{font-size:12px;font-weight:700;white-space:nowrap}
 .pg-vals{font-size:10.5px;color:var(--text3);margin:4px 0 0}
 .pg-card svg{display:block;width:100%;height:auto}
-.pg-radar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow)}
-.pg-radar svg{width:100%;max-width:520px;margin:6px auto 0;display:block}
+.pg-radar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 22px 14px;box-shadow:var(--shadow)}
+.pg-radar svg{width:100%;max-width:400px;margin:0 auto;display:block}
 .pg-legend{display:flex;gap:18px;justify-content:center;font-size:12px;color:var(--text2);margin-top:6px}
 .pg-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .pg-table{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.5}
@@ -1081,16 +1081,17 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
 
   // ---- 2. Radar: system score previous vs current ----
   const sysList = SYSTEMS.filter(sy => sy.groups.some(g => groups[g] && groups[g].length));
+  // Score both tests on the SAME markers: only those with a previous value, so the comparison is like for like.
   function sysScore(sy, useBase){
     let n = 0, ok = 0;
     sy.groups.forEach(g => (groups[g]||[]).forEach(b => {
-      const v = useBase ? num(b.baseline_result) : num(b.result);
-      if (v == null) return;
+      const pv = num(b.baseline_result), cv = num(b.result);
+      if (pv == null || cv == null) return;
       const lo = num(b.lower_optimal), hi = num(b.upper_optimal);
       if (lo == null && hi == null) return;
-      n++; if (dist(b, v) === 0) ok++;
+      n++; if (dist(b, useBase ? pv : cv) === 0) ok++;
     }));
-    return n ? Math.round(ok / n * 100) : null;
+    return n >= 2 ? Math.round(ok / n * 100) : null;   // need at least two comparable markers per axis
   }
   const axes = sysList.map(sy => ({ label: sy.label, prev: sysScore(sy, true), cur: sysScore(sy, false) })).filter(a => a.prev != null && a.cur != null);
   let radar = '';
@@ -1104,13 +1105,14 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
     [25,50,75,100].forEach(f => { svg += `<polygon points="${ring(f)}" fill="none" stroke="${gridStroke}" stroke-width="1"/>`; });
     axes.forEach((a, i) => { const [x,y] = pt(i, 100); svg += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${gridStroke}"/>`;
       const [lx, ly] = pt(i, 118); svg += `<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-size="11" fill="currentColor" opacity=".75" font-family="inherit">${esc(a.label)}</text>`; });
-    svg += `<polygon points="${poly('prev')}" fill="rgba(128,128,140,.18)" stroke="${GREY}" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg += `<polygon points="${poly('prev')}" fill="rgba(160,160,175,.16)" stroke="rgba(190,190,205,.9)" stroke-width="2" stroke-dasharray="5,4"/>`;
+    axes.forEach((a, i) => { const [x,y] = pt(i, a.prev); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="rgba(190,190,205,.9)"/>`; });
     svg += `<polygon points="${poly('cur')}" fill="rgba(44,228,173,.18)" stroke="${G}" stroke-width="2"/>`;
-    axes.forEach((a, i) => { const [x,y] = pt(i, a.cur); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${G}"/>`; });
+    axes.forEach((a, i) => { const [x,y] = pt(i, a.cur); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${G}" stroke="var(--surface)" stroke-width="1.5"/>`; });
     svg += `</svg>`;
     radar = `<section class="pg-section"><div class="pg-radar">
       <div class="pg-title">System performance, previous vs current</div>
-      <div class="pg-sub">Each axis is a body system scored by the share of its markers in the ideal range.</div>
+      <div class="pg-sub">Each axis is a body system, scored by the share of its markers in the ideal range. Both tests are scored on the same markers.</div>
       ${svg}
       <div class="pg-legend"><span><i style="background:${GREY}"></i>Previous test</span><span><i style="background:${G}"></i>This test</span></div>
     </div></section>`;
