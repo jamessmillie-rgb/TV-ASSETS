@@ -76,7 +76,8 @@
 @media(prefers-reduced-motion:reduce){.ring{animation:none}}
 
 /* compact mode: map + search only, for home and panel pages */
-.tv-cmap.compact .fc-head,.tv-cmap.compact .fc-foot,.tv-cmap.compact .fc-chips,.tv-cmap.compact .fc-book{display:none}
+.tv-cmap.compact .fc-head,.tv-cmap.compact .fc-foot,.tv-cmap.compact .fc-chips{display:none}
+.tv-cmap.compact .fc-book{display:none}
 .tv-cmap.compact .fc-grid{grid-template-columns:1fr}@media(min-width:900px){.tv-cmap.compact .fc-grid{grid-template-columns:340px 1fr}}
 .tv-cmap.compact .fc-list{max-height:300px}
 .tv-cmap.compact .fc-map{min-height:360px}
