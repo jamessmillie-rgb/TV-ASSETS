@@ -381,6 +381,31 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
 @media(max-width:860px){.ov-top{grid-template-columns:1fr}.ov-age{justify-content:space-between}}
 @media(max-width:560px){.ov-row2 .ov-vis{flex-direction:column;align-items:flex-start;min-height:0}.ov-row2 .donut,.ov-row2 .hero-ring{width:96px;height:96px}.ov-cell{padding:0 12px}}
 @media print{.ovc{break-inside:avoid}}
+
+/* ---- v3 progress (retest) visuals ---- */
+.pg-section{margin:0 0 34px}
+.pg-title{font-size:15px;font-weight:600;color:var(--text);margin:0 0 4px;letter-spacing:-.2px}
+.pg-sub{font-size:12px;color:var(--text3);margin:0 0 16px}
+.pg-label{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin:18px 0 10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.pg-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px 12px;box-shadow:var(--shadow)}
+.pg-card-h{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;gap:8px}
+.pg-name{font-size:13px;font-weight:600;color:var(--text)}
+.pg-pct{font-size:12px;font-weight:700;white-space:nowrap}
+.pg-vals{font-size:10.5px;color:var(--text3);margin:4px 0 0}
+.pg-card svg{display:block;width:100%;height:auto}
+.pg-radar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow)}
+.pg-radar svg{width:100%;max-width:520px;margin:6px auto 0;display:block}
+.pg-legend{display:flex;gap:18px;justify-content:center;font-size:12px;color:var(--text2);margin-top:6px}
+.pg-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.pg-table{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.5}
+.pg-table th{text-align:left;padding:8px 10px;color:var(--text3);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+.pg-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+.pg-table td:first-child{font-weight:500;color:var(--text)}
+.pg-table td.pg-prev{opacity:.6}
+.pg-table td.pg-chg{font-size:11px;font-weight:700}
+.pg-wrap{overflow-x:auto}
+@media(max-width:560px){.pg-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body data-theme="dark">
@@ -971,6 +996,141 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
 // ============================================================
 //  GATE + LAUNCH ANIMATION
 // ============================================================
+
+// ---------- PROGRESS (retest) VISUALS ----------
+// Renders when the report carries baseline_result values (a retest). Data-driven: nothing hard-coded.
+(function(){
+  const withBase = bms.filter(b => b && b.baseline_result != null && b.baseline_result !== '' && num(b.baseline_result) != null && num(b.result) != null);
+  if (!(data.is_retest || withBase.length >= 10)) return;
+  const ov = document.getElementById('overview'); if (!ov) return;
+
+  const G = '#2ce4ad', R = '#ff5a5f', A = '#e8c15a', GREY = 'rgba(128,128,140,.55)';
+  const isDark = !document.body.hasAttribute('data-theme') || document.body.getAttribute('data-theme') !== 'light';
+  const bandFill = isDark ? 'rgba(44,228,173,.14)' : 'rgba(15,180,136,.14)';
+  const trackFill = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)';
+
+  // distance from the optimal band (0 inside it), used to judge direction of travel
+  function dist(b, v){
+    const lo = num(b.lower_optimal), hi = num(b.upper_optimal);
+    if (lo != null && v < lo) return lo - v;
+    if (hi != null && v > hi) return v - hi;
+    return 0;
+  }
+  function span(b){
+    const lo = num(b.lower_optimal), hi = num(b.upper_optimal);
+    if (lo != null && hi != null && hi > lo) return hi - lo;
+    const ln = num(b.lower_normal), un = num(b.upper_normal);
+    if (ln != null && un != null && un > ln) return un - ln;
+    return Math.max(Math.abs(num(b.result)) * 0.5, 1e-6);
+  }
+  const rows = withBase.map(b => {
+    const prev = num(b.baseline_result), cur = num(b.result);
+    const pct = prev !== 0 ? (cur - prev) / Math.abs(prev) * 100 : (cur === 0 ? 0 : 100);
+    const dPrev = dist(b, prev), dCur = dist(b, cur);
+    const moved = Math.abs(cur - prev) / span(b);          // change relative to the band width
+    let dir = 'same';
+    if (moved >= 0.08 || Math.abs(pct) >= 5) {
+      if (dCur < dPrev - 1e-9) dir = 'better';
+      else if (dCur > dPrev + 1e-9) dir = 'worse';
+      else dir = 'same';                                    // moved within the ideal band: not a concern
+    }
+    return { b, prev, cur, pct, dPrev, dCur, moved, dir };
+  });
+  const better = rows.filter(r => r.dir === 'better').sort((a,z) => (z.dPrev - z.dCur) / span(z.b) - (a.dPrev - a.dCur) / span(a.b));
+  const worse  = rows.filter(r => r.dir === 'worse').sort((a,z) => (z.dCur - z.dPrev) / span(z.b) - (a.dCur - a.dPrev) / span(a.b));
+  const same   = rows.filter(r => r.dir === 'same');
+  const fmt = v => (Math.abs(v) >= 100 ? Math.round(v) : Math.round(v * 100) / 100);
+  const pctTxt = p => (p > 0 ? '+' : '') + Math.round(p) + '%';
+
+  // ---- 1. Key changes: mini charts ----
+  function mini(r){
+    const b = r.b, lo = num(b.lower_optimal), hi = num(b.upper_optimal);
+    const vals = [r.prev, r.cur].concat(lo != null ? [lo] : []).concat(hi != null ? [hi] : []);
+    let vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
+    const pad = (vmax - vmin) * 0.25 || Math.abs(vmax) * 0.25 || 1; vmin -= pad; vmax += pad;
+    const y = v => 52 - ((v - vmin) / (vmax - vmin)) * 42;
+    const col = r.dir === 'better' ? G : r.dir === 'worse' ? R : A;
+    let band = '';
+    if (lo != null || hi != null) {
+      const top = y(hi != null ? hi : vmax), bot = y(lo != null ? lo : vmin);
+      band = `<rect x="24" y="${Math.min(top,bot).toFixed(1)}" width="176" height="${Math.abs(bot-top).toFixed(1)}" fill="${bandFill}" rx="2"/>`;
+    }
+    return `<svg viewBox="0 0 224 62" xmlns="http://www.w3.org/2000/svg">
+      <rect x="24" y="8" width="176" height="46" fill="${trackFill}" rx="3"/>${band}
+      <line x1="30" y1="${y(r.prev).toFixed(1)}" x2="194" y2="${y(r.cur).toFixed(1)}" stroke="${col}" stroke-width="2" opacity=".75"/>
+      <circle cx="30" cy="${y(r.prev).toFixed(1)}" r="4" fill="${GREY}"/>
+      <circle cx="194" cy="${y(r.cur).toFixed(1)}" r="5" fill="${col}"/>
+      <text x="4" y="${(y(r.prev)+3.5).toFixed(1)}" font-size="8.5" fill="${GREY}" font-family="inherit">${fmt(r.prev)}</text>
+      <text x="221" y="${(y(r.cur)+3.5).toFixed(1)}" font-size="9" font-weight="700" text-anchor="end" fill="${col}" font-family="inherit">${fmt(r.cur)}</text>
+    </svg>`;
+  }
+  function cards(list, col){
+    return list.map(r => `<div class="pg-card">
+      <div class="pg-card-h"><span class="pg-name">${esc(r.b.name)}</span><span class="pg-pct" style="color:${col}">${r.dir==='better'?'&#9650;':'&#9660;'} ${pctTxt(r.pct)}</span></div>
+      ${mini(r)}
+      <div class="pg-vals">${fmt(r.prev)} &rarr; ${fmt(r.cur)} ${esc(r.b.units||'')}${r.dCur===0?' &middot; now in the ideal range':''}</div>
+    </div>`).join('');
+  }
+  let kc = `<section id="progress" class="reveal pg-section">
+    <div class="eyebrow">Since your last test</div>
+    <h2 class="sec-title">What has changed</h2>
+    <p class="sec-sub">Each chart runs from your previous result to this one. The shaded band is the ideal range.</p>`;
+  if (better.length) kc += `<div class="pg-label" style="color:var(--green)">Improved</div><div class="pg-grid">${cards(better.slice(0,8), G)}</div>`;
+  if (worse.length)  kc += `<div class="pg-label" style="color:var(--red)">Moved the wrong way</div><div class="pg-grid">${cards(worse.slice(0,6), R)}</div>`;
+  kc += `</section>`;
+
+  // ---- 2. Radar: system score previous vs current ----
+  const sysList = SYSTEMS.filter(sy => sy.groups.some(g => groups[g] && groups[g].length));
+  function sysScore(sy, useBase){
+    let n = 0, ok = 0;
+    sy.groups.forEach(g => (groups[g]||[]).forEach(b => {
+      const v = useBase ? num(b.baseline_result) : num(b.result);
+      if (v == null) return;
+      const lo = num(b.lower_optimal), hi = num(b.upper_optimal);
+      if (lo == null && hi == null) return;
+      n++; if (dist(b, v) === 0) ok++;
+    }));
+    return n ? Math.round(ok / n * 100) : null;
+  }
+  const axes = sysList.map(sy => ({ label: sy.label, prev: sysScore(sy, true), cur: sysScore(sy, false) })).filter(a => a.prev != null && a.cur != null);
+  let radar = '';
+  if (axes.length >= 5) {
+    const N = axes.length, cx = 250, cy = 250, Rr = 150;
+    const pt = (i, val) => { const ang = -Math.PI/2 + i * 2*Math.PI/N; const rr = Rr * val/100; return [cx + rr*Math.cos(ang), cy + rr*Math.sin(ang)]; };
+    const ring = f => axes.map((_, i) => pt(i, f).map(v=>v.toFixed(1)).join(',')).join(' ');
+    const poly = key => axes.map((a, i) => pt(i, a[key]).map(v=>v.toFixed(1)).join(',')).join(' ');
+    const gridStroke = isDark ? 'rgba(255,255,255,.09)' : 'rgba(0,0,0,.09)';
+    let svg = `<svg viewBox="0 0 500 520" xmlns="http://www.w3.org/2000/svg">`;
+    [25,50,75,100].forEach(f => { svg += `<polygon points="${ring(f)}" fill="none" stroke="${gridStroke}" stroke-width="1"/>`; });
+    axes.forEach((a, i) => { const [x,y] = pt(i, 100); svg += `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${gridStroke}"/>`;
+      const [lx, ly] = pt(i, 118); svg += `<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="middle" font-size="11" fill="currentColor" opacity=".75" font-family="inherit">${esc(a.label)}</text>`; });
+    svg += `<polygon points="${poly('prev')}" fill="rgba(128,128,140,.18)" stroke="${GREY}" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    svg += `<polygon points="${poly('cur')}" fill="rgba(44,228,173,.18)" stroke="${G}" stroke-width="2"/>`;
+    axes.forEach((a, i) => { const [x,y] = pt(i, a.cur); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${G}"/>`; });
+    svg += `</svg>`;
+    radar = `<section class="reveal pg-section"><div class="pg-radar">
+      <div class="pg-title">System performance, previous vs current</div>
+      <div class="pg-sub">Each axis is a body system scored by the share of its markers in the ideal range.</div>
+      ${svg}
+      <div class="pg-legend"><span><i style="background:${GREY}"></i>Previous test</span><span><i style="background:${G}"></i>This test</span></div>
+    </div></section>`;
+  }
+
+  // ---- 3. Longitudinal table ----
+  function table(list, colour){
+    if (!list.length) return '';
+    return `<div class="pg-wrap"><table class="pg-table"><tr><th>Marker</th><th>Previous</th><th>Current</th><th>Change</th></tr>` +
+      list.map(r => `<tr><td>${esc(r.b.name)}</td><td class="pg-prev">${fmt(r.prev)} ${esc(r.b.units||'')}</td><td>${fmt(r.cur)} ${esc(r.b.units||'')}</td><td class="pg-chg" style="color:${colour}">${pctTxt(r.pct)}</td></tr>`).join('') + `</table></div>`;
+  }
+  let tbl = `<section class="reveal pg-section"><div class="pg-title">Every marker, previous vs current</div>`;
+  if (better.length) tbl += `<div class="pg-label" style="color:var(--green)">Improved (${better.length})</div>${table(better, G)}`;
+  if (worse.length)  tbl += `<div class="pg-label" style="color:var(--red)">Moved the wrong way (${worse.length})</div>${table(worse, R)}`;
+  if (same.length)   tbl += `<div class="pg-label" style="color:var(--text3)">Stable (${same.length})</div>${table(same, 'var(--text3)')}`;
+  tbl += `</section>`;
+
+  ov.insertAdjacentHTML('afterend', kc + radar + tbl);
+})();
+
 function runIntro(){
   // ring count-up
   const R=94, C=2*Math.PI*R; const fill=document.getElementById('ringFill');
