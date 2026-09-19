@@ -386,7 +386,7 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
 <body data-theme="dark">
 
 <!-- GATE -->
-<div class="gate" id="gate">
+<div class="gate" id="gate" style="display:none">
   <div class="gate-card">
     <img class="gate-logo-img" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
     <div class="gate-sub">Enter your date of birth to unlock your report.</div>
@@ -399,7 +399,7 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
 </div>
 
 <!-- NAV -->
-<nav class="nav hide" id="app-nav">
+<nav class="nav" id="app-nav">
   <div class="nav-brand"><img class="logo-dark" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals"><img class="logo-light" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals"><div class="nav-patient" id="nav-patient"></div></div>
   <div class="nav-links">
     <a data-t="overview" href="#overview">Overview</a>
@@ -415,7 +415,7 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
 </nav>
 
 <!-- MOBILE NAV -->
-<div class="mnav hide" id="app-mnav">
+<div class="mnav" id="app-mnav">
   <div class="mnav-in">
     <a data-t="overview" href="#overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
     <a data-t="body" href="#body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.4"/><path d="M12 8v7M12 15l-4 6M12 15l4 6M6 10l6 1 6-1"/></svg>Body</a>
@@ -429,7 +429,7 @@ body[data-theme="light"]{--orange:#e2711d;--orange-soft:rgba(226,113,29,.12);--l
   <img class="logo-print" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500811c613b28045a91878_Copy%20of%20TrueVitals%20(1).png" alt="TrueVitals">
   <div class="ph-meta" id="print-meta"></div>
 </div>
-<main class="wrap hide" id="app"></main>
+<main class="wrap" id="app"></main>
 
 <script>
 // ============================================================
@@ -1025,6 +1025,8 @@ dob.focus();
 
 // print header fill
 try{ document.getElementById('print-meta').innerHTML = (REPORT_DATA.patient_name||'')+'<br>Report date: '+(REPORT_DATA.report_date||'')+'<br>For informational purposes only'; }catch(e){}
+
+try{ runIntro(); }catch(e){}
 </script>
-<script>(function(){var app=document.getElementById("app");if(!app)return;app.insertAdjacentHTML("afterbegin","<div class=\"tvp\"><span>Found this useful? <a href=\"https://uk.trustpilot.com/evaluate/truevitals.co.uk\" target=\"_blank\" rel=\"noopener\">Leave a review</a></span><span class=\"tvp-d\">&middot;</span><span>Refer someone and you both get &pound;30 off<button class=\"tvp-code\" id=\"tvRef\">MJ6T9K</button></span></div>");var c=document.getElementById("tvRef");if(!c)return;c.addEventListener("click",function(){var o=c.textContent,done=function(){c.textContent="Copied";setTimeout(function(){c.textContent=o},1600)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText("MJ6T9K").then(done,done)}else{var t=document.createElement("textarea");t.value="MJ6T9K";document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(t);done()}})})();</script></body>
+</body>
 </html>
