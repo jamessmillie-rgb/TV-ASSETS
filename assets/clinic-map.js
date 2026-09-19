@@ -6,10 +6,10 @@
       if(root.dataset.mounted) return; root.dataset.mounted='1';
       root.classList.add('tv-cmap', root.dataset.mode||'full', root.dataset.embed?"embed":"tv-cmap-page");
       root.innerHTML=TPL;
-      Promise.all([fetch(BASE+'locations.json?v=2').then(function(r){return r.json()}), fetch(BASE+'clinic-map-land.json?v=1').then(function(r){return r.json()})]).then(function(d){ mount(root,d[0],d[1]); if(root.dataset.postcode){ var q=root.querySelector('#q'); q.value=root.dataset.postcode; root.querySelector('#go').click(); } }).catch(function(){ root.querySelector('#status').textContent='The map could not load. Please try again.'; });
+      Promise.all([fetch(BASE+'locations.json?v=2').then(function(r){return r.json()}), fetch(BASE+'clinic-map-land.json?v=1').then(function(r){return r.json()})]).then(function(d){ mount(root,d[0],d[1]); root.dataset.ready='1'; var pend=root.dataset.pending||root.dataset.postcode; if(pend){ delete root.dataset.pending; var q=root.querySelector('#q'); q.value=pend; root.querySelector('#go').click(); } }).catch(function(){ root.querySelector('#status').textContent='The map could not load. Please try again.'; });
     });
   }
-  window.TVClinicMap={ search:function(pc){ document.querySelectorAll('[data-tv-clinic-map]').forEach(function(root){ var q=root.querySelector('#q'); if(q){ q.value=pc; root.querySelector('#go').click(); } }); } };
+  window.TVClinicMap={ search:function(pc){ document.querySelectorAll('[data-tv-clinic-map]').forEach(function(root){ if(!root.dataset.ready){ root.dataset.pending=pc; return; } var q=root.querySelector('#q'); if(q){ q.value=pc; root.querySelector('#go').click(); } }); } };
   
 function mount(ROOT, LOCDATA, LAND){
   var LOC=LOCDATA; var P=LAND.proj;
@@ -66,7 +66,7 @@ function mount(ROOT, LOCDATA, LAND){
     list.innerHTML=items.map(function(c){return '<button type="button" class="fc-r '+(c.t==='m'?'home':c.t==='r'?'rx':'')+'" data-i="'+c.i+'"><div><span class="fc-tag">'+(c.t==='c'?'Partner clinic':c.t==='r'?'Signature · Randox Health':'Home visit')+'</span><b>'+label(c)+'</b><small>'+c.p+(c.t==='c'?' · £19 draw':c.t==='r'?' · included with Signature':' · £39 visit')+'</small></div>'+(c.d!=null?'<span class="fc-d">'+c.d.toFixed(1)+' mi</span>':'')+'</button>'}).join('');
     applyLayers(); list.querySelectorAll('.fc-r').forEach(function(b){ b.addEventListener('click',function(){pick(+b.dataset.i,false)}); b.addEventListener('mouseenter',function(){var d=svg.querySelector('[data-i="'+b.dataset.i+'"]'); if(d){show(LOC[+b.dataset.i],d)}}); b.addEventListener('mouseleave',hide); });
   }
-  function pick(i,scroll){
+  function pick(i,scroll,auto){
     sel=i; var c=LOC[i];
     svg.querySelectorAll('.dot').forEach(function(d){d.classList.toggle('on',+d.dataset.i===i)});
     list.querySelectorAll('.fc-r').forEach(function(b){b.classList.toggle('on',+b.dataset.i===i)});
@@ -80,7 +80,8 @@ function mount(ROOT, LOCDATA, LAND){
       bk.firstChild.textContent='Book '+(pn==='advanced'?'Advanced':'Ultimate')+(c.t==='c'?' at '+c.a:' at home')+', £'+tot+' ';
       if(cmp) cmp.style.display=(mode==='advanced'||mode==='ultimate')?'none':'block';
     }
-    if(bkp) bkp.style.display='block';
+    if(bkp) bkp.style.display=ROOT.dataset.cta==='none'?'none':'block';
+    if(!auto){ try{ ROOT.dispatchEvent(new CustomEvent('tvmap:pick',{bubbles:true,detail:{p:c.p,a:c.a,t:c.t}})); }catch(e){} }
     var ring=svg.querySelector('#you .ring'); if(ring) ring.remove();
     var p=proj(c.lat,c.lng), r=document.createElementNS('http://www.w3.org/2000/svg','circle'); r.setAttribute('cx',p[0]); r.setAttribute('cy',p[1]); r.setAttribute('r',(9/Math.sqrt(Z)).toFixed(2)); r.setAttribute('class','ring'); $('you').appendChild(r);
     if(scroll){ var b=list.querySelector('[data-i="'+i+'"]'); if(b) b.scrollIntoView({block:'nearest',behavior:'smooth'}); }
@@ -100,7 +101,7 @@ function mount(ROOT, LOCDATA, LAND){
     else if(home.d<18){ ha.textContent='Nearest clinic is '+near.d.toFixed(0)+' miles, '; h.textContent='but home visits cover you.'; }
     else { ha.textContent='Nearest clinic is '+near.d.toFixed(0)+' miles. '; h.textContent='Call us and we will find a way.'; }
     zoomTo(lat,lng,near.d<=15?3.2:2);
-    pick((ON.c?clinics[0]:ON.r?rx[0]:home).i,false);
+    pick((ON.c?clinics[0]:ON.r?rx[0]:home).i,false,true);
   }
   function fallbackSearch(q){
     var Q=q.toUpperCase().replace(/\s+/g,'');
