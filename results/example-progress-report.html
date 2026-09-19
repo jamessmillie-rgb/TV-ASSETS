@@ -1071,7 +1071,7 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
       <div class="pg-vals">${fmt(r.prev)} &rarr; ${fmt(r.cur)} ${esc(r.b.units||'')}${r.dCur===0?' &middot; now in the ideal range':''}</div>
     </div>`).join('');
   }
-  let kc = `<section id="progress" class="reveal pg-section">
+  let kc = `<section id="progress" class="pg-section">
     <div class="eyebrow">Since your last test</div>
     <h2 class="sec-title">What has changed</h2>
     <p class="sec-sub">Each chart runs from your previous result to this one. The shaded band is the ideal range.</p>`;
@@ -1108,7 +1108,7 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
     svg += `<polygon points="${poly('cur')}" fill="rgba(44,228,173,.18)" stroke="${G}" stroke-width="2"/>`;
     axes.forEach((a, i) => { const [x,y] = pt(i, a.cur); svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${G}"/>`; });
     svg += `</svg>`;
-    radar = `<section class="reveal pg-section"><div class="pg-radar">
+    radar = `<section class="pg-section"><div class="pg-radar">
       <div class="pg-title">System performance, previous vs current</div>
       <div class="pg-sub">Each axis is a body system scored by the share of its markers in the ideal range.</div>
       ${svg}
@@ -1122,7 +1122,7 @@ navSections.forEach(id=>{ const el=document.getElementById(id); if(el) navObs.ob
     return `<div class="pg-wrap"><table class="pg-table"><tr><th>Marker</th><th>Previous</th><th>Current</th><th>Change</th></tr>` +
       list.map(r => `<tr><td>${esc(r.b.name)}</td><td class="pg-prev">${fmt(r.prev)} ${esc(r.b.units||'')}</td><td>${fmt(r.cur)} ${esc(r.b.units||'')}</td><td class="pg-chg" style="color:${colour}">${pctTxt(r.pct)}</td></tr>`).join('') + `</table></div>`;
   }
-  let tbl = `<section class="reveal pg-section"><div class="pg-title">Every marker, previous vs current</div>`;
+  let tbl = `<section class="pg-section"><div class="pg-title">Every marker, previous vs current</div>`;
   if (better.length) tbl += `<div class="pg-label" style="color:var(--green)">Improved (${better.length})</div>${table(better, G)}`;
   if (worse.length)  tbl += `<div class="pg-label" style="color:var(--red)">Moved the wrong way (${worse.length})</div>${table(worse, R)}`;
   if (same.length)   tbl += `<div class="pg-label" style="color:var(--text3)">Stable (${same.length})</div>${table(same, 'var(--text3)')}`;
