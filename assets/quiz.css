@@ -5,6 +5,16 @@
 .tvq *,.tvr .tvq button,.tvr button{font-family:inherit}
 .tvq h1,.tvq h2,.tvq h3,.tvr h1,.tvr h2,.tvr h3{font-family:'Inter Tight',sans-serif;letter-spacing:-.03em;line-height:1.05;margin:0}
 .tvq a,.tvr a{text-decoration:none}
+
+/* buttons (shared) */
+.tvq .btn,.tvr .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:#fff;border:0;padding:17px 30px;border-radius:100px;font-size:.82rem;font-weight:700;letter-spacing:.02em;cursor:pointer;transition:.2s;text-decoration:none;line-height:1.2}
+.tvq .btn:hover,.tvr .btn:hover{background:#000;color:#fff;transform:translateY(-1px)}
+.tvq .btn.teal,.tvr .btn.teal{background:var(--g);color:#06251b}.tvq .btn.teal:hover,.tvr .btn.teal:hover{background:var(--g-deep);color:#fff}
+.tvq .btn.gold,.tvr .btn.gold{background:var(--gold);color:#fff}.tvq .btn.gold:hover,.tvr .btn.gold:hover{background:#b3935a}
+.tvq .btn.ghost,.tvr .btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--line)}.tvq .btn.ghost:hover,.tvr .btn.ghost:hover{background:var(--paper-2);color:var(--ink);transform:none}
+.tvq .btn.on-dark.ghost,.tvr .btn.on-dark.ghost{color:#fff;border-color:rgba(255,255,255,.28)}.tvr .btn.on-dark.ghost:hover{background:rgba(255,255,255,.08);color:#fff}
+.tvq a,.tvr a{color:inherit}
+
 /* ---------- INTRO ---------- */
 .intro{display:block;padding:40px 24px 48px;max-width:1080px;margin:0 auto}
 .intro-in{display:flex;flex-direction:column;gap:36px}

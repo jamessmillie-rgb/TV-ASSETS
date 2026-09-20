@@ -213,7 +213,9 @@ async function init(){
   // dashboard mode: hide the pre-purchase sections once someone has bought or has a report
   if(root.dataset.mode==='dashboard'){
     getJourney(m).then(j=>{
-      const purchased=!!(j&&(j.live_order||(j.reports&&j.reports.length)));
+      // same fallback as the journey card: if the CRM lookup fails, a Memberstack dashboard-url means a report exists
+      const msUrl=m&&m.customFields&&m.customFields['dashboard-url'];
+      const purchased=!!(j&&(j.live_order||(j.reports&&j.reports.length)))||(!j&&!!msUrl);
       if(purchased){
         // purchasers never see the preview map: it gets mistaken for the report
         root.style.display='none';document.querySelectorAll('.rbar').forEach(e=>e.style.display='none');
