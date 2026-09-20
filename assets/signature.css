@@ -174,3 +174,18 @@
 .s-case-q .who b{color:#fff}.s-case-q .who .ver{display:inline-flex;align-items:center;gap:4px;color:var(--g);font-weight:700}
 .s-case-q .who .ver svg{width:11px;height:11px}
 .s-case-note{margin-top:16px;font-size:.74rem;color:var(--mute)}
+
+/* why not Randox direct */
+.s-why{background:#fff;border-top:1px solid var(--line)}
+.s-why-g{display:grid;grid-template-columns:1fr;gap:16px;margin-top:30px;max-width:900px}@media(min-width:768px){.s-why-g{grid-template-columns:1fr 1fr;gap:20px}}
+.s-why-c{border-radius:18px;padding:26px 24px;background:var(--grey);border:1px solid var(--line)}
+.s-why-c.gold{border:1.5px solid var(--gold-line);background:linear-gradient(180deg,var(--gold-tint) 0,#fff 100%);box-shadow:0 10px 34px rgba(17,17,17,.05)}
+.s-why-c h3{font-size:1rem;margin-bottom:14px}
+.s-why-c ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.s-why-c li{font-size:.84rem;color:var(--ink-2);line-height:1.5;padding-left:16px;position:relative}
+.s-why-c li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:#c9cdd1}
+.s-why-c.gold li::before{background:var(--gold)}
+.s-why-c.gold li{color:var(--ink)}
+.s-proof{margin-top:14px;font-size:.84rem;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.s-proof .st{display:flex;gap:2px}.s-proof .st svg{width:12px;height:12px;color:var(--g)}
+.s-proof em{font-style:normal;font-size:.72rem;color:var(--mute);font-weight:600}
