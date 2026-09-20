@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap');
 
 .tvq,.tvr{--g:#2ce4ad;--g-deep:#1fb599;--gold:#c9a96e;--ink:#0e1113;--ink-2:#4b5560;--mute:#8a919a;--line:rgba(14,17,19,.09);--tint:rgba(44,228,173,.08);--paper:#ffffff;--paper-2:#f6f8f8;--night:#07090d;--night-2:#0e1218;--amber:#f5b82e;--orange:#f3803d;--red:#ef5a5a}
 .tvq,.tvr{font-family:'Montserrat',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;min-width:0}
