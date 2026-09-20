@@ -215,8 +215,11 @@ async function init(){
     getJourney(m).then(j=>{
       const purchased=!!(j&&(j.live_order||(j.reports&&j.reports.length)));
       if(purchased){
-        document.querySelectorAll('.results .sec,.results .close,.rbar').forEach(e=>e.style.display='none');
-        const p=root.querySelector('.rhead p');if(p)p.textContent=(j.reports&&j.reports.length)?'The map your answers built. Your report is what your blood said.':'The map your answers built. Your blood will confirm, overturn or add to it when your report lands.';
+        // purchasers never see the preview map: it gets mistaken for the report
+        root.style.display='none';document.querySelectorAll('.rbar').forEach(e=>e.style.display='none');
+        const strip=document.createElement('div');strip.className='tvr-strip';
+        strip.innerHTML='<span>Your assessment answers are on file and feed your report.</span><a href="/quiz">Update them</a>';
+        root.parentElement.insertBefore(strip,root);
       }
     });
   }

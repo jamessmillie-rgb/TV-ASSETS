@@ -95,3 +95,6 @@
 .rbar-in{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff}
 .rbar b{display:block;font-size:.88rem}.rbar span{font-size:.72rem;color:rgba(255,255,255,.55)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.tvr-strip{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto 4px;padding:14px 24px;font-family:Montserrat,sans-serif;font-size:.84rem;color:var(--ink-2)}
+.tvr-strip a{color:var(--g-deep);font-weight:700;text-decoration:none}
