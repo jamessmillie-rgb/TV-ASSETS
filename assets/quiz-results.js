@@ -218,7 +218,7 @@ async function init(){
         // purchasers never see the preview map: it gets mistaken for the report
         root.style.display='none';document.querySelectorAll('.rbar').forEach(e=>e.style.display='none');
         const strip=document.createElement('div');strip.className='tvr-strip';
-        strip.innerHTML='<span>Your assessment answers are on file and feed your report.</span><a href="/quiz">Update them</a>';
+        strip.innerHTML='<span>Your assessment answers are on file and feed your report.</span><span class="tvr-strip-links"><a href="/quiz-results">See your body map</a><a href="/quiz">Update your answers</a></span>';
         root.parentElement.insertBefore(strip,root);
       }
     });

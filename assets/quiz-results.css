@@ -98,3 +98,4 @@
 
 .tvr-strip{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto 4px;padding:14px 24px;font-family:Montserrat,sans-serif;font-size:.84rem;color:var(--ink-2)}
 .tvr-strip a{color:var(--g-deep);font-weight:700;text-decoration:none}
+.tvr-strip-links{display:flex;gap:18px;flex-wrap:wrap}
