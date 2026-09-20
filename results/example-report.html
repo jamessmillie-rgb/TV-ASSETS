@@ -1245,7 +1245,7 @@ function verifyDob(){
   }
 }
 window.verifyDob=verifyDob;
-dob.focus();
+try{ runIntro(); }catch(e){}
 
 // print header fill
 try{ document.getElementById('print-meta').innerHTML = (REPORT_DATA.patient_name||'')+'<br>Report date: '+(REPORT_DATA.report_date||'')+'<br>For informational purposes only'; }catch(e){}
