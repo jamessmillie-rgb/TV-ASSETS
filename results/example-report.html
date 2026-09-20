@@ -1196,16 +1196,24 @@ function runIntro(){
   const tsBm=bms.find(b=>b.key==='truescore'); const trueScore=tsBm?parseFloat(tsBm.result):healthPct;
   const optFrac=tsBm?trueScore/100:(assessable.length?optimalCount/assessable.length:0);
   const flagFrac=totalTested?flaggedCount/totalTested:0;
-  const t0=performance.now(), dur=1400;
   const pctEl=document.getElementById('ringPct');
-  function step(t){
-    const k=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-k,3);
-    fill.style.strokeDashoffset=C*(1-optFrac*e);
-    fill2.style.strokeDashoffset=C2*(1-flagFrac*e);
-    pctEl.innerHTML=Math.round(trueScore*e)+(tsBm?'<span>/100</span>':'<span>%</span>');
-    if(k<1) requestAnimationFrame(step);
+  const suffix=tsBm?'<span>/100</span>':'<span>%</span>';
+  // final state first, so the score is right even if animation frames never run (background tab, print, old browser)
+  fill.style.strokeDashoffset=C*(1-optFrac); fill2.style.strokeDashoffset=C2*(1-flagFrac);
+  pctEl.innerHTML=Math.round(trueScore)+suffix;
+  if(!runIntro._ran && typeof requestAnimationFrame==='function' && !(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    runIntro._ran=true;
+    const dur=1400; let t0=null;
+    function step(t){
+      if(t0==null)t0=t;
+      const k=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-k,3);
+      fill.style.strokeDashoffset=C*(1-optFrac*e);
+      fill2.style.strokeDashoffset=C2*(1-flagFrac*e);
+      pctEl.innerHTML=Math.round(trueScore*e)+suffix;
+      if(k<1) requestAnimationFrame(step); else { fill.style.strokeDashoffset=C*(1-optFrac); pctEl.innerHTML=Math.round(trueScore)+suffix; }
+    }
+    requestAnimationFrame(step);
   }
-  requestAnimationFrame(step);
   // scan sweep + node pop
   const scan=document.getElementById('scan'); if(scan) scan.classList.add('run');
   document.querySelectorAll('.node').forEach((n,i)=>{ setTimeout(()=>n.classList.add('on'), 300+i*70); });
