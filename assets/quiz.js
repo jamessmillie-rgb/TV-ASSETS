@@ -169,7 +169,11 @@ function readFields(){
   const dob=g('f_dob').value,sex=g('f_sex').value;if(!dob||!sex){g('ferr').classList.add('on');return false}
   A.dob=dob;A.gender=sex;
   if(U.h==='cm'){A.height=g('f_h').value}else{const f=parseFloat(g('f_ft').value)||0,i=parseFloat(g('f_in').value)||0;A.height=f||i?String(Math.round(f*30.48+i*2.54)):''}
+  // sanity: a height under 3 metres and over 1.2, a weight between 30 and 300 kg; anything else is a units slip
+  const hn=parseFloat(A.height),wn=parseFloat(A.weight!==undefined?A.weight:g('f_w')&&g('f_w').value);
+  if(A.height&&(isNaN(hn)||hn<120||hn>230)){g('ferr').textContent=U.h==='cm'?'Height should be in centimetres, for example 172. Switch to ft in if that is easier.':'Check the height, it does not look right.';g('ferr').classList.add('on');return false}
   if(U.w==='kg'){A.weight=g('f_w').value}else if(U.w==='lb'){const l=parseFloat(g('f_lb').value);A.weight=l?String(Math.round(l/2.2046*10)/10):''}else{const st=parseFloat(g('f_st').value)||0,l=parseFloat(g('f_stlb').value)||0;A.weight=st||l?String(Math.round((st*6.35029+l/2.2046)*10)/10):''}
+  const wv=parseFloat(A.weight);if(A.weight&&(isNaN(wv)||wv<30||wv>300)){g('ferr').textContent=U.w==='kg'?'Weight should be in kilograms, for example 75. Switch to lb or st lb if that is easier.':'Check the weight, it does not look right.';g('ferr').classList.add('on');return false}
   return true;
 }
 
