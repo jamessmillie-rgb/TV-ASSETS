@@ -143,8 +143,8 @@ function finish(){
         window.$memberstackDom.getCurrentMember().then(r=>{
           const m=r&&r.data;
           if(m&&m.id){ window.$memberstackDom.updateMember({customFields:{"quiz-data":quizJSON}}).then(()=>go('/dashboard')).catch(()=>go('/dashboard')) }
-          else go('/join');
-        }).catch(()=>go('/join'));
+          else go('/join?redirect=/dashboard');
+        }).catch(()=>go('/join?redirect=/dashboard'));
       },100);
       setTimeout(()=>{if(!window.$memberstackDom)go('/join')},4000);
     }catch(e){go('/join')}

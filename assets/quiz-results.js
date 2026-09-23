@@ -205,7 +205,9 @@ async function init(){
   const root=document.getElementById('results');if(!root)return;
   const wait=()=>new Promise(res=>{let n=0;const t=setInterval(()=>{if(window.$memberstackDom||n++>30){clearInterval(t);res()}},100)});
   await wait();
-  const {q,m}=await loadQuiz();
+  let {q,m}=await loadQuiz();
+  // answers completed while logged out live in localStorage; once the person logs in, save them to their account
+  if(m&&m.id&&!(m.customFields&&m.customFields['quiz-data'])){try{const l=localStorage.getItem('truevitalsQuiz');if(l){await window.$memberstackDom.updateMember({customFields:{'quiz-data':l}});q=JSON.parse(l)}}catch(e){}}
   const first=m&&m.customFields&&m.customFields['first-name'];
   if(!q){root.querySelector('.rhead h1').textContent='Complete your assessment to build your map.';root.querySelector('.rhead p').innerHTML='About three minutes. <a href="/quiz" style="color:#2ce4ad;font-weight:600">Start the assessment</a>.';document.querySelectorAll('.results .sec,.results .close,.rbar').forEach(e=>e.style.display='none');return}
   renderResults(q);
