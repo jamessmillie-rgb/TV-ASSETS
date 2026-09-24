@@ -48,7 +48,7 @@ function render(){
     if(up&&d.balance!=null){$('hpTotal').innerHTML=`<s>${gbp(d.fullTotal||c.total)}</s>${gbp(d.balance)}`;$('hpFull').innerHTML=`Pay ${gbp(d.balance)} now<small>card, Apple Pay or Google Pay</small>`;if(d.stripe===false)$('hpFull').style.display='none'}
     lastQuote=d.quote||null; paintMonthly();
     if(d.live===false)$('hpLive').style.display='';
-  }).catch(()=>{lastQuote=null;paintMonthly()});
+  }).catch(()=>{lastQuote=null;paintMonthly();/* Worker not live yet: route pay-monthly to the information page rather than an error */ $('hpMonthly').href='/pay-monthly'; $('hpMonthly').innerHTML=P8LOGO+'Pay monthly<small>how it works</small>'; $('hpLive').style.display='none';});
 }
 function paintMonthly(){
   const qt=lastQuote; const el=$('hpMonthly');
