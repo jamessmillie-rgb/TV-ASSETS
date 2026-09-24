@@ -50,13 +50,19 @@ function render(){
 function leaveUpgrade(reason){S.upgrade=null;root.classList.remove('upgrade');root.querySelectorAll('[data-fam]').forEach(b=>b.disabled=false);const u=$('hpUp');u.style.display='block';u.innerHTML=reason==='window closed'?'The 30-day upgrade window on your last test has closed, so plan pricing below is the standard ladder. Your next test on a plan still starts at the lower price.':'That upgrade link isn\u2019t valid any more; plan pricing below is the standard ladder.';render()}
 function boot(){
   const upId=q.get('upgrade');
-  if(upId&&/^[0-9a-f-]{36}$/i.test(upId)){
-    fetch(API+'/payl8r-price?upgrade='+encodeURIComponent(upId)).then(r=>r.json()).then(d=>{
-      if(d.upgrade){S.upgrade={orderId:upId,credit:d.upgrade.credit,until:d.upgrade.until,purchased:d.upgrade.purchased};S.fam=d.upgrade.panel==='signature'?'SIG':'ULT';if(d.upgrade.phleb)S.coll=d.upgrade.phleb;root.classList.add('upgrade');
+  const resolveUp=(url)=>fetch(url).then(r=>r.json()).then(d=>{
+      if(d.upgrade){S.upgrade={orderId:d.upgrade.orderId||upId,credit:d.upgrade.credit,until:d.upgrade.until,purchased:d.upgrade.purchased};S.fam=d.upgrade.panel==='signature'?'SIG':'ULT';if(d.upgrade.phleb)S.coll=d.upgrade.phleb;root.classList.add('upgrade');
         $('hpUp').innerHTML=`<b>${d.upgrade.firstName?d.upgrade.firstName+', your':'Your'} ${S.fam==='SIG'?'Signature':'Ultimate'} test on ${dateUK(d.upgrade.purchased)} counts as test one.</b> The ${gbp(d.upgrade.credit)} you paid comes off any plan below. <span class="hp-up-when">Upgrade by ${dateUK(d.upgrade.until)}</span>, then the window closes and the ladder starts from scratch.`;
         render();}
+      else if(d.upgrade_error==='login required'){$('hpUp').style.display='block';$('hpUp').innerHTML='<b>Log in to see your upgrade offer.</b> If you bought a test in the last 30 days it counts as test one. <a href="/login?redirect=/health-plans%3Fupgrade%3Dlatest" style="text-decoration:underline;color:#fff">Log in</a>';render()}
       else leaveUpgrade(d.upgrade_error||'invalid');
     }).catch(()=>leaveUpgrade('invalid'));
+  if(upId==='latest'){
+    let done=false; const t=setInterval(()=>{ if(!window.$memberstackDom) return; clearInterval(t); done=true;
+      window.$memberstackDom.getCurrentMember().then(r=>{const m=r&&r.data; if(m&&m.auth&&m.auth.email) resolveUp(API+'/payl8r-price?upgrade=latest&email='+encodeURIComponent(m.auth.email)); else resolveUp(API+'/payl8r-price?upgrade=latest');}).catch(()=>resolveUp(API+'/payl8r-price?upgrade=latest'));},100);
+    setTimeout(()=>{ if(!done){ clearInterval(t); resolveUp(API+'/payl8r-price?upgrade=latest'); } },4000);
+  } else if(upId&&/^[0-9a-f-]{36}$/i.test(upId)){
+    resolveUp(API+'/payl8r-price?upgrade='+encodeURIComponent(upId));
   } else if(q.get('expired')){ $('hpUp').style.display='block'; $('hpUp').textContent='The upgrade window on that test has closed. Plan pricing below is the standard ladder.'; render(); }
   else render();
 }
