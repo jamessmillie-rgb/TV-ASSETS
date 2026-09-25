@@ -56,6 +56,7 @@ function paintMonthly(){
     const o=qt.options.find(x=>x.months===S.term)||qt.options.reduce((a,b)=>Math.abs(b.months-S.term)<Math.abs(a.months-S.term)?b:a);
     el.innerHTML=P8LOGO+`${gbp(o.monthly)} a month<small>${o.months} months, ${o.apr?'representative '+o.apr+'% APR':'0% APR'}</small>`;
     $('hpFine').innerHTML=`Total payable ${gbp(o.totalPayable)} over ${o.months} months. ${qt.rep||''} Soft search first; a decision usually takes under a minute.`;
+    const rep=$('hpRep'); if(rep&&qt.rep) rep.innerHTML='<b>Representative example</b>'+qt.rep+' Credit is subject to status; 18+ and UK residents only. TrueVitals Group Ltd is a credit broker, not a lender, and introduces customers to Payl8r (Social Money Ltd), authorised and regulated by the Financial Conduct Authority.';
   } else { el.innerHTML=P8LOGO+'Pay monthly<small>soft search first</small>'; $('hpFine').innerHTML='Finance subject to status. 18+, UK residents.'; }
 }
 function leaveUpgrade(reason){S.upgrade=null;root.classList.remove('upgrade');root.querySelectorAll('[data-fam]').forEach(b=>b.disabled=false);const u=$('hpUp');u.style.display='block';u.innerHTML=reason==='window closed'?'The 30-day upgrade window on your last test has closed, so plan pricing below is the standard ladder. Your next test on a plan still starts at the lower price.':'That upgrade link isn\u2019t valid any more; plan pricing below is the standard ladder.';render()}
