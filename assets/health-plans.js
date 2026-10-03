@@ -2,6 +2,8 @@
 'use strict';
 const API=(window.TV_PAYL8R_API||'https://truevitals-payl8r.james-smillie-8c6.workers.dev').replace(/\/$/,'');
 const root=document.getElementById('tvhp'); if(!root) return;
+// Health Plans withdrawn 3 Oct 2026: hide the ladder wherever it is embedded and do nothing else.
+root.style.display='none'; var hpSec=root.closest('section'); if(hpSec) hpSec.style.display='none'; return;
 const $=(id)=>document.getElementById(id);
 const L={ULT:{name:'Ultimate',markers:140,prices:[349,319,299,299],floor:299,phleb:{clinic:19,home:39}},SIG:{name:'Signature',markers:230,prices:[799,749,699,699],floor:699,phleb:{clinic:0}}};
 const STRIPE={'ULT-2-clinic-y1':'https://buy.stripe.com/7sY3cp2Db14n8nt6FLbbG0m','ULT-3-clinic-y1':'https://buy.stripe.com/28E6oBb9HfZhavB5BHbbG0n','ULT-4-clinic-y1':'https://buy.stripe.com/00weV7fpXaEX339d49bbG0o','ULT-2-home-y1':'https://buy.stripe.com/8x27sF4Lj00j7jpd49bbG0p','ULT-3-home-y1':'https://buy.stripe.com/dRm6oBelT8wP0V1e8dbbG0q','ULT-4-home-y1':'https://buy.stripe.com/4gM7sFa5DbJ19rx4xDbbG0r','SIG-2-y1':'https://buy.stripe.com/8x23cp7XvdR96fl2pvbbG0j','SIG-3-y1':'https://buy.stripe.com/14A00da5DbJ1cDJ2pvbbG0k','SIG-4-y1':'https://buy.stripe.com/14A00d5Pn3cvavB8NTbbG0l'};
