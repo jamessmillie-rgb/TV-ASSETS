@@ -1,4 +1,4 @@
-/* TrueVitals event tracker v1 (30 Sept 2026)
+/* TrueVitals event tracker v1.1 (15 Oct 2026: video play + watch-depth events; v1 30 Sept 2026)
    Runs ONLY after analytics consent, alongside session tracker v2 (same tv_sid / tv_vid).
    Records what people do, never what they type: clicks, scroll depth, time on page,
    rage clicks, which fields get focused (by label, never value), form submits, JS errors.
@@ -86,12 +86,31 @@
   }
   var timeSent = false;
   function pageTime() {
+    videoSummary();
     if (timeSent) { flush(true); return; } timeSent = true;
     var vis = visibleMs + (visSince ? Date.now() - visSince : 0);
     push('page_time', { secs: Math.round(vis / 1000), total: Math.round((Date.now() - t0) / 1000), depth: maxDepth });
     flush(true);
   }
   function onError(e) { if (!e || !e.message) return; push('js_error', { msg: clip(e.message, 120), src: clip(String(e.filename || '').split('/').pop(), 40), line: e.lineno || null }); }
+
+  // Video watching (v1.1, 15 Oct 2026): media events don't bubble, so listen in the capture phase on document.
+  // Records each video's first play and 25/50/75/100% milestones, plus the furthest point reached when the page closes.
+  var vids = {};
+  function vidKey(v) { var s = v.currentSrc || (v.querySelector && v.querySelector('source') && v.querySelector('source').src) || ''; return clip(v.id || s.split('/').pop() || 'video', 40); }
+  function vstate(v) { var k = vidKey(v); return vids[k] || (vids[k] = { k: k, played: 0, m: {}, max: 0, dur: 0 }); }
+  function onMedia(e) {
+    var v = e.target; if (!v || v.tagName !== 'VIDEO') return; var s = vstate(v);
+    if (v.duration && isFinite(v.duration)) s.dur = Math.round(v.duration);
+    if (e.type === 'play' && !s.played) { s.played = 1; push('video', { v: s.k, ev: 'play', secs: Math.round((Date.now() - t0) / 1000), y: scrollPct() }); flush(); return; }
+    if (e.type === 'timeupdate' || e.type === 'ended') {
+      if (!v.duration || !isFinite(v.duration)) return;
+      var pct = e.type === 'ended' ? 100 : Math.floor((v.currentTime / v.duration) * 100);
+      if (pct > s.max) s.max = pct;
+      [25, 50, 75, 100].forEach(function (m) { if (!s.m[m] && s.max >= (m === 100 ? 97 : m)) { s.m[m] = 1; push('video', { v: s.k, ev: 'progress', pct: m, dur: s.dur }); } });
+    }
+  }
+  function videoSummary() { Object.keys(vids).forEach(function (k) { var s = vids[k]; if (s.played && !s.sent) { s.sent = 1; push('video', { v: k, ev: 'left', max_pct: s.max, dur: s.dur }); } }); }
 
   function loadClarity() {
     if (!CLARITY_ID || sensitive) return;
@@ -107,6 +126,7 @@
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('pagehide', pageTime);
     window.addEventListener('error', onError);
+    ['play', 'timeupdate', 'ended'].forEach(function (t) { document.addEventListener(t, onMedia, true); });
     setInterval(function () { flush(); }, 8000);
     setTimeout(onScroll, 1500);
     loadClarity();
