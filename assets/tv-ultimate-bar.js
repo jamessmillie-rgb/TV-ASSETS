@@ -10,7 +10,7 @@
     if (document.querySelector('.tvc-bar, .bk-bar')) return; /* known page bars */
     var bar = document.createElement('div');
     bar.id = 'tvub'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Ultimate panel');
-    bar.innerHTML = '<div class="tvub-t"><b>Ultimate \u00b7 140 biomarkers</b><span>\u00a3349 + \u00a319 clinic draw \u00b7 Klarna available</span></div><a class="tvub-go" href="/ultimate-panel">See Ultimate</a>';
+    bar.innerHTML = '<div class="tvub-t"><b>Ultimate \u00b7 140 biomarkers</b><span>\u00a3399 including the clinic draw \u00b7 Klarna available</span></div><a class="tvub-go" href="/ultimate-panel">See Ultimate</a>';
     addCss();
     document.body.appendChild(bar);
     bar.querySelector('a').addEventListener('click', function(){ try { window.dataLayer = window.dataLayer || []; dataLayer.push({ event: 'tv_ultimate_bar_click', page: path }); } catch(e) {} });

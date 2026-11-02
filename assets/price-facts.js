@@ -38,18 +38,13 @@
     // our all-in totals and per-marker figures
     [/£368 all-in/g,'£399 all-in'],
     [/cost £368 \(TrueVitals Ultimate/g,'cost £399 (TrueVitals Ultimate'],
-    [/£368\b/g,'£399'],
-    [/£388\b/g,'£428'],
     [/£2\.63 per biomarker/g,'£2.85 per biomarker'],
-    [/£2\.63\b/g,'£2.85'],
-    [/£116\.33\b/g,'£133'],
-    // headline prices last
-    [/£349\b/g,'£399'],
-    [/£269\b/g,'£319'],
-    [/£288\b/g,'£319']
+    [/£116\.33\b/g,'£133']
+    // No bare-number rules (£349, £269, £288, £368, £388): every page's raw code now carries the new prices, and
+    // bare rules would rewrite competitor prices (e.g. Bupa £349) on comparison pages. Removed 1 Nov 2026.
   ];
   var SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,NOSCRIPT:1,CODE:1,PRE:1};
-  var HIT=/£(?:349|269|288|368|388|19|39|116|2\.63)/;
+  var HIT=/£(?:349|269|19|39|116|2\.63)/;
   function fix(s){for(var i=0;i<R.length;i++)s=s.replace(R[i][0],R[i][1]);return s}
   function walk(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;return p&&!SKIP[p.nodeName]&&HIT.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});var n;while((n=w.nextNode())){var v=n.nodeValue,o=fix(v);if(o!==v)n.nodeValue=o}}
   function ld(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(sc){var v=sc.textContent,o=fix(v).replace(/("price"\s*:\s*")349(")/g,'$1399$2').replace(/("price"\s*:\s*")269(")/g,'$1319$2').replace(/("price"\s*:\s*)349\b/g,'$1399').replace(/("price"\s*:\s*)269\b/g,'$1319');if(o!==v)sc.textContent=o})}
