@@ -180,7 +180,6 @@
     </div>
   </div>
 
-  <script src="https://results.truevitals.co.uk/assets/sig-book.js?v=20261104"></script>
   <script>
     (function() {
       var WORKER_URL = 'https://truevitals-stripe-webhook.james-smillie-8c6.workers.dev';
@@ -247,10 +246,20 @@
       // Signature: book a Randox clinic and time on this page (sig-book.js). If booking is off or unavailable for this
       // order, the original "Randox will email your booking link" box stays exactly as before.
       var sigMounted = false;
+      function loadSigBook(cb) {
+        if (window.TVSigBook) return cb();
+        var called = false; var once = function () { if (!called) { called = true; cb(); } };
+        var s = document.createElement('script');
+        s.src = 'https://results.truevitals.co.uk/assets/sig-book.js?v=20261104';
+        s.onload = once; s.onerror = once; document.head.appendChild(s);
+        setTimeout(once, 6000);
+      }
       function mountSigBook() {
-        if (sigMounted || !sessionId || !window.TVSigBook) return;
+        if (sigMounted || !sessionId) return;
         sigMounted = true;
         $('sigEmailBox').classList.add('hidden');
+        loadSigBook(function () {
+        if (!window.TVSigBook) { $('sigEmailBox').classList.remove('hidden'); return; }
         window.TVSigBook.mount($('sigbook'), {
           sessionId: sessionId,
           onUnavailable: function () { $('sigEmailBox').classList.remove('hidden'); },
@@ -258,6 +267,7 @@
             $('email-text').textContent = 'Your appointment confirmation is in your inbox. Please check your junk folder if you cannot see it.';
             $('phleb-text').textContent = 'Attend your Randox clinic appointment. It takes around 20 minutes and includes physical measurements.';
           }
+        });
         });
       }
 
