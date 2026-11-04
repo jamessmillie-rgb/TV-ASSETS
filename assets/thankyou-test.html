@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Confirmed | TrueVitals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    if (typeof fbq !== 'undefined') { fbq('track', 'Purchase', { currency: 'GBP' }); }
+  </script>
+  <style>
+    body { font-family: 'Inter Tight', sans-serif; margin: 0; padding: 0; background: #f3f4f6; }
+    .container { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; max-width: 600px; margin: 0 auto; }
+    .icon { width: 80px; height: 80px; background: linear-gradient(135deg, #2ce4ad, #1fb599); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; font-size: 40px; color: #fff; }
+    .title { font-size: 28px; color: #111827; font-weight: 700; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 28px; }
+    .step-box { background: #ffffff; border-radius: 12px; padding: 28px; text-align: left; width: 100%; box-sizing: border-box; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .step-box.highlight { border: 2px solid #2ce4ad; }
+    .step-label { display: inline-block; background: #2ce4ad22; color: #16a085; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; margin-bottom: 12px; }
+    .step-box h3 { font-size: 18px; color: #111827; margin: 0 0 8px 0; }
+    .step-box p { font-size: 15px; color: #374151; line-height: 1.6; margin: 0 0 12px 0; }
+    .step-box p:last-child { margin-bottom: 0; }
+    .cta { display: inline-block; background: linear-gradient(135deg, #2ce4ad, #1fb599); color: #ffffff; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; margin-top: 6px; border: 0; cursor: pointer; font-family: inherit; }
+    .cta:hover { opacity: 0.9; }
+    .cta[disabled] { opacity: .6; cursor: default; }
+    .cta.secondary { background: #ffffff; color: #111827; border: 1.5px solid #d1d5db; }
+    .timeline { text-align: left; width: 100%; background: #ffffff; border-radius: 12px; padding: 24px 28px; box-sizing: border-box; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .timeline h4 { font-size: 13px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 16px 0; }
+    .t-step { display: flex; gap: 14px; margin-bottom: 16px; }
+    .t-step:last-child { margin-bottom: 0; }
+    .t-dot { width: 26px; height: 26px; border-radius: 50%; background: #ecfdf5; color: #16a085; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .t-body { font-size: 14px; color: #374151; line-height: 1.55; }
+    .t-body strong { color: #111827; }
+    .help-text { font-size: 14px; color: #6b7280; margin-top: 28px; line-height: 1.5; }
+    .help-text a { color: #2563EB; text-decoration: none; }
+    .hidden { display: none; }
+    .loader { width: 36px; height: 36px; border: 3px solid #e5e7eb; border-top-color: #2ce4ad; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .call-box { background:#ffffff; border:2px solid #2ce4ad; border-radius:12px; padding:26px 28px; text-align:left; width:100%; box-sizing:border-box; margin-bottom:20px; box-shadow:0 4px 18px rgba(44,228,173,.18); }
+    .call-box .cb-label { display:inline-block; background:#2ce4ad22; color:#16a085; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:6px; margin-bottom:12px; }
+    .call-box h3 { font-size:19px; color:#111827; margin:0 0 8px 0; }
+    .call-box p { font-size:15px; color:#374151; line-height:1.6; margin:0 0 14px 0; }
+    .call-num { display:block; font-size:30px; font-weight:700; color:#111827; text-decoration:none; letter-spacing:-.5px; margin:4px 0 2px; }
+    .call-num:hover { color:#16a085; }
+    .call-opt { font-size:14px; color:#16a085; font-weight:600; margin-bottom:12px; }
+    .call-hours { font-size:13.5px; color:#6b7280; line-height:1.6; background:#f9fafb; border-radius:8px; padding:12px 14px; margin-bottom:14px; }
+    .call-hours strong { color:#374151; }
+    .spam-note { font-size:13.5px; color:#92400e; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:12px 14px; line-height:1.55; }
+    .pref-recall { font-size:13.5px; color:#374151; background:#ecfdf5; border-radius:8px; padding:12px 14px; line-height:1.55; margin-bottom:14px; }
+    .pref-recall strong { color:#111827; }
+    /* patient details form */
+    .pd-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .pd-grid .full { grid-column:1 / -1; }
+    .pd-f label { display:block; font-size:12.5px; font-weight:600; color:#6b7280; margin-bottom:5px; }
+    .pd-f input, .pd-f select { width:100%; box-sizing:border-box; padding:12px 13px; border:1.5px solid #d1d5db; border-radius:8px; font:inherit; font-size:15px; color:#111827; background:#fff; }
+    .pd-f input:focus, .pd-f select:focus { outline:none; border-color:#2ce4ad; box-shadow:0 0 0 3px rgba(44,228,173,.18); }
+    .pd-f.err input, .pd-f.err select { border-color:#dc2626; }
+    .pd-dob { display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:8px; }
+    .pd-sex { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .pd-sex button { padding:12px; border:1.5px solid #d1d5db; border-radius:8px; background:#fff; font:inherit; font-size:15px; color:#111827; cursor:pointer; }
+    .pd-sex button.on { border-color:#2ce4ad; background:#ecfdf5; color:#0f766e; font-weight:600; }
+    .pd-why { font-size:13px; color:#6b7280; line-height:1.55; margin:10px 0 16px; }
+    .pd-error { font-size:13.5px; color:#b91c1c; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; margin:12px 0 0; }
+    .pd-done { font-size:14px; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:12px 14px; line-height:1.55; }
+    @media (max-width: 480px) { .pd-grid { grid-template-columns:1fr; } .pd-grid .full { grid-column:auto; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">✓</div>
+    <h1 class="title" id="main-title">Order confirmed!</h1>
+    <p class="subtitle" id="main-subtitle">Thank you for choosing TrueVitals. Just checking your order details...</p>
+
+    <div id="state-loading">
+      <div class="loader"></div>
+    </div>
+
+    <!-- PATIENT DETAILS: shown first whenever the order is missing DOB, sex or address -->
+    <div id="state-details" class="hidden" style="width:100%">
+      <div class="step-box highlight">
+        <span class="step-label">One minute, then you're done</span>
+        <h3>Who is this test for?</h3>
+        <p class="pd-why">Your laboratory referral is created from these details, and they're what your results are matched to. The address is where your urine sample kit is posted. Nothing here is shared beyond the laboratory.</p>
+        <form id="pdForm" novalidate>
+          <div class="pd-grid">
+            <div class="pd-f full"><label for="pdName">Patient's full name (as on their ID)</label><input id="pdName" autocomplete="name" placeholder="e.g. Sarah Jane Thompson"></div>
+            <div class="pd-f full"><label>Date of birth</label>
+              <div class="pd-dob"><input id="pdD" inputmode="numeric" placeholder="DD" maxlength="2" autocomplete="bday-day"><input id="pdM" inputmode="numeric" placeholder="MM" maxlength="2" autocomplete="bday-month"><input id="pdY" inputmode="numeric" placeholder="YYYY" maxlength="4" autocomplete="bday-year"></div>
+            </div>
+            <div class="pd-f full"><label>Sex at birth <span style="font-weight:500">(sets the laboratory's reference ranges)</span></label>
+              <div class="pd-sex"><button type="button" data-sex="F">Female</button><button type="button" data-sex="M">Male</button></div>
+            </div>
+            <div class="pd-f full"><label for="pdA1">Address line 1</label><input id="pdA1" autocomplete="address-line1"></div>
+            <div class="pd-f full"><label for="pdA2">Address line 2 <span style="font-weight:500">(optional)</span></label><input id="pdA2" autocomplete="address-line2"></div>
+            <div class="pd-f"><label for="pdCity">Town or city</label><input id="pdCity" autocomplete="address-level2"></div>
+            <div class="pd-f"><label for="pdPc">Postcode</label><input id="pdPc" autocomplete="postal-code" style="text-transform:uppercase"></div>
+            <div class="pd-f full"><label for="pdPhone">Mobile number <span style="font-weight:500">(for the booking call)</span></label><input id="pdPhone" inputmode="tel" autocomplete="tel"></div>
+          </div>
+          <div class="pd-error hidden" id="pdErr"></div>
+          <button type="submit" class="cta" id="pdSubmit" style="margin-top:16px;width:100%">Save and create my lab referral</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="details-done" class="hidden" style="width:100%"><div class="pd-done" style="margin-bottom:20px" id="detailsDoneText">Details saved. Your laboratory referral has been created.</div></div>
+
+    <div id="state-account" class="hidden" style="width:100%">
+      <div class="step-box highlight">
+        <span class="step-label">Step 2 of your order</span>
+        <h3>Create your account</h3>
+        <p>Your results and personalised report will be delivered to your secure TrueVitals dashboard. Create your account now so everything is ready when your results come in. It takes under a minute.</p>
+        <a href="/quiz" class="cta" id="signup-link">Complete your quiz &amp; create your account</a>
+      </div>
+    </div>
+
+    <div id="state-quiz" class="hidden" style="width:100%">
+      <div class="step-box highlight">
+        <span class="step-label">One thing left</span>
+        <h3>Complete your 2-minute health quiz</h3>
+        <p>Your report is written personally for you, and the quiz is what makes that possible. Your goals, lifestyle, medications, and symptoms shape every insight in it. Do it now while you have a minute, it directly improves the quality of your report.</p>
+        <a href="/quiz" class="cta">Complete my quiz</a>
+      </div>
+    </div>
+
+    <div id="state-ready" class="hidden" style="width:100%">
+      <div class="step-box">
+        <span class="step-label">You're all set</span>
+        <h3 id="ready-heading">Everything is in place</h3>
+        <p>Your account and health quiz are done. There's nothing more you need to do right now. Here's what happens next.</p>
+        <a href="/dashboard" class="cta secondary">Go to my dashboard</a>
+      </div>
+    </div>
+
+    <!-- BOOKING: Advanced / Ultimate (Nationwide Pathology) -->
+    <div id="booking-np" class="hidden" style="width:100%">
+      <div class="call-box">
+        <span class="cb-label">Action needed — book your appointment</span>
+        <h3>Call to confirm your blood draw</h3>
+        <p>Your appointment is not booked yet. Call our booking team to confirm a date and time that works for you.</p>
+        <a href="tel:+441858571322" class="call-num">01858 571322</a>
+        <div class="call-opt">Select option 3</div>
+        <div class="call-hours">
+          <strong>Monday to Friday</strong> 8:30am to 6:00pm<br>
+          <strong>Saturday</strong> 9:00am to 2:00pm<br>
+          <strong>Sunday</strong> closed
+        </div>
+        <div class="pref-recall hidden" id="prefRecall"></div>
+        <div class="spam-note">This number is also in your order confirmation email. If that email has not arrived within a few minutes, check your junk or spam folder. Either way, you can call the number above right now to get booked in.</div>
+      </div>
+    </div>
+
+    <!-- BOOKING: Signature (Randox) -->
+    <div id="booking-randox" class="hidden" style="width:100%">
+      <div id="sigbook"></div>
+      <div class="call-box" id="sigEmailBox">
+        <span class="cb-label">Next step — your Randox booking link</span>
+        <h3>Watch for your booking link</h3>
+        <p>Signature appointments are booked directly with Randox Health. They will email you a booking link, usually within one working hour, so you can choose your clinic and an exact appointment time.</p>
+        <div class="call-hours">
+          <strong>1.</strong> Randox emails your booking link<br>
+          <strong>2.</strong> Choose your clinic, date and time<br>
+          <strong>3.</strong> Attend your appointment, around 20 minutes<br>
+          <strong>4.</strong> Your report arrives within 12 working days
+        </div>
+        <div class="pref-recall hidden" id="prefRecallSig"></div>
+        <div class="spam-note">If the booking link has not arrived within a couple of hours, check your junk or spam folder first, then email <a href="mailto:support@truevitals.co.uk" style="color:#92400e;font-weight:600">support@truevitals.co.uk</a> and we will chase it for you.</div>
+      </div>
+    </div>
+
+    <div class="timeline hidden" id="timeline">
+      <h4>What happens next</h4>
+      <div class="t-step"><div class="t-dot">1</div><div class="t-body"><strong>Check your email.</strong> <span id="email-text">Your order confirmation contains your booking details. Please check your inbox and junk folder.</span></div></div>
+      <div class="t-step"><div class="t-dot">2</div><div class="t-body"><strong>Your blood draw.</strong> <span id="phleb-text">Attend your appointment as arranged.</span></div></div>
+      <div class="t-step"><div class="t-dot">3</div><div class="t-body"><strong>Lab analysis.</strong> <span id="lab-text">Your sample is processed at our accredited UK laboratory.</span></div></div>
+      <div class="t-step"><div class="t-dot">4</div><div class="t-body"><strong>Your personalised report.</strong> <span id="report-text">Every biomarker analysed and explained in plain English, delivered to your dashboard.</span> We will let you know the moment it is ready.</div></div>
+    </div>
+
+    <div class="help-text">
+      Questions? Email us at <a href="mailto:support@truevitals.co.uk">support@truevitals.co.uk</a>
+    </div>
+  </div>
+
+  <script src="https://results.truevitals.co.uk/assets/sig-book.js?v=20261104"></script>
+  <script>
+    (function() {
+      var WORKER_URL = 'https://truevitals-stripe-webhook.james-smillie-8c6.workers.dev';
+      var params = new URLSearchParams(window.location.search);
+      var sessionId = params.get('session_id');
+      var panelParam = (params.get('panel') || '').toLowerCase();
+      var attempts = 0;
+      var MAX_ATTEMPTS = 8;
+      var orderData = null;
+      var sexChoice = null;
+
+      var DAYNAMES = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+      var TIMENAMES = {EARLY:'early morning',AM:'morning',PM:'afternoon',EVE:'evening',ANY:'any time'};
+
+      function $(id) { return document.getElementById(id); }
+
+      function show(id) {
+        ['state-loading','state-details','state-account','state-quiz','state-ready'].forEach(function(s) { $(s).classList.add('hidden'); });
+        if (id) $(id).classList.remove('hidden');
+        $('timeline').classList.remove('hidden');
+      }
+
+      function isSignature(data) {
+        if (panelParam === 'signature') return true;
+        if (data && data.panel_type && String(data.panel_type).toLowerCase() === 'randox') return true;
+        if (data && data.panel && String(data.panel).toLowerCase().indexOf('signature') > -1) return true;
+        if (data && data.client_reference_id && String(data.client_reference_id).indexOf('p-signature') > -1) return true;
+        return false;
+      }
+
+      function parsePrefs(ref) {
+        if (!ref) return null;
+        var days = null, times = null;
+        String(ref).split('_').forEach(function(part) {
+          if (part.indexOf('d-') === 0) days = part.substring(2).match(/[A-Z][a-z]{2}/g);
+          if (part.indexOf('t-') === 0) times = part.substring(2).match(/EARLY|ANY|AM|PM|EVE/g);
+        });
+        if (!days && !times) return null;
+        var dTxt = days && days.length ? days.map(function(d){return DAYNAMES[d]||d;}).join(', ') : 'any day';
+        var tTxt = times && times.length ? times.map(function(t){return TIMENAMES[t]||t;}).join(' or ') : 'any time';
+        return dTxt + ', ' + tTxt;
+      }
+
+      function showBooking(data) {
+        var sig = isSignature(data);
+        var prefs = parsePrefs(data && data.client_reference_id);
+        if (sig) {
+          $('booking-randox').classList.remove('hidden');
+          mountSigBook();
+          if (prefs) { var el = $('prefRecallSig'); el.innerHTML = 'You told us <strong>' + prefs + '</strong> suits you. Look for a matching slot when your booking link arrives.'; el.classList.remove('hidden'); }
+          $('email-text').textContent = 'Randox will email your booking link, usually within one working hour. Please check your inbox and junk folder.';
+          $('phleb-text').textContent = 'Attend your Randox clinic appointment. It takes around 20 minutes and includes physical measurements.';
+          $('lab-text').textContent = 'Your sample is processed by Randox Health laboratories.';
+          $('report-text').textContent = 'All 230 biomarkers analysed and explained in plain English, delivered to your dashboard within 12 working days of your appointment.';
+        } else {
+          $('booking-np').classList.remove('hidden');
+          if (prefs) { var el2 = $('prefRecall'); el2.innerHTML = 'You told us <strong>' + prefs + '</strong> suits you. Mention this when you call and we will match it where we can.'; el2.classList.remove('hidden'); }
+          $('email-text').textContent = 'Your order confirmation contains your booking number. Please check your inbox and junk folder.';
+          $('lab-text').textContent = 'Your sample is processed at our UKAS-accredited UK laboratory.';
+          $('report-text').textContent = 'Every biomarker analysed and explained in plain English, delivered to your dashboard within 4 working days of your blood draw.';
+        }
+      }
+
+      // Signature: book a Randox clinic and time on this page (sig-book.js). If booking is off or unavailable for this
+      // order, the original "Randox will email your booking link" box stays exactly as before.
+      var sigMounted = false;
+      function mountSigBook() {
+        if (sigMounted || !sessionId || !window.TVSigBook) return;
+        sigMounted = true;
+        $('sigEmailBox').classList.add('hidden');
+        window.TVSigBook.mount($('sigbook'), {
+          sessionId: sessionId,
+          onUnavailable: function () { $('sigEmailBox').classList.remove('hidden'); },
+          onBooked: function () {
+            $('email-text').textContent = 'Your appointment confirmation is in your inbox. Please check your junk folder if you cannot see it.';
+            $('phleb-text').textContent = 'Attend your Randox clinic appointment. It takes around 20 minutes and includes physical measurements.';
+          }
+        });
+      }
+
+      function hideBooking() { $('booking-np').classList.add('hidden'); $('booking-randox').classList.add('hidden'); }
+
+      function setGreeting(name) {
+        if (name) { $('main-title').textContent = 'Order confirmed, ' + name + '!'; }
+        $('main-subtitle').textContent = 'Thank you for choosing TrueVitals. We\'re looking forward to helping you understand your health.';
+      }
+
+      function setPhlebText(type, sig) {
+        if (sig) return;
+        var el = $('phleb-text');
+        if (type === 'at_home') { el.textContent = 'A phlebotomist comes to your home at the time you agree on the call.'; }
+        else if (type === 'clinic') { el.textContent = 'Attend the clinic you agree on the call. There are 103 partner clinics across the UK.'; }
+      }
+
+      function fallback() {
+        setGreeting(null);
+        showBooking(null);
+        show('state-account');
+      }
+
+      function showPostDetails(data) {
+        var msCheck = (window.$memberstackDom && window.$memberstackDom.getCurrentMember)
+          ? window.$memberstackDom.getCurrentMember().catch(function(){ return { data: null }; })
+          : Promise.resolve({ data: null });
+        msCheck.then(function(ms) {
+          var loggedIn = !!(ms && ms.data);
+          var hasAccount = loggedIn || data.has_account;
+          if (!hasAccount) { if (data.email) { $('signup-link').href = '/quiz'; } show('state-account'); }
+          else if (!data.has_quiz) { show('state-quiz'); }
+          else { show('state-ready'); }
+        });
+      }
+
+      function resolveState(data) {
+        orderData = data;
+        setGreeting(data.first_name);
+        var sig = isSignature(data);
+        setPhlebText(data.phlebotomy_type, sig);
+        if (data.details_needed) {
+          if (data.patient_name) $('pdName').value = data.patient_name;
+          if (data.patient_phone) $('pdPhone').value = data.patient_phone;
+          $('main-subtitle').textContent = 'Payment received. One minute to create your laboratory referral, then you\'re done.';
+          hideBooking();
+          show('state-details');
+          $('timeline').classList.add('hidden');
+        } else {
+          showBooking(data);
+          showPostDetails(data);
+        }
+      }
+
+      // ---- patient details form ----
+      var sexBtns = document.querySelectorAll('.pd-sex button');
+      Array.prototype.forEach.call(sexBtns, function(b) {
+        b.addEventListener('click', function() { sexChoice = b.getAttribute('data-sex'); Array.prototype.forEach.call(sexBtns, function(x){ x.classList.toggle('on', x === b); }); });
+      });
+      function advance(from, to, len) { from.addEventListener('input', function(){ if (from.value.replace(/\D/g,'').length >= len) to.focus(); }); }
+      advance($('pdD'), $('pdM'), 2); advance($('pdM'), $('pdY'), 2);
+
+      function markErr(ids) {
+        Array.prototype.forEach.call(document.querySelectorAll('.pd-f'), function(f){ f.classList.remove('err'); });
+        ids.forEach(function(id){ var el = $(id); if (el) { var f = el.closest('.pd-f'); if (f) f.classList.add('err'); } });
+      }
+
+      $('pdForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var errs = [], msgs = [];
+        var name = $('pdName').value.replace(/\s+/g,' ').trim();
+        if (name.length < 3 || name.indexOf(' ') < 0) { errs.push('pdName'); msgs.push('the patient\'s full name'); }
+        var d = $('pdD').value.replace(/\D/g,''), m = $('pdM').value.replace(/\D/g,''), y = $('pdY').value.replace(/\D/g,'');
+        var dobOk = false, dob = '';
+        if (d && m && y && y.length === 4) {
+          var dt = new Date(Date.UTC(+y, +m - 1, +d));
+          var age = (Date.now() - dt.getTime()) / 31557600000;
+          dobOk = dt.getUTCMonth() === (+m - 1) && dt.getUTCDate() === +d && age >= 16 && age <= 110;
+          dob = y + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);
+        }
+        if (!dobOk) { errs.push('pdD'); errs.push('pdM'); errs.push('pdY'); msgs.push('a valid date of birth'); }
+        if (!sexChoice) { msgs.push('sex at birth'); }
+        var a1 = $('pdA1').value.trim(), city = $('pdCity').value.trim(), pc = $('pdPc').value.trim().toUpperCase().replace(/\s+/g,' ');
+        if (!a1) { errs.push('pdA1'); msgs.push('address line 1'); }
+        if (!city) { errs.push('pdCity'); msgs.push('town or city'); }
+        if (!/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(pc)) { errs.push('pdPc'); msgs.push('a UK postcode'); }
+        markErr(errs);
+        var errBox = $('pdErr');
+        if (msgs.length) { errBox.textContent = 'Please check: ' + msgs.join(', ') + '.'; errBox.classList.remove('hidden'); return; }
+        errBox.classList.add('hidden');
+        var btn = $('pdSubmit'); btn.disabled = true; btn.textContent = 'Saving\u2026';
+        fetch(WORKER_URL + '/patient-details', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, full_name: name, dob: dob, sex: sexChoice, address: { line1: a1, line2: $('pdA2').value.trim(), city: city, postcode: pc }, phone: $('pdPhone').value.trim() })
+        }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, body: j }; }); }).then(function(res) {
+          if (!res.ok || !res.body || !res.body.ok) {
+            btn.disabled = false; btn.textContent = 'Save and create my lab referral';
+            var fieldMap = { full_name:'pdName', dob:'pdD', address_line1:'pdA1', city:'pdCity', postcode:'pdPc' };
+            var ids = (res.body && res.body.errors || []).map(function(k){ return fieldMap[k]; }).filter(Boolean);
+            markErr(ids);
+            errBox.textContent = ids.length ? 'Please check the highlighted fields.' : 'We couldn\'t save that just now. Please try again, or email support@truevitals.co.uk and we will add the details for you.';
+            errBox.classList.remove('hidden');
+            return;
+          }
+          var sig = isSignature(orderData);
+          $('detailsDoneText').textContent = sig ? 'Details saved.' : (res.body.referral_sent ? 'Details saved. Your laboratory referral has been created; you can call to book whenever suits you.' : 'Details saved. Your laboratory referral is being created.');
+          $('details-done').classList.remove('hidden');
+          orderData.details_needed = false;
+          showBooking(orderData);
+          showPostDetails(orderData);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }).catch(function() {
+          btn.disabled = false; btn.textContent = 'Save and create my lab referral';
+          errBox.textContent = 'Connection problem. Please try again in a moment.'; errBox.classList.remove('hidden');
+        });
+      });
+
+      function poll() {
+        attempts++;
+        fetch(WORKER_URL + '/session?session_id=' + encodeURIComponent(sessionId))
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.found) { resolveState(data); }
+            else if (attempts < MAX_ATTEMPTS) { setTimeout(poll, 2500); }
+            else { fallback(); }
+          })
+          .catch(function() {
+            if (attempts < MAX_ATTEMPTS) { setTimeout(poll, 2500); }
+            else { fallback(); }
+          });
+      }
+
+      if (sessionId) { poll(); } else { fallback(); }
+    })();
+  </script>
+</body>
+</html>
