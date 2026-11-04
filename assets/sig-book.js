@@ -47,9 +47,12 @@
     '.tvsb-muted{color:#6b7280;font-size:14px;margin-top:10px;line-height:1.5}' +
     '.tvsb-done h3{color:#065f46}' +
     '.tvsb-sticky{position:sticky;bottom:0;background:#fff;padding-bottom:4px;z-index:5}' +
-    '.tvsb.browse .tvsb-sticky{background:#F5F8F8}' +
+    '.tvsb.browse .tvsb-sticky{position:static;background:none}' +
     '.tvsb-hide{display:none!important}';
 
+  // Host pages may reset margins/padding on every element (the Signature page does: .tv-bk *{margin:0;padding:0}),
+  // so every .tvsb-* rule is scoped under .tvsb to outrank a one-class reset.
+  CSS = CSS.replace(/(^|[},])\.tvsb-/g, '$1.tvsb .tvsb-');
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function api(path, body) {
     var opt = body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {};
