@@ -38,6 +38,7 @@
     '.tvsb-link{background:none;border:0;color:#16a085;font:inherit;font-weight:700;cursor:pointer;padding:8px 0;font-size:14px}' +
     '.tvsb-muted{color:#6b7280;font-size:14px;margin-top:10px}' +
     '.tvsb-done h3{color:#065f46}' +
+    '.tvsb-sticky{position:sticky;bottom:0;background:#fff;padding-bottom:4px;z-index:5}' +
     '.tvsb-hide{display:none!important}';
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -48,6 +49,7 @@
   function dayLabel(iso) { var d = new Date(iso + 'T12:00:00Z'); return { top: d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' }), bottom: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) }; }
   function longDay(iso) { return new Date(iso + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); }
   function miles(a, b) { var R = 3958.8, r = Math.PI / 180; var dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r; var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2); return 2 * R * Math.asin(Math.sqrt(h)); }
+  function rx(name) { return (/^randox/i.test(String(name || '')) ? '' : 'Randox Health ') + String(name || ''); }
   function addDays(iso, n) { var d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
   function geocode(pc) {
     var clean = String(pc || '').replace(/\s+/g, '').toUpperCase();
@@ -72,7 +74,7 @@
       '<div class="tvsb-list" id="tvsbVenues"></div><button class="tvsb-link tvsb-hide" id="tvsbAll">Show all clinics</button></div>' +
       '<div id="tvsbS2" class="tvsb-hide"><button class="tvsb-link" id="tvsbBack1">&larr; Change clinic</button><div id="tvsbVenueHead"></div>' +
       '<div class="tvsb-days" id="tvsbDays"></div><div id="tvsbTimes"></div><button class="tvsb-link tvsb-hide" id="tvsbLater">Show later dates &rarr;</button>' +
-      '<div id="tvsbSum" class="tvsb-sum tvsb-hide"></div><button class="tvsb-btn full tvsb-hide" id="tvsbBook">Confirm appointment</button></div>' +
+      '<div class="tvsb-sticky"><div id="tvsbSum" class="tvsb-sum tvsb-hide"></div><button class="tvsb-btn full tvsb-hide" id="tvsbBook">Confirm appointment</button></div></div>' +
       '<div id="tvsbMsg" class="tvsb-msg tvsb-hide"></div>' +
       '</div></div>';
     var $ = function (id) { return document.getElementById(id); };
