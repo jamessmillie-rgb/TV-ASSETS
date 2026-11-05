@@ -129,3 +129,10 @@
  .cp-check{padding:20px;border-radius:16px}
  .cp-hero{padding:calc(var(--navh,100px) + 32px) 0 40px}
 }
+.cp-t i.sp,.cp-spb{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.02em;color:#7a5c1e;background:linear-gradient(135deg,rgba(201,169,110,.28),rgba(201,169,110,.12));border:1px solid rgba(201,169,110,.55);border-radius:5px;padding:0 6px;margin-left:6px;vertical-align:2px}
+.cp-t tbody tr.sp th b{font-weight:600}
+.cp-spn{margin-top:5px;font-size:11px;font-weight:700;color:#7a5c1e;letter-spacing:.01em}
+.cp-spx{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding:16px 18px;border-radius:14px;background:linear-gradient(135deg,rgba(201,169,110,.14),rgba(201,169,110,.04));border:1px solid rgba(201,169,110,.35);max-width:880px}
+.cp-spx .cp-spb{margin:3px 0 0;flex:none}
+.cp-spx p{font-size:14.5px;color:#2d343c}
+@media (max-width:820px){.cp-t i.sp{display:inline-block;margin:3px 0 0 4px;font-size:9.5px}.cp-spn{font-size:9.5px}}
