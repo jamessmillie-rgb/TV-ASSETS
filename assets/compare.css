@@ -1,6 +1,7 @@
 .cp{--g:#08201a;--g2:#0d2c24;--t:#2ce4ad;--t2:#16b98a;--gold:#c9a96e;--ink:#111;--mut:#5b6472;--line:#e3e8e6;--bg:#f5f8f8;--top:72px;font-family:'Inter Tight',Inter,system-ui,-apple-system,sans-serif;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
 .cp *,.cp *:before,.cp *:after{box-sizing:border-box}
-.cp h1,.cp h2,.cp h3,.cp p,.cp ul{margin:0;padding:0}
+.cp h1,.cp h2,.cp h3,.cp p,.cp ul{margin:0;padding:0;text-transform:none;font-family:inherit}
+.cp p{line-height:1.5;font-size:inherit}
 .cp a{color:inherit}
 .cp-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .cp-wrap{max-width:1120px;margin:0 auto;padding:0 20px}
