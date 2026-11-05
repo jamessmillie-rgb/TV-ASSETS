@@ -1,0 +1,318 @@
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between the Advanced, Ultimate and Signature blood tests?", "acceptedAnswer": {"@type": "Answer", "text": "Advanced (74 biomarkers, £319) covers the core systems: full blood count, cholesterol with ApoB and ApoA-1, liver, kidney, glucose and HbA1c, iron and vitamins, thyroid (TSH, Free T4, Free T3), testosterone, SHBG, LH, cortisol and DHEA-S. Ultimate (140 biomarkers for men, 139 for women, £399) adds the complete female and male hormone picture (FSH, oestradiol, progesterone, prolactin), Lp(a), fasting insulin and C-peptide, cystatin C, thyroid antibodies, PTH, tumour markers, immunoglobulins, coeliac screening, urine culture, PhenoAge and TrueScore. Signature (230 biomarkers, £799) is processed by Randox Health and adds specialist markers such as homocysteine, ApoE, IGF-1, cardiac injury markers, ANA, anti-CCP, extra tumour markers and physical measurements."}}, {"@type": "Question", "name": "Which panel should I choose for HRT or menopause?", "acceptedAnswer": {"@type": "Answer", "text": "Ultimate. Advanced does not measure FSH, oestradiol or progesterone, which are the core markers for menopause and HRT monitoring. Ultimate includes all three plus prolactin, SHBG, testosterone, thyroid antibodies, Lp(a) and fasting insulin."}}, {"@type": "Question", "name": "Does Advanced include Lp(a) and fasting insulin?", "acceptedAnswer": {"@type": "Answer", "text": "No. Lp(a), fasting insulin, C-peptide and HOMA-IR are in Ultimate and Signature only. Advanced includes ApoB, ApoA-1 and the ApoB/A-1 ratio, glucose and HbA1c."}}, {"@type": "Question", "name": "Is everything in Ultimate also in Signature?", "acceptedAnswer": {"@type": "Answer", "text": "Almost. Signature adds around 90 specialist markers, but because it runs on Randox Health's laboratory rather than our UKAS partner laboratory, a few Ultimate markers are not on it: free PSA and the PSA ratio, ESR, RDW, reticulocytes, and urine culture with sensitivities. If free PSA matters to you, choose Ultimate or ask us about adding it to Signature."}}, {"@type": "Question", "name": "Can I check whether a specific test is included?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Paste or type the tests you have been asked to have into the checker at the top of this page. It shows which panel covers all of them, and lists anything missing from each panel."}}, {"@type": "Question", "name": "Are some markers only tested in men or women?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PSA is tested for men; CA-125 and CA 15-3 for women. That is why Ultimate is 140 biomarkers for men and 139 for women."}}, {"@type": "Question", "name": "What does 'calc' mean?", "acceptedAnswer": {"@type": "Answer", "text": "Calculated. Some results are clinical indices worked out from measured values, such as HOMA-IR from glucose and insulin, or FIB-4 from liver enzymes and platelets. They are listed so you can see exactly what your report will show."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.truevitals.co.uk/"}, {"@type": "ListItem", "position": 2, "name": "Panels", "item": "https://www.truevitals.co.uk/panels"}, {"@type": "ListItem", "position": 3, "name": "Compare panels marker by marker", "item": "https://www.truevitals.co.uk/compare-panels"}]}</script>
+<link rel="stylesheet" href="https://results.truevitals.co.uk/assets/compare.css?v=20261105">
+<div class="cp" id="cp">
+<section class="cp-hero">
+<div class="cp-wrap">
+<p class="cp-eye">Compare panels</p>
+<h1>Advanced vs Ultimate vs Signature, marker by marker</h1>
+<p class="cp-lede"><strong>Advanced</strong> (74 biomarkers, £319) covers the core systems. <strong>Ultimate</strong> (140 for men, 139 for women, £399) adds the complete hormone picture, Lp(a), fasting insulin, thyroid antibodies, tumour markers and PhenoAge. <strong>Signature</strong> (230, £799) adds around 90 specialist markers on Randox Health's laboratory. Every marker on every panel is listed below.</p>
+<div class="cp-check" id="cpCheck">
+<div class="cp-check-h">
+<h2>Got a list from your doctor?</h2>
+<p>Paste or type the tests you need. We'll show which panel covers all of them.</p>
+</div>
+<label class="cp-sr" for="cpList">Tests you need</label>
+<textarea id="cpList" rows="3" placeholder="e.g. FSH, oestradiol, progesterone, TSH, free T4, ApoB, Lp(a), HbA1c, insulin, vitamin D"></textarea>
+<div class="cp-chips" aria-label="Or start from a common need">
+<span class="cp-chips-l">Or start from:</span>
+<button type="button" data-p="hrt">Menopause &amp; HRT</button>
+<button type="button" data-p="thyroid">Thyroid</button>
+<button type="button" data-p="heart">Heart &amp; cholesterol</button>
+<button type="button" data-p="trt">Testosterone &amp; TRT</button>
+<button type="button" data-p="sugar">Blood sugar</button>
+<button type="button" data-p="long">Longevity</button>
+</div>
+<button type="button" class="cp-go" id="cpGo">Check my list</button>
+<div class="cp-res" id="cpRes" hidden aria-live="polite"></div>
+</div>
+</div>
+</section>
+<section class="cp-main">
+<div class="cp-wrap">
+<div class="cp-tools">
+<div class="cp-search"><label class="cp-sr" for="cpQ">Search markers</label><input id="cpQ" type="search" placeholder="Search a marker, e.g. oestradiol" autocomplete="off"></div>
+<div class="cp-tg" role="group" aria-label="Filters">
+<label><input type="checkbox" id="cpDiff"> Only differences</label>
+<label><input type="checkbox" id="cpCalc" checked> Calculated indices</label>
+<span class="cp-seg" role="radiogroup" aria-label="Show markers for">
+<button type="button" data-sx="" aria-pressed="true">Everyone</button><button type="button" data-sx="f" aria-pressed="false">Women</button><button type="button" data-sx="m" aria-pressed="false">Men</button>
+</span>
+</div>
+</div>
+<div class="cp-tblw">
+<table class="cp-t" id="cpT">
+<caption class="cp-sr">Biomarkers included in the TrueVitals Advanced, Ultimate and Signature panels</caption>
+<thead><tr>
+<th scope="col" class="cp-h0"><span class="cp-hint">Every marker, every panel</span><span class="cp-cnt" id="cpCnt"></span></th>
+<th scope="col" class="cp-hp"><a href="/advanced-panel"><b>Advanced</b><span class="cp-hn">74</span><span class="cp-hm">biomarkers</span><span class="cp-pr">£319</span></a></th>
+<th scope="col" class="cp-hp cp-best"><a href="/ultimate-panel"><i class="cp-flag">Most chosen</i><b>Ultimate</b><span class="cp-hn">140</span><span class="cp-hm">139 for women</span><span class="cp-pr">£399</span></a></th>
+<th scope="col" class="cp-hp"><a href="/signature-panel"><b>Signature</b><span class="cp-hn">230</span><span class="cp-hm">via Randox Health</span><span class="cp-pr">£799</span></a></th>
+</tr></thead>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Blood health<span class=cp-gc>26</span></button>
+<tr class="a3"><th><b>Haemoglobin</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Haematocrit</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Red blood cell count</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>MCV</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>MCH</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>MCHC</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>RDW</b><td class=y>&#10003;<td class=y>&#10003;<td>&ndash;
+<tr class="a3"><th><b>Platelet count</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>MPV</b><td class=y>&#10003;<td class=y>&#10003;<td>&ndash;
+<tr class="a3"><th><b>White blood cell count</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Neutrophils</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Lymphocytes</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Monocytes</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Eosinophils</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Basophils</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Reticulocyte count</b><td class=y>&#10003;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Reticulocyte absolute</b><td class=y>&#10003;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>ESR</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Mentzer index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Reticulocyte production index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Neutrophil-to-lymphocyte ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Platelet-to-lymphocyte ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Systemic immune-inflammation index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Monocyte-to-lymphocyte ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Lymphocyte-to-monocyte ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Neutrophil-to-monocyte ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Heart &amp; lipids<span class=cp-gc>24</span></button>
+<tr class="a3"><th><b>Total cholesterol</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>LDL cholesterol</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>HDL cholesterol</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Triglycerides</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Apolipoprotein A-1</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Apolipoprotein B (ApoB)</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>ApoB/A-1 ratio</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>Cholesterol ratio (TC/HDL)</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Lipoprotein(a)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Non-HDL cholesterol</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>VLDL cholesterol</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>HDL % of total</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Remnant cholesterol</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Triglyceride/HDL ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Lp(a)-corrected LDL</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Atherogenic index of plasma</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>LDL/HDL ratio (Castelli II)</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Castelli risk index I</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Atherogenic coefficient</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>LDL particle count (estimated)</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Apolipoprotein E</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Small dense LDL</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Small LDL % of total LDL</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Homocysteine</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Cardiac &amp; muscle<span class=cp-gc>8</span></button>
+<tr class="a3"><th><b>Creatine kinase</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>CK-MB</b><td class=y>&#10003;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Myoglobin</b><td class=y>&#10003;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Troponin T</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>FABP-3</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>D-dimer</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Lactate dehydrogenase (LDH)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Haemolysis screen</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Inflammation &amp; immune<span class=cp-gc>14</span></button>
+<tr class="a3"><th><b>hs-CRP</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Immunoglobulin G (IgG)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Immunoglobulin M (IgM)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Immunoglobulin A (IgA)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Immunoglobulin E (IgE)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Complement C3</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Complement C4</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Haptoglobin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Antistreptolysin O (ASO)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Interleukins (5, 8, 15, 17A, 17F, 22)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Growth factors (EGF, HB-EGF)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>MCP-1</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>GM-CSF</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Monocyte:HDL ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Liver<span class=cp-gc>18</span></button>
+<tr class="a3"><th><b>ALT</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>AST</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Gamma GT (GGT)</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Alkaline phosphatase</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Bilirubin</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Albumin</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Total protein</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Globulin</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Albumin/globulin ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>FIB-4 index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>APRI</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>NAFLD fibrosis score</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>AST/ALT ratio (De Ritis)</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Direct bilirubin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>GLDH</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Bile acids</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Aldolase</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>R factor</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Kidney &amp; electrolytes<span class=cp-gc>19</span></button>
+<tr class="a3"><th><b>Creatinine</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>eGFR (creatinine)</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urea</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Uric acid</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Sodium</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Potassium</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Chloride</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Cystatin C</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>eGFR (cystatin C)</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>eGFR (creatinine + cystatin C)</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Bicarbonate</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Anion gap</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Urea/creatinine ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Calculated osmolality</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Albumin-corrected anion gap</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Glucose-corrected sodium</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Beta-2-microglobulin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>NGAL</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Urine albumin/creatinine ratio</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Bone &amp; minerals<span class=cp-gc>6</span></button>
+<tr class="a3"><th><b>Calcium</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Corrected calcium</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Phosphate</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Magnesium</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Calcium:phosphate ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Dickkopf-1 (DKK-1)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Glucose &amp; metabolic<span class=cp-gc>13</span></button>
+<tr class="a3"><th><b>Glucose</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>HbA1c</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Insulin</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>C-peptide</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>HOMA-IR</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>HOMA-B</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>TyG index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Estimated average glucose</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Fructosamine</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Non-esterified fatty acids (NEFA)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Adiponectin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Glucose:insulin ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Adiponectin:insulin ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Thyroid &amp; parathyroid<span class=cp-gc>10</span></button>
+<tr class="a3"><th><b>TSH</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Free T4</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Free T3</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Thyroid peroxidase antibodies (TPO)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Thyroglobulin antibodies</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Parathyroid hormone (PTH)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>FT3/FT4 ratio</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Calcitonin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Thyroxine-binding globulin (TBG)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>TSH:FT4 ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Hormones<span class=cp-gc>17</span></button>
+<tr class="a3"><th><b>Testosterone</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>SHBG</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>Free androgen index</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Luteinising hormone (LH)</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Cortisol</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>DHEA-S</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Follicle stimulating hormone (FSH)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Oestradiol</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Progesterone</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Prolactin</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Calculated free testosterone</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>Bioavailable testosterone</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c"><th><b>Free oestradiol index</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>IGF-1</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="f"><th><b>Prolactin recovery post-PEG</b><i class=sx>women</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>LH:FSH ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Testosterone:cortisol ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Iron, vitamins &amp; antioxidants<span class=cp-gc>16</span></button>
+<tr class="a3"><th><b>Iron</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Ferritin</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Total iron binding capacity</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Transferrin</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>Transferrin saturation</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Vitamin D</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Vitamin B12</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Folate</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Total antioxidant status</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Active B12</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Red cell folate</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Zinc</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Copper</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Glutathione reductase</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>UIBC</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Iron:TIBC ratio</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Tumour markers<span class=cp-gc>12</span></button>
+<tr><th><b>CEA</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>CA 19-9</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="m"><th><b>PSA total</b><i class=sx>men</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="m"><th><b>PSA free</b><i class=sx>men</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c m"><th><b>PSA ratio</b><i class=k>calc</i><i class=sx>men</i><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr class="c m"><th><b>Prostate cancer risk score</b><i class=k>calc</i><i class=sx>men</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="f"><th><b>CA-125</b><i class=sx>women</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="f"><th><b>CA 15-3</b><i class=sx>women</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>AFP</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>NSE</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>hCG</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Mesothelin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Autoimmune, gut &amp; infection<span class=cp-gc>11</span></button>
+<tr><th><b>Rheumatoid factor</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Anti-tTG (coeliac)</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Amylase</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Lipase</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Antinuclear antibodies (ANA)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Anti-CCP</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Intrinsic factor antibodies</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Gastric parietal cell antibodies</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>H. pylori</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Gastrin</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Epstein-Barr virus (EBNA IgG, VCA IgG, VCA IgM)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Urinalysis<span class=cp-gc>13</span></button>
+<tr class="a3"><th><b>Urine pH</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urine protein</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urine ketones</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urine nitrite</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urine red blood cells</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="a3"><th><b>Urine white blood cells</b><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Urine bilirubin</b><td class=y>&#10003;<td>&ndash;<td class=y>&#10003;
+<tr><th><b>Urine glucose</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Urobilinogen</b><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Specific gravity</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Casts</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Bacterial count</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+<tr><th><b>Culture &amp; sensitivities</b><td>&ndash;<td class=y>&#10003;<td>&ndash;
+</tbody>
+<tbody class=cp-g><tr class=cp-gh><th colspan=4><button type=button class=cp-gt aria-expanded=true>Scores &amp; body measurements<span class=cp-gc>5</span></button>
+<tr class="c"><th><b>TrueScore</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c"><th><b>PhenoAge (biological age)</b><i class=k>calc</i><td>&ndash;<td class=y>&#10003;<td class=y>&#10003;
+<tr class="c a3"><th><b>Cardiovascular risk score</b><i class=k>calc</i><td class=y>&#10003;<td class=y>&#10003;<td class=y>&#10003;
+<tr><th><b>Physical measurements (height, weight, waist, BP)</b><td>&ndash;<td>&ndash;<td class=y>&#10003;
+<tr class="c"><th><b>Body composition estimates (BMI, body fat, lean mass, BMR)</b><i class=k>calc</i><td>&ndash;<td>&ndash;<td class=y>&#10003;
+</tbody>
+<tbody id="cpNone" hidden><tr><td colspan="4" class="cp-none">No markers match that search. Try another name, or email <a href="mailto:support@truevitals.co.uk">support@truevitals.co.uk</a> and we'll tell you.</td></tr></tbody>
+</table>
+</div>
+<p class="cp-note"><i class="cp-calc">calc</i> Calculated from your measured results. Prices include the clinic blood draw; Advanced and Ultimate also offer a home visit for £29. Panel counts include the calculated indices each report produces. Signature's count also includes Randox's own summary assessments and body-composition estimates, which are grouped together here.</p>
+</div>
+</section>
+<section class="cp-pick">
+<div class="cp-wrap">
+<h2>Which one is right for you?</h2>
+<div class="cp-cards">
+<div class="cp-card"><p class="cp-ct">Advanced · £319</p><h3>A solid baseline</h3><ul><li>You feel well and want the core systems checked</li><li>You want ApoB, not just cholesterol</li><li>You want testosterone, cortisol and thyroid basics</li></ul><p class="cp-not">Not for menopause or HRT: no FSH, oestradiol or progesterone. No Lp(a) or fasting insulin.</p><a href="/advanced-panel" class="cp-btn cp-btn-o">See Advanced</a></div>
+<div class="cp-card cp-card-b"><p class="cp-ct">Ultimate · £399 · most chosen</p><h3>The whole picture</h3><ul><li>Menopause, HRT, TRT or symptoms nobody has explained</li><li>Lp(a), fasting insulin, cystatin C and thyroid antibodies</li><li>Tumour markers, coeliac and immune screening</li><li>PhenoAge, TrueScore and both guarantees</li></ul><p class="cp-not">66 more biomarkers than Advanced for £80. Clinic draw included, or £29 at home.</p><a href="/ultimate-panel" class="cp-btn">See Ultimate</a></div>
+<div class="cp-card"><p class="cp-ct">Signature · £799</p><h3>Nothing left unchecked</h3><ul><li>Homocysteine, ApoE, IGF-1 and small dense LDL</li><li>Cardiac injury markers, ANA, anti-CCP, H. pylori</li><li>Physical measurements at a Randox Health clinic</li></ul><p class="cp-not">Runs on Randox Health's laboratory, so free PSA, ESR, RDW, reticulocytes and urine culture are not included. Results in up to 12 working days. No home visits.</p><a href="/signature-panel" class="cp-btn cp-btn-o">See Signature</a></div>
+</div>
+<p class="cp-addons">Need one extra marker on Advanced or Ultimate, like homocysteine or IGF-1? Most specialist markers can be added to the same draw. Email <a href="mailto:support@truevitals.co.uk">support@truevitals.co.uk</a> and we'll set it up.</p>
+</div>
+</section>
+<section class="cp-faqs">
+<div class="cp-wrap">
+<h2>Questions people ask</h2>
+<details class="cp-faq"><summary>What is the difference between the Advanced, Ultimate and Signature blood tests?</summary><p>Advanced (74 biomarkers, £319) covers the core systems: full blood count, cholesterol with ApoB and ApoA-1, liver, kidney, glucose and HbA1c, iron and vitamins, thyroid (TSH, Free T4, Free T3), testosterone, SHBG, LH, cortisol and DHEA-S. Ultimate (140 biomarkers for men, 139 for women, £399) adds the complete female and male hormone picture (FSH, oestradiol, progesterone, prolactin), Lp(a), fasting insulin and C-peptide, cystatin C, thyroid antibodies, PTH, tumour markers, immunoglobulins, coeliac screening, urine culture, PhenoAge and TrueScore. Signature (230 biomarkers, £799) is processed by Randox Health and adds specialist markers such as homocysteine, ApoE, IGF-1, cardiac injury markers, ANA, anti-CCP, extra tumour markers and physical measurements.</p></details><details class="cp-faq"><summary>Which panel should I choose for HRT or menopause?</summary><p>Ultimate. Advanced does not measure FSH, oestradiol or progesterone, which are the core markers for menopause and HRT monitoring. Ultimate includes all three plus prolactin, SHBG, testosterone, thyroid antibodies, Lp(a) and fasting insulin.</p></details><details class="cp-faq"><summary>Does Advanced include Lp(a) and fasting insulin?</summary><p>No. Lp(a), fasting insulin, C-peptide and HOMA-IR are in Ultimate and Signature only. Advanced includes ApoB, ApoA-1 and the ApoB/A-1 ratio, glucose and HbA1c.</p></details><details class="cp-faq"><summary>Is everything in Ultimate also in Signature?</summary><p>Almost. Signature adds around 90 specialist markers, but because it runs on Randox Health&#x27;s laboratory rather than our UKAS partner laboratory, a few Ultimate markers are not on it: free PSA and the PSA ratio, ESR, RDW, reticulocytes, and urine culture with sensitivities. If free PSA matters to you, choose Ultimate or ask us about adding it to Signature.</p></details><details class="cp-faq"><summary>Can I check whether a specific test is included?</summary><p>Yes. Paste or type the tests you have been asked to have into the checker at the top of this page. It shows which panel covers all of them, and lists anything missing from each panel.</p></details><details class="cp-faq"><summary>Are some markers only tested in men or women?</summary><p>Yes. PSA is tested for men; CA-125 and CA 15-3 for women. That is why Ultimate is 140 biomarkers for men and 139 for women.</p></details><details class="cp-faq"><summary>What does &#x27;calc&#x27; mean?</summary><p>Calculated. Some results are clinical indices worked out from measured values, such as HOMA-IR from glucose and insulin, or FIB-4 from liver enzymes and platelets. They are listed so you can see exactly what your report will show.</p></details>
+<p class="cp-upd">Marker lists checked against each panel's published biomarker list and real reports, November 2026. Every report is clinician-reviewed.</p>
+</div>
+</section>
+</div>
+<script src="https://results.truevitals.co.uk/assets/compare.js?v=20261105" defer></script>
