@@ -5,7 +5,7 @@
 .cp a{color:inherit}
 .cp-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .cp-wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-.cp-hero{background:radial-gradient(900px 500px at 85% -10%,rgba(44,228,173,.18),transparent 60%),var(--g);color:#fff;padding:64px 0 56px}
+.cp-hero{background:radial-gradient(900px 500px at 85% -10%,rgba(44,228,173,.18),transparent 60%),var(--g);color:#fff;padding:calc(var(--navh,100px) + 56px) 0 56px}
 .cp-eye{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--t);font-weight:600;margin-bottom:14px}
 .cp-hero h1{font-size:clamp(32px,5vw,56px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:820px}
 .cp-lede{margin-top:24px;font-size:clamp(16px,1.6vw,19px);color:rgba(255,255,255,.78);max-width:780px}
@@ -127,5 +127,5 @@
  .cp-t tbody th b{font-size:14px}.cp-t small{display:none}
  .cp-tools{flex-direction:column;align-items:stretch}.cp-search{max-width:none}
  .cp-check{padding:20px;border-radius:16px}
- .cp-hero{padding:44px 0 40px}
+ .cp-hero{padding:calc(var(--navh,100px) + 32px) 0 40px}
 }
