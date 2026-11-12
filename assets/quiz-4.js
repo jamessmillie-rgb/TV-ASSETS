@@ -237,7 +237,8 @@ function gate(quizJSON){
    '#tvgate .ge a{color:#b91c1c;font-weight:700}'+
    '#tvgate .gf{font-size:.76rem;color:#51605a;line-height:1.6;margin:14px 0 0;text-align:center}'+
    '#tvgate .gf a{color:#0c1512;font-weight:600}'+
-   '#tvgate .gt{font-size:.74rem;color:#51605a;text-align:center;margin:12px 0 0}';
+   '#tvgate .gq{font-size:.84rem;line-height:1.55;color:#0c1512;font-weight:500;margin:18px 0 0;padding:14px 0 0;border-top:1px solid #e3ebe7}'+
+   '#tvgate .gq span{display:block;font-size:.74rem;font-weight:500;color:#51605a;margin-top:6px}';
    document.head.appendChild(st)}
   const el=document.createElement('div');el.id='tvgate';el.setAttribute('data-tvpc-off','');
   el.innerHTML='<div class="gw"><div>'+
@@ -258,7 +259,7 @@ function gate(quizJSON){
     '<label class="ck"><input type="checkbox" id="tvg-o"><span>Send me personalised health insights, offers and new panel launches. Unsubscribe at any time.</span></label>'+
     '<button class="go" id="tvg-b" type="submit">See my results</button>'+
     '</form>'+
-    '<p class="gt">Rated Excellent on Trustpilot</p>'+
+    '<p class="gq">“Very good service and exceptional insights helpfully explained in plain English so easy to act upon”<span>Julian S. on Trustpilot, where TrueVitals is rated Excellent</span></p>'+
     '<p class="gf">Already have an account? <a href="/login">Log in</a>. Prefer the full sign-up form? <a href="/join?redirect=/dashboard">Use it here</a>.</p>'+
    '</div></div>';
   document.body.appendChild(el);window.scrollTo(0,0);

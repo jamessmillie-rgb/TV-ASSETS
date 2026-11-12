@@ -200,8 +200,10 @@ function topReco(prio){
    '#tvtop .pr small{font-family:Montserrat,sans-serif;font-size:.74rem;font-weight:600;color:rgba(255,255,255,.55);margin-left:8px;letter-spacing:0}'+
    '#tvtop .kl{font-size:.8rem;font-weight:600;color:#2ce4ad}'+
    '#tvtop a.btn{width:100%;text-align:center;justify-content:center}'+
+   '#tvtop .tq{margin:0;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:.84rem;line-height:1.55;color:rgba(255,255,255,.86)}'+
+   '#tvtop .tq span{display:block;font-size:.74rem;color:rgba(255,255,255,.5);margin-top:5px}'+
    '#tvtop a.tw{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.7);text-decoration:underline;text-underline-offset:3px;justify-self:center}'+
-   '@media(min-width:760px){#tvtop{grid-template-columns:1fr auto;align-items:center;column-gap:28px;padding:24px 26px}#tvtop .tt{grid-column:1}#tvtop .tp{grid-column:1}#tvtop a.btn{grid-column:2;grid-row:1/3;width:auto;padding-left:34px;padding-right:34px}#tvtop a.tw{grid-column:1/3;justify-self:start}}';
+   '@media(min-width:760px){#tvtop{grid-template-columns:1fr auto;align-items:center;column-gap:28px;padding:24px 26px}#tvtop .tt{grid-column:1}#tvtop .tp{grid-column:1}#tvtop a.btn{grid-column:2;grid-row:1/3;width:auto;padding-left:34px;padding-right:34px}#tvtop a.tw{grid-column:1/3;justify-self:start}#tvtop .tq{grid-column:1/3}}';
    document.head.appendChild(st)}
   const p=document.getElementById('profile');if(!p)return;
   let el=document.getElementById('tvtop');if(!el){el=document.createElement('div');el.id='tvtop';p.parentNode.insertBefore(el,p.nextSibling)}
@@ -209,7 +211,8 @@ function topReco(prio){
   el.innerHTML='<div class="tt"><b>Ultimate is essential in your case</b><span>'+why+' 140 biomarkers and a clinician-reviewed report within 4 working days.</span></div>'+
     '<div class="tp"><div class="pr">£399<small>clinic draw included</small></div><div class="kl">or 3 interest-free payments of £133 with Klarna</div></div>'+
     '<a class="btn teal" href="/phlebotomy?panel=ultimate">Book Ultimate</a>'+
-    '<a class="tw" href="#tvreco">See why, and what Signature adds</a>';
+    '<a class="tw" href="#tvreco">See why, and what Signature adds</a>'+
+    '<p class="tq">“Very efficient and much more detailed reporting than any previous blood test service I have tried.”<span>Richard T. on Trustpilot, where TrueVitals is rated Excellent</span></p>';
   const rc=document.getElementById('reco');if(rc&&rc.parentElement)rc.parentElement.id='tvreco';
   const set=(sel,href)=>document.querySelectorAll(sel).forEach(a=>a.setAttribute('href',href));
   set('#ctaMain','/phlebotomy?panel=ultimate');set('.rbar a.btn','/phlebotomy?panel=ultimate');set('#ctaAlt','/signature-phlebotomy');
