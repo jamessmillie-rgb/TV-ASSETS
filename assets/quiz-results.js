@@ -1,6 +1,7 @@
-/* Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
+/* LIVE 12 Nov 2026 13:30: the next version (-4 files) is now the default for everyone; ?tvnext=0 on a page address switches that
+   browser back to this file, ?tvnext=1 clears that. To roll everyone back, revert this commit. Original note: Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
    for that browser only; ?tvnext=0 switches it back. Everyone else gets this file exactly as before. */
-(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.setItem('tvnext','1');window.__tvNext=localStorage.getItem('tvnext')==='1'}catch(e){window.__tvNext=false}})();
+(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.setItem('tvnext','0');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.removeItem('tvnext');window.__tvNext=localStorage.getItem('tvnext')!=='0'}catch(e){window.__tvNext=true}})();
 (function(){
 if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/quiz-results-4.js';document.head.appendChild(nx);return}
 const SYS={
