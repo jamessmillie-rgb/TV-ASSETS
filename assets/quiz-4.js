@@ -225,6 +225,7 @@ function gate(quizJSON){
    '@media(min-width:900px){#tvgate .gc{padding:34px 32px;position:sticky;top:32px}}'+
    '#tvgate .gc h2{font-family:"Inter Tight",sans-serif;font-weight:800;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 6px;color:#0c1512}'+
    '#tvgate .gc p.sub{font-size:.86rem;color:#51605a;line-height:1.55;margin:0 0 18px}'+
+   '#tvgate .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}'+
    '#tvgate label.f{display:block;font-size:.78rem;font-weight:600;margin:0 0 6px;color:#0c1512}'+
    '#tvgate input.t{width:100%;padding:14px 14px;border:1.5px solid #d9e2de;border-radius:12px;font:inherit;font-size:1rem;margin:0 0 14px;background:#fff;color:#0c1512}'+
    '#tvgate input.t:focus{outline:2px solid #2ce4ad;outline-offset:1px;border-color:#2ce4ad}'+
@@ -252,7 +253,8 @@ function gate(quizJSON){
     '<p class="sub">Free, and no payment details. It stays in your account so you can come back to it.</p>'+
     '<div class="ge" id="tvg-e"></div>'+
     '<form id="tvg-f" novalidate>'+
-    '<label class="f" for="tvg-n">First name</label><input class="t" id="tvg-n" type="text" autocomplete="given-name" maxlength="60">'+
+    '<div class="g2"><div><label class="f" for="tvg-n">First name</label><input class="t" id="tvg-n" type="text" autocomplete="given-name" maxlength="60"></div>'+
+    '<div><label class="f" for="tvg-s">Last name</label><input class="t" id="tvg-s" type="text" autocomplete="family-name" maxlength="60"></div></div>'+
     '<label class="f" for="tvg-m">Email</label><input class="t" id="tvg-m" type="email" autocomplete="email" inputmode="email" maxlength="120">'+
     '<label class="f" for="tvg-p">Choose a password</label><input class="t" id="tvg-p" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters">'+
     '<label class="ck"><input type="checkbox" id="tvg-c"><span>I have read and agree to the <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms-of-use" target="_blank" rel="noopener">Terms of Use</a>.</span></label>'+
@@ -278,12 +280,13 @@ function gate(quizJSON){
     ev.preventDefault();if(busy)return;
     const name=document.getElementById('tvg-n').value.trim(),email=document.getElementById('tvg-m').value.trim(),pw=document.getElementById('tvg-p').value;
     if(!name){err('Please add your first name.');document.getElementById('tvg-n').focus();return}
+    const sur=document.getElementById('tvg-s').value.trim();if(!sur){err('Please add your last name, so your blood results can be matched to you.');document.getElementById('tvg-s').focus();return}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){err('Please enter a valid email address.');document.getElementById('tvg-m').focus();return}
     if(pw.length<8){err('Please choose a password of at least 8 characters.');document.getElementById('tvg-p').focus();return}
     if(!document.getElementById('tvg-c').checked){err('Please tick the box to accept the Privacy Policy and Terms of Use.');return}
     err('');busy=true;const btn=document.getElementById('tvg-b');btn.disabled=true;btn.textContent='Saving your map...';
     const fail=m=>{busy=false;btn.disabled=false;btn.textContent='See my results';err(m)};
-    const data={email:email,password:pw,customFields:{'first-name':name,'dob':q.dob||'','gender':q.gender||'','marketing-opt-in':document.getElementById('tvg-o').checked,'quiz-data':quizJSON}};
+    const data={email:email,password:pw,customFields:{'first-name':name,'surname':sur,'dob':q.dob||'','gender':q.gender||'','marketing-opt-in':document.getElementById('tvg-o').checked,'quiz-data':quizJSON}};
     let tries=0;const t=setInterval(function(){
       if(!window.$memberstackDom){if(++tries>50){clearInterval(t);fail('We could not reach the sign-up service. <a href="/join?redirect=/dashboard">Use the full sign-up form</a>.')}return}
       clearInterval(t);
