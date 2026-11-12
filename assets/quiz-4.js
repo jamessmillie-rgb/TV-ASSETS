@@ -210,18 +210,17 @@ function gate(quizJSON){
   if(!document.getElementById('tvgate-css')){const st=document.createElement('style');st.id='tvgate-css';st.textContent=
    '#tvgate{position:fixed;inset:0;z-index:99990;background:#07090d;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:Montserrat,sans-serif}'+
    '#tvgate *{box-sizing:border-box}'+
-   '#tvgate .gw{max-width:980px;margin:0 auto;padding:34px 22px 56px;display:grid;gap:26px}'+
+   '#tvgate .gw{max-width:980px;margin:0 auto;padding:26px 22px 56px;display:grid;gap:22px}'+
    '@media(min-width:900px){#tvgate .gw{grid-template-columns:1.05fr .95fr;gap:48px;padding:64px 32px;align-items:start}}'+
-   '#tvgate .glogo{display:block;height:26px;width:auto;margin:0 0 28px}'+
+   '#tvgate .glogo{display:block;height:24px;width:auto;margin:0 0 20px}'+
    '#tvgate .gk{font-size:.8rem;font-weight:600;color:#2ce4ad;margin-bottom:12px}'+
    '#tvgate h1{font-family:"Inter Tight",sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-size:clamp(1.9rem,6.4vw,3rem);margin:0 0 12px;color:#fff}'+
    '#tvgate h1 em{font-style:normal;color:#2ce4ad}'+
-   '#tvgate .gs{color:rgba(255,255,255,.62);font-size:.95rem;line-height:1.65;margin:0 0 20px;max-width:46ch}'+
+   '#tvgate .gs{color:rgba(255,255,255,.62);font-size:.92rem;line-height:1.6;margin:0 0 14px;max-width:46ch}'+
    '#tvgate .gl{list-style:none;margin:0;padding:0;border-top:1px solid rgba(255,255,255,.1)}'+
-   '#tvgate .gl li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-family:"Inter Tight",sans-serif;font-weight:700;font-size:1rem}'+
+   '#tvgate .gl li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);font-family:"Inter Tight",sans-serif;font-weight:700;font-size:.98rem}'+
    '#tvgate .gl li span{font-family:Montserrat,sans-serif;font-size:.74rem;font-weight:600;white-space:nowrap}'+
-   '#tvgate .gl li.lock{color:rgba(255,255,255,.4);font-weight:600;font-size:.9rem}'+
-   '#tvgate .gl li.lock span{color:rgba(255,255,255,.35)}'+
+   '#tvgate .gl li.lock{color:rgba(255,255,255,.45);font-family:Montserrat,sans-serif;font-weight:500;font-size:.82rem;line-height:1.5}'+
    '#tvgate .gc{background:#fff;color:#0c1512;border-radius:20px;padding:26px 22px}'+
    '@media(min-width:900px){#tvgate .gc{padding:34px 32px;position:sticky;top:32px}}'+
    '#tvgate .gc h2{font-family:"Inter Tight",sans-serif;font-weight:800;font-size:1.45rem;letter-spacing:-.02em;margin:0 0 6px;color:#0c1512}'+
@@ -245,7 +244,7 @@ function gate(quizJSON){
     '<img class="glogo" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals" height="26">'+
     '<div class="gk">Your health profile</div>'+
     '<h1 id="tvg-h">Your body map is ready.</h1>'+
-    '<p class="gs">Built from your answers. Save it to your free account to see every system, the questions your blood needs to answer and the panel that fits you.</p>'+
+    '<p class="gs">Built from your answers. Save it to your free account to see it in full.</p>'+
     '<ul class="gl" id="tvg-l"></ul>'+
    '</div><div class="gc">'+
     '<h2>Save your map and see it in full</h2>'+
@@ -263,13 +262,13 @@ function gate(quizJSON){
     '<p class="gf">Already have an account? <a href="/login">Log in</a>. Prefer the full sign-up form? <a href="/join?redirect=/dashboard">Use it here</a>.</p>'+
    '</div></div>';
   document.body.appendChild(el);window.scrollTo(0,0);
-  const lock=['The questions your blood needs to answer','The markers no questionnaire can see','Which panel fits you, and why'].map(x=>'<li class="lock">'+x+'<span>In your full map</span></li>').join('');
+  const lock='<li class="lock">Plus the questions your blood needs to answer, the markers no questionnaire can see, and which panel fits you.</li>';
   document.getElementById('tvg-l').innerHTML=lock;
   loadSummary(q).then(s=>{
     if(!s||!document.getElementById('tvg-h'))return;
     const p=s.prio.length,w=s.worth.length;
     document.getElementById('tvg-h').innerHTML=p?(p+' '+(p===1?'system needs':'systems need')+' a proper look.'+(w?'<br><em>'+w+' more worth checking.</em>':'')):(w?('Nothing urgent in your answers.<br><em>'+w+' '+(w===1?'area is':'areas are')+' worth checking.</em>'):'Your body map is ready.');
-    const rows=s.prio.concat(s.worth).slice(0,4).map(x=>'<li>'+esc(x.n)+'<span style="color:'+esc(x.c)+'">'+esc(x.l)+'</span></li>').join('');
+    const rows=s.prio.concat(s.worth).slice(0,3).map(x=>'<li>'+esc(x.n)+'<span style="color:'+esc(x.c)+'">'+esc(x.l)+'</span></li>').join('');
     document.getElementById('tvg-l').innerHTML=rows+lock;
   });
   const err=m=>{const e=document.getElementById('tvg-e');e.innerHTML=m;e.style.display=m?'block':'none';if(m)e.scrollIntoView({block:'center'})};
