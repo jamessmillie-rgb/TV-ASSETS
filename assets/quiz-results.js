@@ -232,3 +232,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 window.TVResults={render:renderResults};
 })();
+/* Fact corrections for the dashboard and quiz results pages (12 Nov 2026). The page embeds still carry the
+   pre-2 Nov Ultimate price and withdrawn payment options; this corrects what members see until the embeds
+   are rewritten. Only these two pages load this file, and neither shows competitor prices. */
+(function(){
+  var R=[[/£349/g,'£399'],[/Klarna, Clearpay and Payl8r/g,'Klarna and Clearpay'],[/\s*On a Health Plan your second test is cheaper than your first\./g,''],[/100\+ partner clinics/g,'103 partner clinics']];
+  var HIT=/£349|Payl8r|Health Plan|100\+ partner/;
+  function fix(root){try{var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n;while((n=w.nextNode())){var v=n.nodeValue;if(!HIT.test(v))continue;var p=n.parentNode;if(!p||p.nodeName==='SCRIPT'||p.nodeName==='STYLE')continue;var o=v;for(var i=0;i<R.length;i++)o=o.replace(R[i][0],R[i][1]);if(o!==v)n.nodeValue=o}}catch(e){}}
+  function scopes(){return document.querySelectorAll('.tvr,.tvr3')}
+  function run(){scopes().forEach(fix);if(window.MutationObserver){var t;new MutationObserver(function(){clearTimeout(t);t=setTimeout(function(){scopes().forEach(fix)},60)}).observe(document.body,{childList:true,subtree:true,characterData:true})}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
+})();
