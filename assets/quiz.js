@@ -1,4 +1,8 @@
+/* Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
+   for that browser only; ?tvnext=0 switches it back. Everyone else gets this file exactly as before. */
+(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.setItem('tvnext','1');window.__tvNext=localStorage.getItem('tvnext')==='1'}catch(e){window.__tvNext=false}})();
 (function(){
+if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/quiz-4.js';document.head.appendChild(nx);return}
 const A = {}; // answers
 const Q = [
  {sec:"About you",id:"about",type:"fields",title:"A few basics first.",help:"Age, sex, height and weight change what a normal result looks like. Sex at birth decides which hormone and cancer markers apply.",noskip:true},

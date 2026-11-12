@@ -1,4 +1,8 @@
+/* Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
+   for that browser only; ?tvnext=0 switches it back. Everyone else gets this file exactly as before. */
+(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.setItem('tvnext','1');window.__tvNext=localStorage.getItem('tvnext')==='1'}catch(e){window.__tvNext=false}})();
 (function(){
+if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/quiz-results-4.js';document.head.appendChild(nx);return}
 const SYS={
  heart:{n:"Heart and circulation",mk:[["ApoB","the count of particles that actually cause heart disease"],["Lp(a)","genetic risk, tested once for life"],["hs-CRP","low-grade inflammation in the artery wall"],["Homocysteine","vascular risk, and a functional B12 and folate check",'sig'],["HbA1c","sugar control feeding cardiac risk"]]},
  metabolic:{n:"Blood sugar and metabolism",mk:[["Fasting insulin","the earliest sign of insulin resistance, years before HbA1c moves"],["HOMA-IR","how resistant you are, as a number"],["HbA1c","your three-month sugar average"],["Triglycerides","the fat that rises first when carbs exceed need"],["Adiponectin","the fat-cell hormone that falls before insulin resistance shows",'sig']]},
@@ -236,6 +240,7 @@ window.TVResults={render:renderResults};
    pre-2 Nov Ultimate price and withdrawn payment options; this corrects what members see until the embeds
    are rewritten. Only these two pages load this file, and neither shows competitor prices. */
 (function(){
+  if(window.__tvNext)return;
   var R=[[/£349/g,'£399'],[/Klarna, Clearpay and Payl8r/g,'Klarna and Clearpay'],[/\s*On a Health Plan your second test is cheaper than your first\./g,''],[/100\+ partner clinics/g,'103 partner clinics']];
   var HIT=/£349|Payl8r|Health Plan|100\+ partner/;
   function fix(root){try{var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n;while((n=w.nextNode())){var v=n.nodeValue;if(!HIT.test(v))continue;var p=n.parentNode;if(!p||p.nodeName==='SCRIPT'||p.nodeName==='STYLE')continue;var o=v;for(var i=0;i<R.length;i++)o=o.replace(R[i][0],R[i][1]);if(o!==v)n.nodeValue=o}}catch(e){}}
