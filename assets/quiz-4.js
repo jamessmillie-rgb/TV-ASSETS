@@ -208,10 +208,11 @@ function gate(quizJSON){
   let q={};try{q=JSON.parse(quizJSON)}catch(e){}
   const b=document.getElementById('build');if(b)b.classList.remove('on');
   if(!document.getElementById('tvgate-css')){const st=document.createElement('style');st.id='tvgate-css';st.textContent=
-   '#tvgate{position:fixed;inset:0;z-index:70;background:#07090d;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:Montserrat,sans-serif}'+
+   '#tvgate{position:fixed;inset:0;z-index:99990;background:#07090d;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:Montserrat,sans-serif}'+
    '#tvgate *{box-sizing:border-box}'+
    '#tvgate .gw{max-width:980px;margin:0 auto;padding:34px 22px 56px;display:grid;gap:26px}'+
    '@media(min-width:900px){#tvgate .gw{grid-template-columns:1.05fr .95fr;gap:48px;padding:64px 32px;align-items:start}}'+
+   '#tvgate .glogo{display:block;height:26px;width:auto;margin:0 0 28px}'+
    '#tvgate .gk{font-size:.8rem;font-weight:600;color:#2ce4ad;margin-bottom:12px}'+
    '#tvgate h1{font-family:"Inter Tight",sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-size:clamp(1.9rem,6.4vw,3rem);margin:0 0 12px;color:#fff}'+
    '#tvgate h1 em{font-style:normal;color:#2ce4ad}'+
@@ -241,6 +242,7 @@ function gate(quizJSON){
    document.head.appendChild(st)}
   const el=document.createElement('div');el.id='tvgate';el.setAttribute('data-tvpc-off','');
   el.innerHTML='<div class="gw"><div>'+
+    '<img class="glogo" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals" height="26">'+
     '<div class="gk">Your health profile</div>'+
     '<h1 id="tvg-h">Your body map is ready.</h1>'+
     '<p class="gs">Built from your answers. Save it to your free account to see every system, the questions your blood needs to answer and the panel that fits you.</p>'+
