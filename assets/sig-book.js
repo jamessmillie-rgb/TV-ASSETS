@@ -48,6 +48,7 @@
     '.tvsb-done h3{color:#065f46}' +
     '.tvsb-sticky{position:sticky;bottom:0;background:#fff;padding-bottom:4px;z-index:5}' +
     '.tvsb.browse .tvsb-sticky{position:static;background:none}' +
+    '.tvsb-open{background:#fff;color:#111;border:1.5px solid rgba(17,17,17,.14)}' +
     '.tvsb-hide{display:none!important}';
 
   // Host pages may reset margins/padding on every element (the Signature page does: .tv-bk *{margin:0;padding:0}),
@@ -103,8 +104,12 @@
     var prefer = browse ? null : (fromRef(opts.ref) || saved());
     var S = { venues: [], venue: null, slots: [], from: null, day: null, slot: null, origin: null, showAll: false };
     var head = browse
-      ? '<span class="tvsb-label">Optional</span><h3>Choose your clinic and time now</h3>' +
-        '<p class="tvsb-sub">These are live appointments at Randox Health clinics. Pick one, pay, add the patient\'s details, and confirm it in one tap. Nothing is held until you confirm.</p>'
+      // 12 Nov 2026: collapsed by default. With the picker open first, visitors searched clinics and left without paying
+      // (Pay clicks fell from 27% of visits to 6%). Paying first is the main route again; the picker is one tap away.
+      ? '<span class="tvsb-label">Optional</span><h3>Want to see clinics and times first?</h3>' +
+        '<p class="tvsb-sub">You can pay now and choose your Randox clinic and time on the next screen. It takes about a minute. Or check live availability near you before you pay.</p>' +
+        '<button class="tvsb-btn tvsb-open" id="tvsbOpen">See clinics and times near me</button>' +
+        '<div id="tvsbBody" class="tvsb-hide"><p class="tvsb-sub">These are live appointments at Randox Health clinics. Pick one, pay, add the patient\'s details, and confirm it in one tap. Nothing is held until you confirm.</p>'
       : '<span class="tvsb-label">Book your appointment</span><h3>Choose your Randox clinic and time</h3>' +
         '<p class="tvsb-sub">Pick the clinic and appointment that suit you and it is booked straight away. It takes about 20 minutes on the day.</p>';
     el.innerHTML = '<div class="tvsb' + (browse ? ' browse' : '') + '"><div class="tvsb-card" id="tvsbCard">' + head +
@@ -114,11 +119,16 @@
       '<div class="tvsb-days" id="tvsbDays"></div><div id="tvsbTimes"></div><button class="tvsb-link tvsb-hide" id="tvsbLater">Show later dates &rarr;</button>' +
       '<div class="tvsb-sticky"><div id="tvsbSum" class="tvsb-sum tvsb-hide"></div><button class="tvsb-btn full tvsb-hide" id="tvsbBook">' + (browse ? 'Choose this time' : 'Confirm appointment') + '</button></div></div>' +
       '<div id="tvsbS3" class="tvsb-hide"></div>' +
-      '<div id="tvsbMsg" class="tvsb-msg tvsb-hide"></div>' +
+      '<div id="tvsbMsg" class="tvsb-msg tvsb-hide"></div>' + (browse ? '</div>' : '') +
       '</div></div>';
     var root = el.querySelector('.tvsb');
     var $ = function (id) { return root.querySelector('#' + id); };
     var BOOK_LABEL = browse ? 'Choose this time' : 'Confirm appointment';
+    if (browse) {
+      var openBody = function () { $('tvsbBody').classList.remove('tvsb-hide'); $('tvsbOpen').classList.add('tvsb-hide'); };
+      $('tvsbOpen').addEventListener('click', function () { openBody(); try { $('tvsbPc').focus(); } catch (e) {} });
+      try { if (opts.postcode || saved()) openBody(); } catch (e) {}
+    }
     function msg(text, kind) { var m = $('tvsbMsg'); m.textContent = text; m.className = 'tvsb-msg' + (kind ? ' ' + kind : ''); }
     function clearMsg() { $('tvsbMsg').className = 'tvsb-msg tvsb-hide'; }
 
