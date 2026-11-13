@@ -344,7 +344,7 @@ async function makeCard(){
   g=x.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,W*.45);g.addColorStop(0,'rgba(44,228,173,.08)');g.addColorStop(1,'rgba(44,228,173,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
   const [logo,fig]=await Promise.all([loadImg(LOGO,true),loadImg('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(cardSVG()))]);
   try{await Promise.all([document.fonts.load('800 70px "Inter Tight"'),document.fonts.load('700 44px "Inter Tight"'),document.fonts.load('500 34px Montserrat')])}catch(e){}
-  const lh=58;x.drawImage(logo,84,84,Math.round(lh*logo.naturalWidth/logo.naturalHeight),lh);
+  const lh=84;x.drawImage(logo,76,72,Math.round(lh*logo.naturalWidth/logo.naturalHeight),lh);
   const fh=780,fw=Math.round(fh*360/470);x.drawImage(fig,(W-fw)/2,190,fw,fh);
   x.textBaseline='alphabetic';x.fillStyle='#fff';x.font='800 70px "Inter Tight", sans-serif';x.fillText('My body map',84,1080);
   x.fillStyle='rgba(255,255,255,.72)';x.font='500 34px Montserrat, sans-serif';x.fillText('Built from a free 3-minute quiz. Do yours at',84,1140);
