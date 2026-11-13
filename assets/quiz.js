@@ -1,10 +1,12 @@
-/* PREVIEW 13 Nov 2026: ?tvnext=5 loads the quiz-5.js preview in that browser only (?tvnext=1 clears it); nobody else is affected.
+/* LIVE 13 Nov 2026 (James: "if ur happy with quiz push it"): quiz-5.js is the default for everyone. ?tvnext=4 puts one browser back on quiz-4.js,
+   ?tvnext=1 clears that. To roll EVERYONE back to quiz-4.js, revert this commit (or set window.TV_QUIZ_DEFAULT=4 before this file).
+   If quiz-5.js fails to load, quiz-4.js loads instead.
    LIVE 12 Nov 2026 13:30: the next version (-4 files) is now the default for everyone; ?tvnext=0 on a page address switches that
    browser back to this file, ?tvnext=1 clears that. To roll everyone back, revert this commit. Original note: Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
    for that browser only; ?tvnext=0 switches it back. Everyone else gets this file exactly as before. */
-(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.setItem('tvnext','0');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=5(&|$)/.test(s))localStorage.setItem('tvnext','5');window.__tvNext=localStorage.getItem('tvnext')!=='0';window.__tvFive=localStorage.getItem('tvnext')==='5'}catch(e){window.__tvNext=true}})();
+(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.setItem('tvnext','0');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=5(&|$)/.test(s))localStorage.setItem('tvnext','5');else if(/[?&]tvnext=4(&|$)/.test(s))localStorage.setItem('tvnext','4');var v=localStorage.getItem('tvnext');window.__tvNext=v!=='0';window.__tvFive=(window.TV_QUIZ_DEFAULT!==4&&v!=='4')}catch(e){window.__tvNext=true;window.__tvFive=true}})();
 (function(){
-if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/'+(window.__tvFive?'quiz-5.js':'quiz-4.js');document.head.appendChild(nx);return}
+if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/'+(window.__tvFive?'quiz-5.js':'quiz-4.js');if(window.__tvFive)nx.onerror=function(){var f=document.createElement('script');f.src='https://results.truevitals.co.uk/assets/quiz-4.js';document.head.appendChild(f)};document.head.appendChild(nx);return}
 const A = {}; // answers
 const Q = [
  {sec:"About you",id:"about",type:"fields",title:"A few basics first.",help:"Age, sex, height and weight change what a normal result looks like. Sex at birth decides which hormone and cancer markers apply.",noskip:true},

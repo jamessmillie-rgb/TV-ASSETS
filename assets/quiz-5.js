@@ -251,6 +251,9 @@ function finish(){
   app.classList.add('built');paintFigures();
   const started=Date.now();const wait=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms-(Date.now()-started))));
   getMember().then(async m=>{
+    // the scorer file failed to load: fall back to the previous flow (results page for members, full sign-up form otherwise)
+    if(!TVR)await loadResults();
+    if(!TVR){if(m&&m.id){try{await window.$memberstackDom.updateMember({customFields:{'quiz-data':json}})}catch(e){}nav(purchased?'/dashboard':'/quiz-results')}else nav('/join?redirect=/dashboard');return}
     if(m&&m.id){
       try{await window.$memberstackDom.updateMember({customFields:{'quiz-data':json}})}catch(e){}
       await wait(1500);
@@ -309,7 +312,10 @@ function gate(out,json){
     const fail=m=>{busy=false;btn.disabled=false;btn.textContent='See my full results';err(m)};
     const data={email:email,password:pw,customFields:{'first-name':name,'surname':sur,'dob':out.dob||'','gender':out.gender||'','marketing-opt-in':document.getElementById('t5go').checked,'quiz-data':json}};
     let tries=0;const t=setInterval(()=>{if(!window.$memberstackDom){if(++tries>50){clearInterval(t);fail('We could not reach the sign-up service. <a href="/join?redirect=/dashboard">Use the full sign-up form</a>.')}return}clearInterval(t);
-      Promise.resolve().then(()=>window.$memberstackDom.signupMemberEmailPassword(data)).then(()=>{fresh=true;out['first-name']=name;showResults(out,true)}).catch(e=>{const m=((e&&e.message)||'').toLowerCase();
+      Promise.resolve().then(()=>window.$memberstackDom.signupMemberEmailPassword(data)).then(()=>{fresh=true;out['first-name']=name;showResults(out,true);
+        // safety net: save the answers once more a few seconds later so Memberstack sends member.updated and the CRM records the quiz
+        // even if this visitor never loads another page (the old flow always went on to /verification)
+        setTimeout(()=>{try{Promise.resolve(window.$memberstackDom.updateMember({customFields:{'quiz-data':json}})).catch(()=>{})}catch(e){}},6000)}).catch(e=>{const m=((e&&e.message)||'').toLowerCase();
         if(m.includes('already exists')||m.includes('email is taken')||m.includes('duplicate')||m.includes('already taken'))fail('An account with this email already exists. <a href="/login?email='+encodeURIComponent(email)+'">Log in instead</a> and your map will be saved to it.');
         else if(m.includes('invalid email'))fail('Please enter a valid email address.');else if(m.includes('password'))fail('Please choose a longer password, at least 8 characters.');
         else if(m.includes('network')||m.includes('timeout')||m.includes('fetch'))fail('Connection problem. Please check your internet and try again.');
@@ -430,7 +436,12 @@ function applyMember(m){
   return fetch("https://truevitals-stripe-webhook.james-smillie-8c6.workers.dev/my-journey?email="+encodeURIComponent(m.auth.email)+"&member_id="+encodeURIComponent(m.id)).then(r=>r.json()).then(j=>{purchased=!!(j&&!j.error&&(j.live_order||(j.reports&&j.reports.length)));
     if(purchased&&m._hadQuiz&&app.hidden){const h=document.getElementById('t5hero');if(h){h.outerHTML=heroHTML();bindHero();paintFigures()}}}).catch(()=>{});
 }
-async function boot(){
+// if anything here fails, put the page back as it was and load the previous quiz instead, so /quiz never ends up blank
+function fallback(e){try{console.error('quiz-5 failed, loading quiz-4',e)}catch(x){}
+  try{const h=document.querySelector('.tvq');if(h)h.classList.remove('t5-on');const r=document.getElementById('tv5');if(r)r.remove();const a=document.getElementById('t5app');if(a)a.remove();document.documentElement.classList.remove('t5-lock')}catch(x){}
+  if(!window.__tvq4){window.__tvq4=1;const s=document.createElement('script');s.src=ASSET+'quiz-4.js';document.head.appendChild(s)}}
+async function boot(){try{await boot1()}catch(e){fallback(e)}}
+async function boot1(){
   const host=document.querySelector('.tvq');if(!host||document.getElementById('tv5'))return;css();
   root=document.createElement('div');root.id='tv5';host.insertBefore(root,host.firstChild);host.classList.add('t5-on');
   root.innerHTML=heroHTML();
