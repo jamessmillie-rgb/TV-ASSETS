@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>TrueVitals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#0a0d12;color:#eef1f5;font-family:Outfit,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+.tg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
+.tg-card{background:#12161d;border:1px solid #222834;border-radius:22px;padding:46px 40px;max-width:410px;width:100%;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.tg-logo{display:block;width:180px;height:auto;margin:0 auto 14px}
+.tg-sub{color:#a9b1bf;font-size:14px;margin:0 0 28px;line-height:1.55}
+.tg-label{display:block;text-align:left;font-size:12.5px;font-weight:600;color:#a9b1bf;margin-bottom:8px}
+.tg-input{width:100%;background:#181d26;border:1px solid #2c3442;border-radius:12px;padding:15px;color:#eef1f5;font-family:inherit;font-size:17px;text-align:center;letter-spacing:2px;outline:none;transition:.18s}
+.tg-input:focus{border-color:#2ce4ad;box-shadow:0 0 0 4px rgba(44,228,173,.16)}
+.tg-input.shake{animation:tgshake .4s;border-color:#ff6b6b}
+@keyframes tgshake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.tg-btn{width:100%;margin-top:16px;padding:15px;background:#2ce4ad;color:#04110c;font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:.18s}
+.tg-btn[disabled]{opacity:.6;cursor:default}
+.tg-msg{color:#ff8f8f;font-size:13px;margin-top:14px;min-height:18px;line-height:1.5}
+.tg-foot{color:#7c8594;font-size:11px;margin-top:22px;line-height:1.5}
+.tg-foot a,.tg-sub a{color:#2ce4ad}
+@media(max-width:560px){.tg-card{padding:32px 24px}.tg-logo{width:150px}.tg-sub{font-size:13px}.tg-input{font-size:16px;padding:13px}.tg-btn{padding:13px;font-size:14px}}
+@media(prefers-reduced-motion:reduce){.tg-input.shake{animation:none}}
+</style>
+</head>
+<body>
+<div class="tg"><div class="tg-card">
+  <img class="tg-logo" src="https://cdn.prod.website-files.com/6825a8869d9afdbdbc4d8881/68500823ebf7f5e6d4b298f9_Copy%20of%20TrueVitals%20Inverse.png" alt="TrueVitals">
+  <div id="tg-report">
+    <p class="tg-sub">Enter your date of birth to unlock your report.</p>
+    <label class="tg-label" for="tg-dob">Date of birth</label>
+    <input type="text" class="tg-input" id="tg-dob" placeholder="DD / MM / YYYY" maxlength="14" autocomplete="off" inputmode="numeric">
+    <button class="tg-btn" id="tg-btn" type="button">View my results</button>
+    <div class="tg-msg" id="tg-msg" role="alert" aria-live="polite"></div>
+    <div class="tg-foot">Your results are private. Having trouble? Contact support@truevitals.co.uk</div>
+  </div>
+  <div id="tg-none" style="display:none">
+    <p class="tg-sub">We could not find that page. <a href="https://www.truevitals.co.uk/">Go to truevitals.co.uk</a></p>
+  </div>
+</div></div>
+<script>
+(function(){
+  var API='https://truevitals-reports.james-smillie-8c6.workers.dev';
+  var m=location.pathname.match(/\/(?:results|r)\/([A-Za-z0-9_-]{3,64}\.html)$/);
+  var file=m?m[1]:null;
+  var box=document.getElementById('tg-report'),none=document.getElementById('tg-none');
+  if(!file){box.style.display='none';none.style.display='block';return;}
+  var inp=document.getElementById('tg-dob'),btn=document.getElementById('tg-btn'),msg=document.getElementById('tg-msg');
+  var KEY='tvr:'+file;
+  function show(html){
+    try{sessionStorage.setItem(KEY+':ok','1');}catch(e){}
+    document.open();document.write(html);document.close();
+  }
+  function say(t){msg.textContent=t||'';}
+  function busy(b){btn.disabled=b;btn.textContent=b?'Opening...':'View my results';}
+  function call(body,quiet){
+    busy(true);
+    var done=false,timer=setTimeout(function(){if(done)return;done=true;busy(false);if(!quiet)say('That took too long. Please check your connection and try again.');},20000);
+    fetch(API+'/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){return r.json().then(function(j){return {s:r.status,j:j};});})
+    .then(function(x){
+      if(done)return;done=true;clearTimeout(timer);
+      var j=x.j||{};
+      if(j.ok&&j.html){try{if(j.token)sessionStorage.setItem(KEY,j.token);}catch(e){}show(j.html);return;}
+      busy(false);
+      try{sessionStorage.removeItem(KEY);}catch(e){}
+      if(quiet)return;
+      if(j.reason==='locked')say('Too many wrong attempts. For your security this report is locked for an hour. If you need help, email support@truevitals.co.uk');
+      else if(j.reason==='mismatch'){say('That date of birth does not match. Please try again.');inp.classList.add('shake');setTimeout(function(){inp.classList.remove('shake');},500);}
+      else if(j.reason==='notfound')say('We could not find this report. Please use the link in your email, or contact support@truevitals.co.uk');
+      else say('Something went wrong on our side. Please try again in a minute, or email support@truevitals.co.uk');
+    })
+    .catch(function(){if(done)return;done=true;clearTimeout(timer);busy(false);if(!quiet)say('We could not reach the report service. Please check your connection and try again.');});
+  }
+  inp.addEventListener('input',function(){
+    var v=this.value.replace(/[^\d]/g,'').slice(0,8),f='';
+    if(v.length>0)f=v.slice(0,2);if(v.length>2)f+=' / '+v.slice(2,4);if(v.length>4)f+=' / '+v.slice(4);
+    this.value=f;
+  });
+  function submit(){
+    var d=inp.value.replace(/[^\d]/g,'');
+    if(d.length!==8){say('Please enter your date of birth as day, month and year, for example 07 / 03 / 1985.');return;}
+    say('');call({file:file,dob:d});
+  }
+  btn.addEventListener('click',submit);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit();});
+  var tok=null;try{tok=sessionStorage.getItem(KEY);}catch(e){}
+  if(tok)call({file:file,token:tok},true);else inp.focus();
+})();
+</script>
+</body>
+</html>
