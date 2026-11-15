@@ -1,7 +1,8 @@
 (function(){
-var HOST=document.getElementById('tvhs-host');if(!HOST)return;
-var ROOT=HOST.shadowRoot;
-if(!ROOT){var T=HOST.querySelector('template');if(!T||!HOST.attachShadow)return;ROOT=HOST.attachShadow({mode:'open'});ROOT.appendChild(T.content.cloneNode(true));T.remove();}
+var HOST=document.getElementById('tvhs-host');if(!HOST||!HOST.attachShadow||!window.fetch)return;
+var SRC=(document.currentScript&&document.currentScript.src)||'';var BASE=SRC.slice(0,SRC.lastIndexOf('/')+1);
+fetch(BASE+'tv-home-story-1.1.html').then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(H){
+var ROOT=HOST.attachShadow({mode:'open'});ROOT.innerHTML=H;
 var TVROOT=ROOT.querySelector('.tvroot'),LINK=ROOT.querySelector('link[rel=stylesheet]');
 function hideBar(){var r=HOST.getBoundingClientRect(),on=r.top<innerHeight&&r.bottom>80;if(on)document.documentElement.setAttribute('data-tvhs','1');else document.documentElement.removeAttribute('data-tvhs');}
 addEventListener('scroll',hideBar,{passive:true});addEventListener('resize',hideBar);hideBar();
@@ -295,4 +296,5 @@ if('IntersectionObserver' in window)new IntersectionObserver(function(en){go(en[
 
 }catch(err){TVROOT.classList.add('static');if(window.console)console.error('tv-home-story',err);}}
 if(LINK&&!LINK.sheet){LINK.addEventListener('load',start);LINK.addEventListener('error',start);setTimeout(start,4000);}else start();
+}).catch(function(){});
 })();
