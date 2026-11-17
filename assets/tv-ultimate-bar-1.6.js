@@ -51,9 +51,10 @@
     function menuOpen(){
       var nav = document.getElementById('tvNavLinks');
       if (!nav) return false;
+      var cs = window.getComputedStyle(nav);
+      if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false; /* desktop: the menu is ordinary header links */
       if (nav.classList.contains('active')) return true;
       var ham = document.getElementById('tvHam'); if (ham && ham.getAttribute('aria-expanded') === 'true') return true;
-      var cs = window.getComputedStyle(nav); if (cs.display === 'none' || cs.visibility === 'hidden') return false;
       var r = nav.getBoundingClientRect();
       return r.width > 0 && r.left < window.innerWidth - 1 && r.right > 1;
     }
