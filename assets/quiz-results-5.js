@@ -185,7 +185,7 @@ function renderResults(q){
   const ultWhy=[];if(prio.length)ultWhy.push(prio.slice(0,3).map(k=>SYS[k].n.toLowerCase()).join(', ')+' need the full picture, not a spot check');ultWhy.push('PhenoAge, TrueScore and a clinician-reviewed written report');ultWhy.push('Ideal ranges set for your sex, age and answers');ultWhy.push('No findings, no fee');
   const sigWhy=[];if(r.lvl.immune>=1)sigWhy.push('Anti-CCP, ANA and complement, to settle whether inflammation is autoimmune');if(r.lvl.heart>=1||(q.familyHistory||'').includes('Heart'))sigWhy.push('Homocysteine, small dense LDL and cardiac injury markers');if((q.familyHistory||'').includes('cancer'))sigWhy.push('Four extra tumour markers given your family history');if(r.lvl.gut>=1)sigWhy.push('Gastrin and H. pylori for the gut');if(r.lvl.nutrients>=1)sigWhy.push('Active B12, red cell folate, zinc and copper');if(r.lvl.metabolic>=1)sigWhy.push('Adiponectin and fructosamine, earlier than insulin');if(r.a>=50)sigWhy.push('Physical measurements read with your bloods, at an age where silent risk accelerates');if(!sigWhy.length)sigWhy.push('90 specialist markers a consultant would order, in one appointment');
   document.getElementById('recoLead').textContent='Ultimate is essential in your case. If the budget allows, Signature goes the extra mile.';
-  document.getElementById('reco').innerHTML='<div class="rc main"><div class="tagline">Essential in your case</div><h3>Ultimate Panel</h3><div class="price">£399<small>clinic draw included, or £29 at home</small></div><p>140 biomarkers, 103 partner clinics or at home, report in 4 working days.</p><ul>'+ultWhy.map(x=>'<li>'+cap(x)+'</li>').join('')+'</ul><a href="/phlebotomy?panel=ultimate" class="btn teal" style="width:100%">Book Ultimate</a></div>'+
+  document.getElementById('reco').innerHTML='<div class="rc main"><div class="tagline">Essential in your case</div><h3>Ultimate Panel</h3><div class="price">£399<small>clinic draw included, or £29 at home</small></div><p>140 biomarkers, 103 partner clinics or at home, report in 4 working days.</p><ul>'+ultWhy.map(x=>'<li>'+cap(x)+'</li>').join('')+'</ul><a href="/ultimate-panel" class="btn teal" style="width:100%">See Ultimate</a></div>'+
    '<div class="rc sig"><div class="tagline">The extra mile</div><h3>Signature Panel</h3><div class="price">£799<small>clinic appointment included</small></div><p>Everything in Ultimate plus 90 specialist markers by Randox Health, and physical measurements.</p><ul>'+sigWhy.slice(0,3).map(x=>'<li>'+x+'</li>').join('')+'</ul><a href="/signature-phlebotomy" class="btn gold" style="width:100%">Book Signature</a></div>';
   // lifestyle
   const life=[];const Lf=(lab,val,lv,note)=>life.push({lab,val,lv,note});
@@ -221,13 +221,13 @@ function topReco(prio){
   let el=document.getElementById('tvtop');if(!el){el=document.createElement('div');el.id='tvtop';p.parentNode.insertBefore(el,p.nextSibling)}
   const why=prio.length?cap(prio.slice(0,2).map(k=>SYS[k].n.toLowerCase()).join(' and '))+(prio.length===1?' needs':' need')+' the full picture, not a spot check.':'A full baseline across all 12 systems, read together.';
   el.innerHTML='<div class="tt"><b>Ultimate is essential in your case</b><span>'+why+' 140 biomarkers and a clinician-reviewed report within 4 working days.</span></div>'+
-    '<div class="tp"><div class="pr">£399<small>clinic draw included</small></div><div class="kl">or 3 interest-free payments of £133 with Klarna</div></div>'+
-    '<a class="btn teal" href="/phlebotomy?panel=ultimate">Book Ultimate</a>'+
+    '<div class="tp"><div class="pr">£399<small>clinic draw included</small></div></div>'+
+    '<a class="btn teal" href="/ultimate-panel">See Ultimate</a>'+
     '<a class="tw" href="#tvreco">See why, and what Signature adds</a>'+
     '<p class="tq">“Very efficient and much more detailed reporting than any previous blood test service I have tried.”<span>Richard T. on Trustpilot, where TrueVitals is rated Excellent</span></p>';
   const rc=document.getElementById('reco');if(rc&&rc.parentElement)rc.parentElement.id='tvreco';
   const set=(sel,href)=>document.querySelectorAll(sel).forEach(a=>a.setAttribute('href',href));
-  set('#ctaMain','/phlebotomy?panel=ultimate');set('.rbar a.btn','/phlebotomy?panel=ultimate');set('#ctaAlt','/signature-phlebotomy');
+  set('#ctaMain','/ultimate-panel');set('.rbar a.btn','/ultimate-panel');document.querySelectorAll('#ctaMain,.rbar a.btn').forEach(x=>{if(x.children.length)return;const t=x.textContent.trim();if(t==='Book')x.textContent='See Ultimate';else if(/^Book Ultimate/.test(t))x.textContent=t.replace(/^Book Ultimate/,'See Ultimate')});set('#ctaAlt','/signature-phlebotomy');
 }
 function summary(q){
   const r=score(q);const keys=Object.keys(SYS).sort((a,b)=>r.lvl[b]-r.lvl[a]||r.s[b]-r.s[a]);
@@ -280,15 +280,16 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 window.TVResults={render:renderResults,score:score,summary:summary,data:{SYS:SYS,CNT:CNT,LVL:LVL,SYSWHY:SYSWHY,QS:QSX},sysWhy:sysWhy};
 })();
-/* Fact corrections for the dashboard and quiz results pages (12 Nov 2026). The page embeds still carry the
+/* 18 Nov 2026 (James): no instalment amounts on results; Ultimate buttons go to /ultimate-panel (every tracked buyer viewed it first).
+   Fact corrections for the dashboard and quiz results pages (12 Nov 2026). The page embeds still carry the
    pre-2 Nov Ultimate price and withdrawn payment options; this corrects what members see until the embeds
    are rewritten. Only these two pages load this file, and neither shows competitor prices. */
 (function(){
-  var R=[[/£349/g,'£399'],[/Klarna, Clearpay and Payl8r/g,'Klarna and Clearpay'],[/\s*On a Health Plan your second test is cheaper than your first\./g,''],[/100\+ partner clinics/g,'103 partner clinics']];
-  var HIT=/£349|Payl8r|Health Plan|100\+ partner/;
+  var R=[[/£349/g,'£399'],[/Klarna, Clearpay and Payl8r/g,'Klarna and Clearpay'],[/\s*On a Health Plan your second test is cheaper than your first\./g,''],[/100\+ partner clinics/g,'103 partner clinics'],[/,?\s*or 3\s*(?:×|x|interest-free payments of)\s*£133(?: with Klarna)?/gi,'']];
+  var HIT=/£349|Payl8r|Health Plan|100\+ partner|£133/;
   function fix(root){try{var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n;while((n=w.nextNode())){var v=n.nodeValue;if(!HIT.test(v))continue;var p=n.parentNode;if(!p||p.nodeName==='SCRIPT'||p.nodeName==='STYLE')continue;var o=v;for(var i=0;i<R.length;i++)o=o.replace(R[i][0],R[i][1]);if(o!==v)n.nodeValue=o}}catch(e){}}
   function scopes(){return document.querySelectorAll('.tvr,.tvr3')}
-  function links(){document.querySelectorAll('.tvr3 a[href="/ultimate-panel"]').forEach(function(a){a.setAttribute('href','/phlebotomy?panel=ultimate')});document.querySelectorAll('.tvr3 a[href="/signature-panel"]').forEach(function(a){a.setAttribute('href','/signature-phlebotomy')})}
+  function links(){document.querySelectorAll('.tvr3 a[href="/signature-panel"]').forEach(function(a){a.setAttribute('href','/signature-phlebotomy')})}
   function both(){scopes().forEach(fix);links()}
   function run(){both();if(window.MutationObserver){var t;new MutationObserver(function(){clearTimeout(t);t=setTimeout(both,60)}).observe(document.body,{childList:true,subtree:true,characterData:true})}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();

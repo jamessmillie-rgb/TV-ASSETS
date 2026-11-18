@@ -404,8 +404,8 @@ function showResults(out,justJoined){
    '<section class="t5-rsec"><h3>What no questionnaire can see</h3><div class="t5-sil">'+SIL.map(s=>'<div><b>'+s[0]+'</b><p>'+s[1]+'</p></div>').join('')+'</div></section>'+
    '<section class="t5-offer" id="t5offer"><p class="t5-eb">The panel that answers all of it</p><h3>Ultimate covers every system above</h3>'+
     '<ul>'+ultWhy.map(x=>'<li>'+svg('check')+'<span>'+esc(x)+'</span></li>').join('')+'</ul>'+
-    '<div class="t5-price"><b>£399</b><span>clinic draw included, or £29 extra for a home visit</span></div><p class="t5-klarna">or 3 interest-free payments of £133 with Klarna</p>'+
-    '<a class="t5-btn wide" href="/phlebotomy?panel=ultimate">Book Ultimate</a>'+
+    '<div class="t5-price"><b>£399</b><span>clinic draw included, or £29 extra for a home visit</span></div><p class="t5-klarna">Klarna or Clearpay if you would rather pay in instalments.</p>'+
+    '<a class="t5-btn wide" href="/ultimate-panel">See Ultimate</a>'+
     '<p class="t5-nf"><b>No findings, no fee.</b> If nothing across your panel comes back outside the ideal range, the panel price is refunded.</p>'+
     '<a class="t5-sigl" href="/signature-phlebotomy"><span><b>Want the most comprehensive check?</b> Signature tests 230 biomarkers at a Randox Health clinic.</span><em>£799'+svg('arrow')+'</em></a>'+
     '<p class="t5-quote light">“Very efficient and much more detailed reporting than any previous blood test service I have tried.”<span>Richard T. on Trustpilot, where TrueVitals is rated Excellent</span></p></section>'+
@@ -414,7 +414,7 @@ function showResults(out,justJoined){
     '<div class="t5-shbtns"><button type="button" class="t5-btn" id="t5sh">'+svg('share')+'Share my map</button><a class="t5-sbtn" id="t5wa" href="https://wa.me/?text='+encodeURIComponent(SHARE_TEXT+' '+SHARE_URL)+'" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="t5-sbtn" id="t5cp">Copy link</button></div>'+
     '<p class="t5-shnote" id="t5shnote" aria-live="polite">Only the picture and the link are shared, never your answers.</p></section>'+
    '<p class="t5-foot">This map is built from your answers and is not a diagnosis.'+(member&&member.id&&!justJoined?' <a href="/dashboard">Go to your dashboard</a>':'')+'</p>'+
-   '<div class="t5-sticky" id="t5sticky"><div><b>Ultimate, £399</b><span>or 3 × £133 with Klarna</span></div><a class="t5-btn" href="/phlebotomy?panel=ultimate">Book Ultimate</a></div>'+
+   '<div class="t5-sticky" id="t5sticky"><div><b>Ultimate, £399</b><span>Clinic draw included</span></div><a class="t5-btn" href="/ultimate-panel">See Ultimate</a></div>'+
   '</div>';
   paintFigures();stage.scrollTop=0;
   const top=app.querySelector('.t5-top .t5-meter');if(top)top.innerHTML='<span>Your body map</span>';
