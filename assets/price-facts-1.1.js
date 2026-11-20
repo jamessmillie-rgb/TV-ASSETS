@@ -1,7 +1,10 @@
 /* TrueVitals price facts v1.1 (20 Nov 2026; v1 2 Nov 2026). Ultimate £399 including the clinic draw, home visit £29,
    Advanced £269 including the clinic draw from 23 Nov 2026 (the old Advanced was £319, and £269 + £19 before 2 Nov).
    Corrects TrueVitals' own old prices (£349/£269 + £19 clinic / £39 home) in rendered text and JSON-LD on pages
-   whose source has not been rewritten yet. Rules are phrase-specific so competitor prices are left alone. */
+   whose source has not been rewritten yet. Rules are phrase-specific so competitor prices are left alone.
+   1.1 also moves the old Advanced (74 biomarkers, £319, £348 at home, 3 x £106.33) to the new Advanced (93, £269, £298, 3 x £89.67)
+   in rendered text: £319 is only ever our Advanced; '74' is only changed in a text node that is about our Advanced and names no
+   other provider (One Day Tests and others also sell 74-marker panels). */
 (function(){
   var R=[
     // full phrases first
@@ -40,15 +43,27 @@
     [/£368 all-in/g,'£399 all-in'],
     [/cost £368 \(TrueVitals Ultimate/g,'cost £399 (TrueVitals Ultimate'],
     [/£2\.63 per biomarker/g,'£2.85 per biomarker'],
-    [/£116\.33\b/g,'£133']
+    [/£116\.33\b/g,'£133'],
+    // old Advanced -> new Advanced (23 Nov 2026)
+    [/£106\.33\b/g,'£89.67'],
+    [/((?:\b3|three)\b[^£\n]{0,30}?)£106\b(?!\.)/gi,'$1£89.67'],
+    [/£319\b/g,'£269'],
+    [/£348\b/g,'£298']
     // No bare-number rules (£349, £269, £288, £368, £388): every page's raw code now carries the new prices, and
     // bare rules would rewrite competitor prices (e.g. Bupa £349) on comparison pages. Removed 1 Nov 2026.
   ];
   var SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,NOSCRIPT:1,CODE:1,PRE:1};
-  var HIT=/£(?:349|269|19|39|116|2\.63)/;
-  function fix(s){for(var i=0;i<R.length;i++)s=s.replace(R[i][0],R[i][1]);return s}
+  var HIT=/£(?:349|269|19|39|116|2\.63|319|348|106)|\b74\b/;
+  var OTHER=/One ?Day|Lola|Medichecks|Thriva|Forth|Randox|Bupa|Nuffield|Bluecrest|Superdrug|Boots|Numan|Selph|Vitall|Function|Neko|London Medical|LML/i;
+  function adv74(s){if(!/\b74\b/.test(s)||!/£319|Advanced/.test(s))return s;
+    s=s.replace(/(Advanced(?: [Pp]anel)?\s*(?:\(|,|:|-|·)?\s*)74\b/g,'$193')
+       .replace(/(£319\)?\s*(?:for|\(|,)?\s*)74\b/g,'$193')
+       .replace(/\b74(\s+(?:blood\s+)?(?:bio)?markers\s*(?:·|,|\(|from)?\s*£319)/gi,'93$1');
+    if(OTHER.test(s))return s;
+    return s.replace(/\b74(\s+(?:blood\s+)?(?:bio)?markers\b|\s+BIOMARKERS\b|(?=\s+Venous))/g,'93$1')}
+  function fix(s){s=adv74(s);for(var i=0;i<R.length;i++)s=s.replace(R[i][0],R[i][1]);return s}
   function walk(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;return p&&!SKIP[p.nodeName]&&HIT.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});var n;while((n=w.nextNode())){var v=n.nodeValue,o=fix(v);if(o!==v)n.nodeValue=o}}
-  function ld(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(sc){var v=sc.textContent,o=fix(v).replace(/("price"\s*:\s*")349(")/g,'$1399$2').replace(/("price"\s*:\s*)349\b/g,'$1399');if(o!==v)sc.textContent=o})}
+  function ld(){document.querySelectorAll('script[type="application/ld+json"]').forEach(function(sc){var v=sc.textContent,o=fix(v).replace(/("price"\s*:\s*")349(")/g,'$1399$2').replace(/("price"\s*:\s*)349\b/g,'$1399').replace(/("price"\s*:\s*")319(")/g,'$1269$2').replace(/("price"\s*:\s*)319\b/g,'$1269');if(o!==v)sc.textContent=o})}
   function run(){try{walk(document.body);ld();if(window.MutationObserver){var t;new MutationObserver(function(m){clearTimeout(t);t=setTimeout(function(){for(var i=0;i<m.length;i++){m[i].addedNodes.forEach(function(a){if(a.nodeType===1)walk(a)})}},50)}).observe(document.body,{childList:true,subtree:true})}}catch(e){}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
 })();
