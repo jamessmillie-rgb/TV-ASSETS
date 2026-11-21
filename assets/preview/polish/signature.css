@@ -1,1 +1,159 @@
-/* polish preview: signature (empty = no change yet) */
+/* TrueVitals polish r1: Signature panel (/signature-panel). Phones only (portrait up to 900px, landscape phones up to 500px high).
+   Scoped to this page. Loads after common.css; signature.css?v=3 and the embeds sit later, so every rule carries html[data-wf-page]. */
+
+@media (max-width:900px),(orientation:landscape) and (max-height:500px){
+
+  /* Hero: Cream kept, glow off, gold ink for small gold text, Trustpilot stars in Trustpilot green */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero::before{display:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .lead{font-size:15px;line-height:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-tp,.s-proof) .st svg{color:#00B67A}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-tp{font:500 13px/1.4 var(--tvp-ui);color:#5B6472;min-height:32px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-price{margin-top:20px;padding-top:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-price .inc,.s-ticks svg){color:#8A6A2F}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-price .inc{font:500 13.5px/1.4 var(--tvp-ui)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-alt{font:500 13px/1.45 var(--tvp-ui);color:#6B7280}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-alt a{color:#5B6472;border-bottom-color:rgba(17,17,17,.2)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-final .s-alt{color:#9CA3AF}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-final .s-alt a{color:#B9BFC6;border-bottom-color:rgba(255,255,255,.24)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-proof{margin-top:16px;padding-top:16px;border-top:1px solid rgba(17,17,17,.08);font:500 14px/1.45 var(--tvp-ui);color:#111;gap:6px 8px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-proof em{flex-basis:100%;font:500 12.5px/1.4 var(--tvp-ui);color:#6B7280}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ticks{gap:10px;margin-top:28px;padding-top:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ticks li{font:500 14px/1.4 var(--tvp-ui);color:#5B6472;gap:10px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero-img{border-radius:16px}
+
+  /* Headings balance; intros at body size; gold-ink text links with 44px hit area */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig h2{text-wrap:balance}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig .sub{font-size:15px;line-height:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig .lnk{color:#8A6A2F;border-bottom:1px solid rgba(138,106,47,.35);padding-bottom:1px;position:relative}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig .lnk::after{content:"";position:absolute;inset:-12px -4px}
+
+  /* Trust strip: inset hairline grid, icon beside label (was a full-bleed stock 2x2) */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip{background:#fff;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-g{margin:0 20px;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-i{flex-direction:row;align-items:center;text-align:left;gap:10px;padding:16px 0;border:0!important;border-bottom:1px solid rgba(17,17,17,.08)!important}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-i:nth-last-child(-n+2){border-bottom:0!important}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-i svg{width:18px;height:18px;color:#8A6A2F;flex-shrink:0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-i span{font:500 13px/1.35 var(--tvp-ui);color:#5B6472}
+
+  /* Why Signature (Night) and the comparison table type */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gold::before{display:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gold .sub{color:#9CA3AF}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp{margin-top:28px;border-radius:16px;border-color:rgba(255,255,255,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp table{font:500 13.5px/1.45 var(--tvp-ui)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp th{font:600 11px/1.3 var(--tvp-ui);letter-spacing:.06em;color:#9CA3AF;padding:14px 16px;border-bottom-color:rgba(255,255,255,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp td{padding:14px 16px;color:#B9BFC6;border-bottom-color:rgba(255,255,255,.06)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp td b{font-weight:700}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp tr.hi td:first-child{font:700 15px/1.3 var(--tvp-ui);color:#C9A96E}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp-note{font:500 12px/1.6 var(--tvp-ui);color:#7A818A;margin-top:14px}
+
+  /* Why not Randox directly: flat cards, Signature card Cream with a gold hairline */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-g{gap:12px;margin-top:28px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c{border-radius:16px;padding:22px 20px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c.gold{background:#F7F6F3;border:1px solid rgba(201,169,110,.6);box-shadow:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c h3{font-size:17px;line-height:22px;margin-bottom:12px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c li{font-size:14px;line-height:1.5}
+
+  /* Specialist depth: hairline spec list, small gold-ink "Signature only" label above each heading */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why + .s-spec{padding-top:8px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-spec-g{gap:0 24px;margin-top:28px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc{background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:18px 0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc h3{flex-direction:column-reverse;align-items:flex-start;gap:4px;font-size:16px;line-height:22px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-only{background:none;padding:0;border-radius:0;color:#8A6A2F;font:600 12px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc ul{margin-top:8px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc li{font-size:14px;line-height:1.55}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc li b{font-family:var(--tvp-ui);font-weight:600;letter-spacing:-.005em}
+
+  /* Case study: tighter cards, no 3px stripes, no quote watermark or grey bar */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-g{gap:12px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-story{border-radius:16px;padding:24px 20px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-story p{font-size:15px;line-height:25px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-mk{border:1px solid rgba(201,169,110,.45);border-radius:16px;padding:18px 20px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-mk .lab{font:600 12px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:#8A6A2F}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-mk p{font-size:14px;line-height:1.55}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-q{border-radius:16px;padding:24px 20px;background:#080808}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-q::before{display:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-q blockquote{border-left:0;padding:0;font:700 22px/1.25 var(--tvp-ui);letter-spacing:-.02em}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-q .who{font:500 13px/1.4 var(--tvp-ui)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-case-note{font:500 12.5px/1.55 var(--tvp-ui);color:#6B7280}
+
+  /* Scores (glow kept, keep list) and guarantees (watermark numerals off) */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-score-g{gap:12px;margin-top:28px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sk{border-radius:16px;padding:28px 24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-guar-g{gap:12px;margin-top:28px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc{background:#111313;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px 20px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc .num{display:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc h3{font-size:19px;line-height:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc p{font-size:14.5px;line-height:1.6}
+
+  /* Biomarker search and list */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-search input{border-radius:12px;border:1px solid rgba(17,17,17,.12);font:500 15px/1.3 var(--tvp-ui);background:#F7F6F3}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-count{font:500 13px/1.4 var(--tvp-ui);color:#5B6472;font-variant-numeric:tabular-nums}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-count b{color:#8A6A2F;font-weight:700}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ah{font:600 15px/1.3 var(--tvp-ui);letter-spacing:-.005em;min-height:52px;padding:14px 18px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ah .n{font:500 13px/1 var(--tvp-ui);color:#6B7280;font-variant-numeric:tabular-nums}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-ah .pl,.s-fb .pl){background:none;border:1px solid rgba(17,17,17,.14);color:#111}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-ai.open .pl,.s-fi.open .pl){background:none;border-color:#8A6A2F;color:#8A6A2F}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ab li{font:500 14px/1.4 var(--tvp-ui)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-sex.m,.s-sex.f,.s-calc){background:none;border:1px solid rgba(17,17,17,.14);color:#5B6472;border-radius:999px;font:600 10.5px/1.2 var(--tvp-ui);letter-spacing:.01em;padding:2px 7px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-unav{border-radius:12px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-unav summary{font:600 14px/1.4 var(--tvp-ui);color:#111}
+
+  /* Who it's for: hairline list */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-who-g{gap:0 24px;margin-top:24px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk{background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:14px 0;gap:12px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk svg{color:#8A6A2F;margin-top:5px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk p{font-size:15px;line-height:24px}
+
+  /* Process: numbered hairline list, gold outline numerals */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-proc-g{gap:0 24px;margin-top:28px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-pc{display:grid;grid-template-columns:36px 1fr;column-gap:12px;align-content:start;background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:18px 0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-pc .num{grid-row:span 2;width:28px;height:28px;margin:0;border-radius:999px;background:none;border:1px solid #8A6A2F;color:#8A6A2F;font:600 13px/1 var(--tvp-ui);font-variant-numeric:tabular-nums lining-nums}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-pc h3{font-size:16px;line-height:22px;margin:3px 0 4px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-pc p{font-size:14px;line-height:22px}
+
+  /* FAQ */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-fb{font:600 15.5px/1.35 var(--tvp-ui);letter-spacing:-.01em;min-height:56px;padding:16px 0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-fa p{font-size:15px;line-height:24px}
+
+  /* Map section (inline #050607 on a <section>, missed by common): Night, no label pill */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] section.s-who[style*="050607"]{background:#080808!important}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] section.s-who[style*="050607"] .su{background:none!important;border:0!important}
+
+  /* Final CTA */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-final::before{display:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-final .big{font-size:44px;line-height:1}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-final .inc{font:500 13.5px/1.4 var(--tvp-ui);color:#C9A96E;margin-top:8px}
+
+  /* Link hub (native Webflow, .swf-*): Cream, gold-ink labels, 48px rows with a chevron */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-wrap{background:#F7F6F3;padding:56px 20px;border-top:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-h2{font:700 26px/30px var(--tvp-ui);letter-spacing:-.025em;color:#111;margin:0 0 12px;text-wrap:balance}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-sub{font:400 15px/24px Montserrat,sans-serif;color:#5B6472;margin-bottom:32px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-sub a{color:#8A6A2F;font-weight:600;border-bottom:1px solid rgba(138,106,47,.35);text-decoration:none}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-block{margin-bottom:32px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-h3{font:600 13px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:#8A6A2F;padding:0 0 10px;margin:0;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-link{display:flex;align-items:center;min-height:48px;padding:12px 28px 12px 0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239CA3AF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 10.5 8 6 12.5'/%3E%3C/svg%3E") no-repeat right 2px center/14px 14px;font:500 15px/1.35 var(--tvp-ui);letter-spacing:-.005em;color:#111;border-bottom:1px solid rgba(17,17,17,.08)}
+}
+
+/* The page's old 76px bar clearance left white bands before the story and before the link hub; the footer now carries it */
+@media (max-width:767px){
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig{padding-bottom:0}
+}
+
+/* Comparison table on phones (A15 interim): pinned first column, right-edge fade, wider columns so rows stay short */
+@media (max-width:640px){
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);overscroll-behavior-x:contain}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp table{min-width:820px;table-layout:fixed}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp :is(th,td):first-child{position:sticky;left:0;z-index:1;background:#080808;width:124px;min-width:124px;padding-left:14px;padding-right:12px;box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp tr.hi td:first-child{background:#171511}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp :is(th,td):nth-child(2){width:210px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp :is(th,td):nth-child(3){width:140px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp :is(th,td):nth-child(4){width:206px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp :is(th,td):last-child{width:140px;padding-right:40px}
+}
+
+/* Landscape: trust strip as one row of four on the 32px gutter; link hub on the 32px gutter and 40px rhythm */
+@media (orientation:landscape) and (max-height:500px){
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-g{margin:0 32px;grid-template-columns:repeat(4,minmax(0,1fr))}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-strip-i{border-bottom:0!important}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-wrap{padding:40px 32px}
+}

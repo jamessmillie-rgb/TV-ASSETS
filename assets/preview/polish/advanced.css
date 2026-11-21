@@ -1,1 +1,125 @@
-/* polish preview: advanced (empty = no change yet) */
+/* TrueVitals polish r1: Advanced panel (/advanced-panel). Phones only (portrait up to 900px, landscape phones up to 500px high).
+   Scoped to this page. Loads after common.css; page embed styles sit later, so every rule carries html[data-wf-page]. */
+
+@media (max-width:900px),(orientation:landscape) and (max-height:500px){
+
+  /* Hero: Mist background kept (A3), glow off, calmer small print, teal-ink ticks */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-hero::before{display:none}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-hero .hero-desc{font-size:15px;line-height:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-price{margin-top:24px;padding-top:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-price-plus{font:500 13.5px/1.4 var(--tvp-ui);color:#5B6472}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-hero-alt{font:500 13px/1.4 var(--tvp-ui);color:#6B7280}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] :is(.ta-hero-alt,.ta-final-alt) a{color:#5B6472;border-bottom-color:rgba(17,17,17,.2)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-trust{gap:10px;margin-top:28px;padding-top:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-trust li{font:500 14px/1.4 var(--tvp-ui);color:#5B6472;gap:10px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] :is(.ta-trust,.ta-who-item) svg{color:#0E7A66}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-hero-img .img-wrap{border-radius:16px}
+
+  /* Headings balance; section intros at body size */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv h2{text-wrap:balance}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv .ta-sub{font-size:15px;line-height:24px}
+
+  /* What's covered: twelve tinted cards become one hairline spec list (A21) */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-checks-grid{gap:0 24px;margin-top:28px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] :is(.ta-cc,.ta-cc-new){background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:16px 0;box-shadow:none;transform:none}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-cc h3{font-size:16px;line-height:22px;margin-bottom:4px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-cc p{font-size:14px;line-height:22px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-checks-foot{margin-top:24px;font-size:15px}
+
+  /* Text links: teal ink (A12), 44px hit area */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv .lnk{color:#0E7A66;font-family:var(--tvp-ui);font-weight:600;font-size:inherit;border-bottom:1px solid rgba(14,122,102,.3);padding-bottom:1px;position:relative}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv .lnk::after{content:"";position:absolute;inset:-12px -4px}
+
+  /* Who it's for: hairline list */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-who-grid{gap:0 24px;margin-top:24px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-who-item{background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:14px 0;gap:12px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-who-item p{font-size:15px;line-height:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-who-item svg{margin-top:5px}
+
+  /* Advanced vs Ultimate (Night): no glow, flat cards, Ultimate keeps a thin teal outline, plain-text difference line */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up::before{display:none}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up .ta-sub{color:#9CA3AF}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-grid{gap:12px;margin-top:28px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card{border-radius:16px;padding:24px 20px;background:#111313;border:1px solid rgba(255,255,255,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-hero{box-shadow:none;background:#111313;border-color:rgba(44,228,173,.45)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card h3{font-size:19px;line-height:24px;letter-spacing:-.015em}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card .up-bio{font:500 13px/1.4 var(--tvp-ui);color:#9CA3AF;margin-bottom:14px;font-variant-numeric:tabular-nums}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card ul{gap:10px;margin-bottom:20px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card li{font-size:14px;line-height:1.5;color:#B9BFC6}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card li svg{margin-top:5px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-card .up-price{font-weight:700;font-size:30px;line-height:1;letter-spacing:-.03em;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv .ta-up-diff{display:block;background:none;border:0;border-radius:0;padding:0;margin-top:10px;font:600 13px/1.4 var(--tvp-ui);letter-spacing:.01em;color:#2ce4ad}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-cta{margin-top:24px;gap:12px}
+
+  /* Process: numbered hairline list, 28px outline numerals */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-how-steps{gap:0 24px;margin-top:28px;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-step{display:grid;grid-template-columns:36px 1fr;column-gap:12px;align-content:start;background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:18px 0}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-step-num{grid-row:span 2;width:28px;height:28px;margin:0;border-radius:999px;background:none;border:1px solid #111;color:#111;font:600 13px/1 var(--tvp-ui);font-variant-numeric:tabular-nums lining-nums}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-step h3{font-size:16px;line-height:22px;margin:3px 0 4px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-step p{font-size:14px;line-height:22px}
+
+  /* Biomarker list: Inter Tight rows, outlined icons, quiet calc tags */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-bio-note{font-size:15px;line-height:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc{gap:8px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc-btn{font:600 15px/1.3 var(--tvp-ui);letter-spacing:-.005em;min-height:56px;padding:14px 16px 14px 20px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc-btn .acc-count{font:500 13px/1 var(--tvp-ui);color:#6B7280;font-variant-numeric:tabular-nums}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] :is(.ta-acc-btn .acc-icon,.ta-faq-q .fq-icon){background:none;border:1px solid rgba(17,17,17,.14);color:#111}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] :is(.ta-acc-item.open .acc-icon,.ta-faq-item.open .fq-icon){background:none;border-color:#0E7A66;color:#0E7A66}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc-list li{font:500 14px/1.4 var(--tvp-ui);color:#5B6472}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc-list li.nm{color:#0E7A66}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-acc-list li i{font-family:var(--tvp-ui);font-weight:600;letter-spacing:.01em}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv .ta-up-not{font-size:14px;line-height:22px}
+
+  /* FAQ */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-faq-q{font:600 15.5px/1.35 var(--tvp-ui);letter-spacing:-.01em;min-height:56px;padding:16px 0}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-faq-a p{font-size:15px;line-height:24px}
+
+  /* Final CTA: tighter rhythm, stray <br> line removed */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final h2{text-wrap:wrap}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final p{font-size:15px;line-height:24px;margin-bottom:24px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final-price{font-size:44px;line-height:1}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final .ta-price-plus{margin-top:8px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final br{display:none}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final-alt{font:500 13px/1.4 var(--tvp-ui)}
+
+  /* Clinic map band heading (inline-styled shared embed): plain label, 700 heading (see COMMON-ISSUES: move to common) */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] div[style*="background:#050607"] span[style*="text-transform:uppercase"]{background:none!important;border:0!important;padding:0!important;font:600 13px/1.3 var(--tvp-ui)!important;letter-spacing:.01em!important;text-transform:none!important;color:#2ce4ad!important;margin-bottom:12px!important}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] div[style*="background:#050607"] h2{font-family:var(--tvp-ui)!important;font-weight:700!important;font-size:26px!important;line-height:30px!important;letter-spacing:-.025em!important;text-wrap:balance}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] div[style*="background:#050607"] h2 + p{font-size:15px!important;line-height:24px!important}
+
+  /* Guide links block (native Webflow, .awf-*): page gutter, Inter Tight, sentence-case labels, 48px rows with a chevron */
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-wrap{background:#F5F8F8;padding:56px 20px;border-top:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-h2{font:700 26px/30px var(--tvp-ui);letter-spacing:-.025em;color:#111;margin:0 0 12px;text-wrap:balance}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-sub{font:400 15px/24px Montserrat,sans-serif;color:#5B6472;margin-bottom:32px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-inline{color:#0E7A66;font-weight:600;border-bottom:1px solid rgba(14,122,102,.3);text-decoration:none;position:relative}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-inline::after{content:"";position:absolute;inset:-12px -4px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-block{margin-bottom:32px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-h3{font:600 13px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:#0E7A66;padding:0 0 10px;margin:0;border-bottom:1px solid rgba(17,17,17,.08)}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-link{display:flex;align-items:center;min-height:48px;padding:12px 28px 12px 0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239CA3AF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 10.5 8 6 12.5'/%3E%3C/svg%3E") no-repeat right 2px center/14px 14px;font:500 15px/1.35 var(--tvp-ui);letter-spacing:-.005em;color:#111;border-bottom:1px solid rgba(17,17,17,.08)}
+}
+
+/* The page's old 76px bar clearance left a white strip above the map; the footer now carries the clearance (common.css) */
+@media (max-width:767px){
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .tv-adv{padding-bottom:0}
+}
+
+/* View Ultimate / Choose Advanced: equal full-width pair on phones */
+@media (max-width:600px){
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-cta{flex-direction:column;align-items:stretch}
+}
+
+/* Two-column comparison: cards keep their natural height (no empty space under the shorter list) */
+@media (min-width:700px) and (max-width:900px),(orientation:landscape) and (max-height:500px){
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-up-grid{align-items:start}
+}
+
+/* Final headline breaks as "93 biomarkers. One draw. / 4 working days." */
+@media (max-width:500px){
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .ta-final h2{max-width:300px;margin-left:auto;margin-right:auto}
+}
+
+/* Landscape: guide block on the 32px gutter and 40px rhythm; map heading one step down */
+@media (orientation:landscape) and (max-height:500px){
+  html[data-wf-page="6846cdcf5df1eff437f39415"] .awf-wrap{padding:40px 32px}
+  html[data-wf-page="6846cdcf5df1eff437f39415"] div[style*="background:#050607"] h2{font-size:24px!important;line-height:28px!important}
+}
