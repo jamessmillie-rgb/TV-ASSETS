@@ -1,6 +1,7 @@
 @property --tvpfade{syntax:"<length>";inherits:false;initial-value:28px}
 @keyframes tvpfade{0%,90%{--tvpfade:28px}100%{--tvpfade:0px}}
-/* TrueVitals polish r1: Signature panel (/signature-panel). Phones only (portrait up to 900px, landscape phones up to 500px high).
+/* TrueVitals polish r2: Signature panel (/signature-panel). Phones only: portrait (max-width:767px) and landscape phones
+   ((orientation:landscape) and (max-height:500px) and (max-width:932px)). Tablets and desktop untouched.
    Scoped to this page. Loads after common.css; signature.css?v=3 and the embeds sit later, so every rule carries html[data-wf-page]. */
 
 @media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
@@ -22,6 +23,10 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ticks{gap:10px;margin-top:28px;padding-top:24px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ticks li{font:500 14px/1.4 var(--tvp-ui);color:#5B6472;gap:10px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero-img{border-radius:16px}
+
+  /* Book Signature on light surfaces: black with gold text (O4). The r1 gold rule in common still out-scores the r2 one, see COMMON-ISSUES */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-hero,.s-proc) .btn{background:#111;color:#C9A96E}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] :is(.s-hero,.s-proc) .btn:hover{background:#000;color:#C9A96E}
 
   /* Headings balance; intros at body size; gold-ink text links with 44px hit area */
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig h2{text-wrap:balance}
@@ -55,7 +60,7 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c h3{font-size:17px;line-height:22px;margin-bottom:12px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why-c li{font-size:14px;line-height:1.5}
 
-  /* Specialist depth: hairline spec list, small gold-ink "Signature only" label above each heading */
+  /* Specialist depth: gold-hairline spec list (O5), small gold-ink "Signature only" label above each heading */
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-why + .s-spec{padding-top:8px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-spec-g{gap:0 24px;margin-top:28px;border-bottom:1px solid rgba(201,169,110,.45)}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-sc{background:none;border:0;border-top:1px solid rgba(201,169,110,.45);border-radius:0;padding:18px 0}
@@ -87,8 +92,8 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc h3{font-size:19px;line-height:24px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-gc p{font-size:14.5px;line-height:1.6}
 
-  /* Biomarker search and list */
-  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-search input{border-radius:12px;border:1px solid rgba(17,17,17,.12);font:500 15px/1.3 var(--tvp-ui);background:#F7F6F3}
+  /* Biomarker search (16px: no iPhone zoom) and list */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-search input{border-radius:12px;border:1px solid rgba(17,17,17,.12);font:500 16px/1.3 var(--tvp-ui);background:#F7F6F3}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-count{font:500 13px/1.4 var(--tvp-ui);color:#5B6472;font-variant-numeric:tabular-nums}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-count b{color:#8A6A2F;font-weight:700}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-ah{font:600 15px/1.3 var(--tvp-ui);letter-spacing:-.005em;min-height:52px;padding:14px 18px}
@@ -100,9 +105,9 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-unav{border-radius:12px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-unav summary{font:600 14px/1.4 var(--tvp-ui);color:#111}
 
-  /* Who it's for: hairline list */
-  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-who-g{gap:0 24px;margin-top:24px;border-bottom:1px solid rgba(17,17,17,.08)}
-  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk{background:none;border:0;border-top:1px solid rgba(17,17,17,.08);border-radius:0;padding:14px 0;gap:12px}
+  /* Who it's for: white cards on Cream (rhythm: the process right after is a hairline list) */
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-who-g{gap:8px;margin-top:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk{background:#fff;border:1px solid rgba(17,17,17,.06);border-radius:16px;padding:16px 18px;gap:12px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk svg{color:#8A6A2F;margin-top:5px}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-wk p{font-size:15px;line-height:24px}
 
@@ -117,8 +122,7 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-fb{font:600 15.5px/1.35 var(--tvp-ui);letter-spacing:-.01em;min-height:56px;padding:16px 0}
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-fa p{font-size:15px;line-height:24px}
 
-  /* Map section (inline #050607 on a <section>, missed by common): Night, no label pill */
-  html[data-wf-page="6a5b80f82b54e516086d7ee6"] section.s-who[style*="050607"]{background:#080808!important}
+  /* Map section label: its inline gold-tint pill has no text-transform, so common's span rule misses it */
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] section.s-who[style*="050607"] .su{background:none!important;border:0!important}
 
   /* Final CTA */
@@ -136,12 +140,25 @@
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .swf-link{display:flex;align-items:center;min-height:48px;padding:12px 28px 12px 0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239CA3AF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 10.5 8 6 12.5'/%3E%3C/svg%3E") no-repeat right 2px center/14px 14px;font:500 15px/1.35 var(--tvp-ui);letter-spacing:-.005em;color:#111;border-bottom:1px solid rgba(17,17,17,.08)}
 }
 
-/* The page's old 76px bar clearance left white bands before the story and before the link hub; the footer now carries it */
+/* First screen sells (portrait): badge, H1, price, Klarna line, small print, full-width Book, then lead, Trustpilot, review, alt links, ticks.
+   .s-price becomes display:contents so its children can be ordered; the button's colour-only transition stops "order" animating. */
 @media (max-width:767px){
-  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .tv-sig{padding-bottom:0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero-g > div:first-child{display:flex;flex-direction:column;align-items:flex-start}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-badge{order:1}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero h1{order:2;margin-bottom:0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-price{display:contents}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-price .n{order:3;margin-top:24px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-klarna{order:4}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-price > .s-alt{order:5}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .btn{order:6;align-self:stretch;width:100%;margin-top:20px;transition:background-color .2s,color .2s}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .lead{order:7;margin-top:28px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-tp{order:8;margin-top:14px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-proof{order:9;margin-top:10px;padding-top:0;border-top:0}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero-g > div > .s-alt{order:10;margin-top:16px}
+  html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-hero .s-ticks{order:11;width:100%}
 }
 
-/* Comparison table on phones (A15 interim): pinned first column, right-edge fade, wider columns so rows stay short */
+/* Comparison table on phones (A15 interim): pinned first column, right-edge fade that clears at the end of the swipe, wider columns */
 @media (max-width:640px){
   html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp{--tvpfade:28px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - var(--tvpfade)),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - var(--tvpfade)),transparent);overscroll-behavior-x:contain}
   @supports (animation-timeline:scroll()){html[data-wf-page="6a5b80f82b54e516086d7ee6"] .s-cmp{animation:tvpfade linear both;animation-timeline:scroll(self inline)}}
