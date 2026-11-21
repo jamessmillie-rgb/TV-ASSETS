@@ -1,9 +1,10 @@
+/* ROLLED BACK 21 Nov 2026 with quiz.js: /quiz-results and /dashboard use the pre-12 Nov results in THIS file again (it also corrects the old embed facts at render). ?tvnext=5 (or 4) loads quiz-results-5.js for one browser; ?tvnext=1 or 0 puts it back. */
 /* 13 Nov 2026: /quiz-results and /dashboard now load quiz-results-5.js (= quiz-results-4.js with the scorer fixed for options that contain
    ", ", so the map matches the one the new quiz shows). Falls back to quiz-results-4.js if -5 fails to load. */
 /* LIVE 12 Nov 2026 13:30: the next version (-4 files) is now the default for everyone; ?tvnext=0 on a page address switches that
    browser back to this file, ?tvnext=1 clears that. To roll everyone back, revert this commit. Original note: Preview switch (12 Nov 2026): adding ?tvnext=1 to a page address loads the next version of the quiz and results files
    for that browser only; ?tvnext=0 switches it back. Everyone else gets this file exactly as before. */
-(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.setItem('tvnext','0');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.removeItem('tvnext');window.__tvNext=localStorage.getItem('tvnext')!=='0'}catch(e){window.__tvNext=true}})();
+(function(){try{var s=location.search;if(/[?&]tvnext=0(&|$)/.test(s))localStorage.setItem('tvnext','0');else if(/[?&]tvnext=1(&|$)/.test(s))localStorage.removeItem('tvnext');else if(/[?&]tvnext=5(&|$)/.test(s))localStorage.setItem('tvnext','5');else if(/[?&]tvnext=4(&|$)/.test(s))localStorage.setItem('tvnext','4');var v=localStorage.getItem('tvnext');window.__tvNext=(v==='4'||v==='5')}catch(e){window.__tvNext=false}})();
 (function(){
 if(window.__tvNext){var nx=document.createElement('script');nx.src='https://results.truevitals.co.uk/assets/quiz-results-5.js';nx.onerror=function(){var f=document.createElement('script');f.src='https://results.truevitals.co.uk/assets/quiz-results-4.js';document.head.appendChild(f)};document.head.appendChild(nx);return}
 const SYS={
