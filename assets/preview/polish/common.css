@@ -14,11 +14,13 @@
 }
 
 /* Panel sticky bars: one dark bar on Ultimate, Advanced and Signature (Advanced was white) */
-html :is(.tu-sticky,.ta-sticky,.s-bar){background:rgba(8,8,8,.96);border-top:1px solid var(--tvp-line-dark);box-shadow:none;transition:transform .25s ease}
-html :is(.tu-sticky-price,.ta-sticky-price,.s-bar .pr){font-family:var(--tvp-ui);font-weight:700;color:#fff;font-variant-numeric:tabular-nums lining-nums}
-html :is(.tu-sticky-meta,.ta-sticky-meta,.s-bar .kl){font-family:var(--tvp-ui);font-weight:500;color:var(--tvp-on-dark)}
-/* Hook for JS J1: the bar slides away while the page's own Book button is on screen */
-html :is(.tu-sticky,.ta-sticky,.s-bar).tvp-off{transform:translateY(calc(100% + 1px));pointer-events:none}
+@media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
+  html :is(.tu-sticky,.ta-sticky,.s-bar){background:rgba(8,8,8,.96);border-top:1px solid var(--tvp-line-dark);box-shadow:none;transition:transform .25s ease}
+  html :is(.tu-sticky-price,.ta-sticky-price,.s-bar .pr){font-family:var(--tvp-ui);font-weight:700;color:#fff;font-variant-numeric:tabular-nums lining-nums}
+  html :is(.tu-sticky-meta,.ta-sticky-meta,.s-bar .kl){font-family:var(--tvp-ui);font-weight:500;color:var(--tvp-on-dark)}
+  /* Hook for JS J1: the bar slides away while the page's own Book button is on screen */
+  html :is(.tu-sticky,.ta-sticky,.s-bar).tvp-off{transform:translateY(calc(100% + 1px));pointer-events:none}
+}
 
 /* Footer clears the fixed Book / Pay bars so the clinical disclaimer can be read */
 @media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
