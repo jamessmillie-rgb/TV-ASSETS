@@ -47,6 +47,9 @@
 .cp .cp-ch{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .cp-ch li{font-size:13px;line-height:1.3;font-weight:500;color:var(--g);background:rgba(44,228,173,.1);border:1px solid rgba(22,185,138,.32);border-radius:999px;padding:4px 10px}
 .cp-ch li i{font-style:normal;font-size:11px;font-weight:600;color:#7a5c1e;margin-left:5px}
+.cp-ch li.sp{background:linear-gradient(135deg,rgba(201,169,110,.26),rgba(201,169,110,.12));border-color:rgba(201,169,110,.7);color:#5c4519;font-weight:600}
+.cp-ch li.sp i{color:#5c4519}
+.cp-spx a{color:var(--g);font-weight:600}
 @media (min-width:760px){
  .cp-al{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;border-top:0}
  .cp-al>li{border-top:1px solid var(--line);border-bottom:0}
