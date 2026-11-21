@@ -22,7 +22,27 @@
       return 'cmp:swapped';
     });
   }
+  function story(){
+    /* the scroll story lives in a shadow root: put polish/story.css inside it, last, for ~6 s while the story builds */
+    if(off) { [].slice.call(document.querySelectorAll('*')).forEach(function(e){ if(e.shadowRoot){ var o=e.shadowRoot.getElementById('tvpv-story'); if(o) o.remove(); } }); return 'story:off'; }
+    var n=0, t=setInterval(function(){
+      [].slice.call(document.querySelectorAll('*')).forEach(function(e){ var r=e.shadowRoot; if(!r) return;
+        var l=r.getElementById('tvpv-story'); if(!l){ l=document.createElement('link'); l.rel='stylesheet'; l.id='tvpv-story'; l.href=B+'polish/story.css'+T; }
+        if(r.lastChild!==l) r.appendChild(l); });
+      if(++n>12) clearInterval(t);
+    },500);
+    return 'story:on';
+  }
+  function behave(){
+    if(off||document.getElementById('tvpv-behave')) return 'behave:'+(off?'off':'already');
+    var s=document.createElement('script'); s.id='tvpv-behave'; s.src=B+'polish/behave.js'+T; document.head.appendChild(s); return 'behave:on';
+  }
   window.__tvpv=cmp().then(function(c){
-    return Promise.all([link('tvpv-common',B+'polish/common.css'), slug?link('tvpv-page',B+'polish/'+slug+'.css'):Promise.resolve('page:none')]).then(function(r){ document.documentElement.setAttribute('data-tvpv',off?'off':'on'); return [c].concat(r).join(' '); });
+    return Promise.all([link('tvpv-common',B+'polish/common.css'), slug?link('tvpv-page',B+'polish/'+slug+'.css'):Promise.resolve('page:none')]).then(function(r){
+      document.documentElement.setAttribute('data-tvpv',off?'off':'on');
+      var extra=[story(),behave()];
+      try{ window.dispatchEvent(new Event('resize')); }catch(e){}
+      return [c].concat(r,extra).join(' ');
+    });
   });
 })();
