@@ -1,10 +1,10 @@
-/* TrueVitals polish r1: booking /phlebotomy (page 6890c30f9dde29a144f89aeb). Phones only. Pay button text, Pay amounts, the stepper and the bar layout are deliberately untouched. */
+/* TrueVitals polish r2: booking /phlebotomy (page 6890c30f9dde29a144f89aeb). Phones only. Pay button text, Pay amounts, the stepper and the bar layout are deliberately untouched. */
 @media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* Page rhythm: no dead white band above the footer (the footer itself now clears the Pay bar) */
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .tv-bk{padding-bottom:var(--tvp-sec)}
 
-  /* Heading: calm 700 instead of 900, balanced lines */
-  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head h1{font-family:var(--tvp-ui);font-weight:700;font-size:26px;line-height:1.15;letter-spacing:-.025em;text-wrap:balance;margin-bottom:12px}
+  /* Heading: 600 like the other page H1s, balanced lines; compact for a checkout step */
+  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head h1{font-family:var(--tvp-ui);font-weight:600;font-size:28px;line-height:1.12;letter-spacing:-.03em;text-wrap:balance;margin-bottom:12px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head p{font-size:15px;line-height:24px;color:var(--tvp-ink-2);text-wrap:pretty}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pill{font:600 14px/1.2 var(--tvp-ui);letter-spacing:-.005em;border-color:var(--tvp-line);padding:6px 6px 6px 16px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pill em{font-weight:500;font-variant-numeric:tabular-nums lining-nums}
@@ -55,12 +55,12 @@
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-sig h4{font-weight:700;font-size:16px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-sig a{min-height:44px;padding:0 18px;background:var(--tvp-gold);color:var(--tvp-gold-text);font:600 14px/1 var(--tvp-ui);letter-spacing:-.005em;text-transform:none}
 
-  /* Check what's near you: quiet tool panel; the postcode box keeps upper-case values but not an upper-case placeholder */
+  /* Check what's near you: quiet tool panel; 16px postcode box (no iPhone zoom), upper-case values but not an upper-case placeholder */
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-near{border-radius:16px;padding:20px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-near h3{font:700 17px/22px var(--tvp-ui);letter-spacing:-.01em}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-near h3 span{font:500 12px var(--tvp-ui);margin-left:6px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-near p{font-size:14px;line-height:22px;margin:6px 0 14px}
-  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pc input{min-height:48px;border-radius:12px;border-width:1px;border-color:var(--tvp-line-strong);font:500 15px/1.2 var(--tvp-ui);letter-spacing:.02em}
+  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pc input{min-height:48px;border-radius:12px;border-width:1px;border-color:var(--tvp-line-strong);font:500 16px/1.2 var(--tvp-ui);letter-spacing:.02em}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pc input::placeholder{text-transform:none;letter-spacing:0;color:var(--tvp-mute)}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pc button{min-height:48px;padding:0 20px;background:transparent;color:var(--tvp-ink);border:1px solid var(--tvp-line-strong);font:600 15px/1 var(--tvp-ui);letter-spacing:-.005em;text-transform:none}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-pc button:hover{background:#fff}
@@ -101,14 +101,15 @@
   /* Pay bar: same layout and text; just no glow under the button */
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-bar .bk-pay{box-shadow:none}
 }
-@media (min-width:768px){
+@media (orientation:landscape) and (max-height:500px) and (max-width:932px) and (min-width:768px){
+  /* Landscape phones from 768px wide: the page gutter is 32px there (tablets and desktop untouched) */
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-how{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px}
 }
 @media (orientation:landscape) and (max-height:500px) and (max-width:932px){
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .tv-bk{padding-top:20px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-steps{margin-bottom:14px}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head{margin-bottom:18px}
-  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head h1{font-size:24px}
+  html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-head h1{font-size:26px}
   /* Landscape matches portrait: no stock photos or bullet lists in the two choices, radio on the left */
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-opt img,html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-opt ul{display:none}
   html[data-wf-page="6890c30f9dde29a144f89aeb"] .bk-opt-b{padding:15px 16px 15px 52px}

@@ -1,4 +1,4 @@
-/* TrueVitals polish r1: home (page 6825a8869d9afdbdbc4d8892). Phones only (portrait <=900px and landscape phones). Loads after common.css. */
+/* TrueVitals polish r2: home (page 6825a8869d9afdbdbc4d8892). Phones only (portrait <=767px and landscape phones). Loads after common.css. */
 @media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* Hero */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero{background:var(--tvp-night)}
@@ -63,7 +63,10 @@
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card--sig .tv-ck,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card--sig .tv-new-lbl,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card--sig .tv-new-count{color:var(--tvp-gold-ink)}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card--sig .tv-new{background:rgba(201,169,110,.10);border-color:rgba(201,169,110,.3)}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-badge--sig{background:var(--tvp-gold);color:var(--tvp-gold-text)}
-  /* Advanced: outline button */
+  /* Signature: black with gold text on the cream card (r2 O4; common's rule loses on specificity here) */
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-panels .tv-cta--sig,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-panels .tv-card:hover .tv-cta--sig{background:#111;color:var(--tvp-gold)}
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-panels .tv-cta--sig:active{background:#000;color:var(--tvp-gold)}
+  /* Advanced: filled teal button (r2 O6) */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card:not(.tv-card--hero):not(.tv-card--sig) .tv-cta,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-card:not(.tv-card--hero):not(.tv-card--sig):hover .tv-cta{background:var(--tvp-teal);color:var(--tvp-teal-text);border:0;box-shadow:none}
   /* Features: hairline spec list (also ends the .tv-trust marquee class collision) */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-grid{margin-bottom:40px}
@@ -138,24 +141,22 @@
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rv h3{font:600 16px/1.35 var(--tvp-ui);letter-spacing:-.005em}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rv blockquote p{font-family:'Montserrat',sans-serif;font-size:14px;line-height:22px}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rv figcaption{font-family:var(--tvp-ui);font-size:13px}
-  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev-foot{font:500 13px/1.6 var(--tvp-ui)}
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev-foot{font:500 13px/1.6 var(--tvp-ui);text-align:left;padding:0 20px}
 
-  /* Section heads: left-aligned like the hero, the story and the sections that follow */
+  /* Section heads: left-aligned like the hero, the story and the sections that follow (the clinic band's label and heading styles now come from common.css) */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tvtr-hd,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-head,html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev-hd{text-align:left}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-head p{margin:0}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-guide{justify-content:flex-start}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev-hd{padding:0 20px}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev-grid{padding-left:20px;padding-right:20px;scroll-padding:0 20px}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] div[style*="background:#050607"] div[style*="text-align:center"]{text-align:left!important}
-  html[data-wf-page="6825a8869d9afdbdbc4d8892"] div[style*="background:#050607"] div[style*="text-align:center"] > span{background:none!important;border:0!important;border-radius:0!important;padding:0!important;font:600 13px/1.3 var(--tvp-ui)!important;letter-spacing:.01em!important;text-transform:none!important;color:var(--tvp-teal)!important}
-  html[data-wf-page="6825a8869d9afdbdbc4d8892"] div[style*="background:#050607"] div[style*="text-align:center"] > h2{font-weight:700!important;font-size:26px!important;line-height:1.15!important;letter-spacing:-.025em!important}
-  html[data-wf-page="6825a8869d9afdbdbc4d8892"] div[style*="background:#050607"] div[style*="text-align:center"] > p{font-size:15px!important;line-height:24px!important}
 
   /* Final band */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-final{background:var(--tvp-deep);padding:var(--tvp-sec) 20px 64px}
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-final h2{text-wrap:balance}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-final p{font-size:15px;line-height:24px}
 }
-@media (max-width:768px){
+@media (max-width:767px){
   /* Lifestyle stock photos off on phones; text-only slides, left-aligned */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hp3 .tv-cat-imgs{display:none}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hp3 .tv-cat-sl{text-align:left;align-items:flex-start}
@@ -167,6 +168,10 @@
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero-btns{flex-direction:row;align-items:stretch;gap:12px}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero-btns .tv-h-btn{flex:1 1 0;justify-content:center}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero-c{padding-top:24px}
+  /* Both hero buttons fully on the first landscape screen */
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero-tag{margin-bottom:12px}
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-guar-line{margin-bottom:12px}
+  html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-hero-sub{margin-bottom:20px}
   /* Quiz band: words and body map side by side instead of a full screen of figure first */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-quiz-in{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:32px;align-items:center}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-quiz-fig{order:0}
@@ -179,8 +184,8 @@
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-rev{padding-top:var(--tvp-sec-land);padding-bottom:var(--tvp-sec-land)}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] div[style*="background:#050607"]{padding:var(--tvp-sec-land) 24px!important}
 }
-@media (min-width:640px) and (max-width:959px){
-  /* Landscape: three panel cards in price order, Ultimate in the middle */
+@media (orientation:landscape) and (max-height:500px) and (max-width:932px){
+  /* Landscape phones: three panel cards in price order, Ultimate in the middle (tablets untouched) */
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-checks{grid-template-columns:1fr}
   html[data-wf-page="6825a8869d9afdbdbc4d8892"] .tv-checks li{min-height:0;padding:4px 0}
