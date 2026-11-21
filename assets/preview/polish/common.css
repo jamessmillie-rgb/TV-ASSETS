@@ -1,4 +1,4 @@
-/* TrueVitals polish r1: shared system for the buying path, phones only (portrait <=900px and landscape phones). Desktop untouched. */
+/* TrueVitals polish r1: shared system for the buying path, phones only (portrait <=767px and landscape phones <=932x500). Desktop untouched. */
 /* This file loads BEFORE the page stylesheets, so every override adds `html` to win on specificity, not on order. */
 
 /* Tokens */

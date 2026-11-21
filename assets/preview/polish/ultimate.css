@@ -1,10 +1,7 @@
-/* polish r1: ultimate (/ultimate-panel, page 6846d1196dd1d0884979b265). Phones only: portrait <=900px wide and landscape phones <=500px high. Desktop untouched. */
+/* polish r2: ultimate (/ultimate-panel, page 6846d1196dd1d0884979b265). Phones only: portrait <=767px, landscape phones <=500px high and <=932px wide. Desktop and tablets untouched. */
 /* common.css loads first; every rule here is scoped to this page with html[data-wf-page] so it wins on specificity and cannot leak. */
 
 @media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
-
-  /* Page rhythm: the 76px bottom padding meant for the old bar left white gaps under the reviews and the final band (the footer now clears the bar) */
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tv-ult{padding-bottom:0}
 
   /* Prose: Montserrat 400, 15/24 */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tv-ult :where(.hero-desc,.tu-sub,.tu-report-grid > div:first-child > p,.tu-tc > p,.tu-gc > p:not(.gc-note),.tu-cov-grid p,.tu-final .tu-inner > p,.tu-faq-a p,.tu-rc p,.tu-who-item p){font-family:Montserrat,sans-serif;font-weight:400;font-size:15px;line-height:24px}
@@ -12,7 +9,7 @@
 
   /* HERO */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero::before,html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero::after{display:none}
-  /* Strapline: the badge rule .tu-tag was leaking into it (dark slab, nowrap, capitals) */
+  /* Strapline: the badge rule .tu-tag was leaking into it (dark slab, nowrap, capitals); the one teal promise on the hero (O2) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag{display:block;background:none;padding:0;border-radius:0;white-space:normal;text-transform:none;font:600 19px/1.3 var(--tvp-ui);letter-spacing:-.01em;color:var(--tvp-teal);margin:2px 0 16px}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag::after{display:none}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .hero-desc{color:var(--tvp-on-dark)}
@@ -24,6 +21,21 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero-alt a{color:var(--tvp-on-dark-hi);border-bottom-color:rgba(255,255,255,.24)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-trust li{font:500 14px/1.4 var(--tvp-ui);color:var(--tvp-on-dark-hi)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero-img .img-wrap{border-radius:16px}
+  /* First screen sells (r2): badge, H1, strapline, price, Klarna line, small print, full-width Book, then guarantee, description, rating, links, ticks. CSS order only, same elements */
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero-grid > div:first-child{display:flex;flex-direction:column;align-items:flex-start}
+  html[data-wf-page="6846d1196dd1d0884979b265"] :where(.tu-hero-grid > div:first-child) > *{order:20;max-width:100%}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-badge{order:1}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero h1{order:2}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag{order:3}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-price{order:4;align-self:stretch;margin-top:8px;padding-top:0;border-top:0}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-klarna{order:5}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-price-note{order:6}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .btn-p{order:7;align-self:stretch;margin-top:24px}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-hero-guar{order:8;margin-top:14px}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .hero-desc{order:9;margin-top:32px}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tp{order:10}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-hero-alt{order:11}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-trust{order:12;align-self:stretch}
 
   /* TRUST STRIP */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-strip-item svg{color:var(--tvp-teal-ink)}
@@ -129,23 +141,13 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-col-ult svg{color:var(--tvp-teal-ink)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-diff{display:block;background:none;border:0;padding:0;border-radius:0;margin-top:20px;font:600 15px/1.4 var(--tvp-ui);letter-spacing:-.005em;color:var(--tvp-teal-ink)}
 
-  /* COVERAGE */
+  /* COVERAGE (the clinic finder panel itself now comes from common.css) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov::after{display:none}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tu-label{background:none!important;border:0!important;padding:0;color:var(--tvp-teal)!important}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov-stats div{border-radius:16px;background:#111313;border:1px solid var(--tvp-line-dark)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov-stats b{font-weight:700}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov-stats span{font:500 12.5px/1.4 var(--tvp-ui);color:var(--tvp-on-dark)}
-
-  /* Clinic finder: align with the 20px gutter, give the search panel its own padding, one border level fewer */
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap.compact{padding:0;border-radius:0;background:none}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-panel{padding:16px;border-radius:16px;background:#111313;border-color:var(--tvp-line-dark)}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-panel::before{display:none}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-map{border-radius:16px;border-color:var(--tvp-line-dark)}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-search{gap:8px}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-search input{font:500 16px/1.2 var(--tvp-ui);border-width:1px;border-radius:12px}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-geo{margin-top:12px;min-height:36px;padding:0 14px;font:600 13px/1 var(--tvp-ui);letter-spacing:0;text-transform:none}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-status{margin-top:10px;font:500 12.5px/1.45 var(--tvp-ui);color:var(--tvp-on-dark)}
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-empty{border:0;background:none;padding:14px 0 2px;text-align:left}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-cov .tv-cmap .fc-status{font:500 12.5px/1.45 var(--tvp-ui);color:var(--tvp-on-dark)}
 
   /* HOW IT WORKS: outline numerals */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-step{border-radius:16px}
@@ -159,7 +161,7 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-faq-q .fq-icon{background:none;border:1px solid var(--tvp-line-strong);color:var(--tvp-ink)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-faq-item.open .fq-icon{background:var(--tvp-teal);border-color:var(--tvp-teal);color:var(--tvp-teal-text)}
 
-  /* FINAL */
+  /* FINAL: the closing band on the brand Deep (O3) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final::before{display:none}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final{background:var(--tvp-deep)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final-tag{text-transform:none;letter-spacing:0;text-wrap:balance;font:600 14px/1.5 var(--tvp-ui);color:var(--tvp-teal)}
@@ -174,9 +176,7 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .uwf-wrap .uwf-inline{color:var(--tvp-teal-ink)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .uwf-wrap .uwf-h3{font:600 13px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:var(--tvp-teal-ink);border-bottom-color:var(--tvp-line)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .uwf-wrap .uwf-link{font:500 15px/1.3 var(--tvp-ui);color:var(--tvp-ink);padding:12px 0;border-bottom-color:var(--tvp-line)}
-}
 
-@media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* What's covered as a hairline spec list (two columns in landscape) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-checks-grid{gap:0 32px;margin-top:28px}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-checks-grid > :last-child{border-bottom:1px solid var(--tvp-line)}
