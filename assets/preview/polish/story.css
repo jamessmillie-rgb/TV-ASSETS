@@ -1,1 +1,27 @@
-/* polish preview: scroll story (inside its shadow root); empty = no change yet */
+/* polish r1: scroll story (inside its shadow root; home, ultimate, signature). Custom properties such as --tvNavH inherit into the shadow root. */
+.tvroot{font-family:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif}
+.hero h1,.cap h2,.sec h2,.end h2{font-weight:700;letter-spacing:-.03em}
+.hero-sub,.cap p,.lede,.hero-after{font-weight:400}
+.scue,.rx-lab,.vs-c.old h3,.vs-n{font-family:'Inter Tight',system-ui,sans-serif}
+.btn,.ph .btn,.phc .btn,.card .btn{min-height:52px;padding:0 24px;border-radius:999px;font-family:'Inter Tight',system-ui,sans-serif;font-weight:600;font-size:15px;letter-spacing:-.005em}
+.btn-p{color:#08201a}
+.btn-p:hover{background:#1fb599;color:#08201a}
+.btn-s{border-color:rgba(255,255,255,.24)}
+/* Stage and progress rail start 12px below the site nav (95px portrait, 49px landscape) */
+.stage{padding-top:calc(var(--tvNavH,95px) + 12px)}
+.stage:after{inset:calc(var(--tvNavH,95px) + 12px) 0 0}
+/* 20px gutter for the SVG scenes, so body-map labels clear the screen edge */
+.scene{padding-left:20px;padding-right:20px}
+/* Range bars (A19, show James): dark = outside lab range, grey = lab range, teal = optimal; the marker keeps its status colour */
+.rbar{background:linear-gradient(90deg,#1d1f24 0 var(--a),#3a3d45 var(--a) var(--b),rgba(44,228,173,.8) var(--b) var(--c),#3a3d45 var(--c) var(--d),#1d1f24 var(--d) 100%)}
+/* Scroll cue: sticks to the bottom of the screen only while the story itself is on screen (it used to float over the home hero) */
+.scue{position:sticky;left:auto;bottom:16px;width:max-content;margin:0 auto -46px;transform:translateY(8px)}
+.scue.on{transform:none}
+/* Small text links: 44px hit areas without moving anything */
+.hero-quiz a,.skip{position:relative}
+.hero-quiz a::after,.skip::after{content:"";position:absolute;inset:-12px -6px}
+@media (max-width:899px){
+  .hero{padding-top:56px}
+  .find{width:calc(100% - 40px)}
+  .scene>.legend{right:20px}
+}

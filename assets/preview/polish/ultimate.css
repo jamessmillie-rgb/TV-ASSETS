@@ -1,7 +1,7 @@
 /* polish r1: ultimate (/ultimate-panel, page 6846d1196dd1d0884979b265). Phones only: portrait <=900px wide and landscape phones <=500px high. Desktop untouched. */
 /* common.css loads first; every rule here is scoped to this page with html[data-wf-page] so it wins on specificity and cannot leak. */
 
-@media (max-width:900px),(orientation:landscape) and (max-height:500px){
+@media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
 
   /* Page rhythm: the 76px bottom padding meant for the old bar left white gaps under the reviews and the final band (the footer now clears the bar) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tv-ult{padding-bottom:0}
@@ -13,7 +13,7 @@
   /* HERO */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero::before,html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero::after{display:none}
   /* Strapline: the badge rule .tu-tag was leaking into it (dark slab, nowrap, capitals) */
-  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag{display:block;background:none;padding:0;border-radius:0;white-space:normal;text-transform:none;font:600 19px/1.3 var(--tvp-ui);letter-spacing:-.01em;color:#E8ECEA;margin:2px 0 16px}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag{display:block;background:none;padding:0;border-radius:0;white-space:normal;text-transform:none;font:600 19px/1.3 var(--tvp-ui);letter-spacing:-.01em;color:var(--tvp-teal);margin:2px 0 16px}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .tu-tag::after{display:none}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero .hero-desc{color:var(--tvp-on-dark)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-tp{font:500 13px/1.4 var(--tvp-ui);color:var(--tvp-on-dark-hi);margin-top:18px}
@@ -161,6 +161,7 @@
 
   /* FINAL */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final::before{display:none}
+  html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final{background:var(--tvp-deep)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final-tag{text-transform:none;letter-spacing:0;text-wrap:balance;font:600 14px/1.5 var(--tvp-ui);color:var(--tvp-teal)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final-alt{font:500 13px/1.5 var(--tvp-ui)}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-final-alt a{color:var(--tvp-on-dark-hi)}
@@ -175,7 +176,7 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .uwf-wrap .uwf-link{font:500 15px/1.3 var(--tvp-ui);color:var(--tvp-ink);padding:12px 0;border-bottom-color:var(--tvp-line)}
 }
 
-@media (max-width:767px),(orientation:landscape) and (max-height:500px){
+@media (max-width:767px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* What's covered as a hairline spec list (two columns in landscape) */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-checks-grid{gap:0 32px;margin-top:28px}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-checks-grid > :last-child{border-bottom:1px solid var(--tvp-line)}
@@ -192,12 +193,12 @@
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-who-item{background:none;border:0;border-top:1px solid var(--tvp-line);border-radius:0;padding:16px 0;gap:14px}
 }
 
-@media (max-width:520px),(orientation:landscape) and (max-height:500px){
+@media (max-width:520px),(orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* PhenoAge: figures above the explanation instead of squeezing it into a 95px column */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-tc-vis{flex-direction:column;align-items:flex-start;gap:18px}
 }
 
-@media (orientation:landscape) and (max-height:500px){
+@media (orientation:landscape) and (max-height:500px) and (max-width:932px){
   /* Hero: the product photo stays beside the price and Book button while the text column scrolls */
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero{overflow:visible}
   html[data-wf-page="6846d1196dd1d0884979b265"] .tu-hero-img{position:sticky;top:calc(var(--tvNavH,49px) + 16px)}
