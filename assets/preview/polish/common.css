@@ -1,1 +1,173 @@
-/* polish preview: common (empty = no change yet) */
+/* TrueVitals polish r1: shared system for the buying path, phones only (portrait <=900px and landscape phones). Desktop untouched. */
+/* This file loads BEFORE the page stylesheets, so every override adds `html` to win on specificity, not on order. */
+
+/* Tokens */
+:root{
+  --tvp-night:#080808;--tvp-mist:#F5F8F8;--tvp-cream:#F7F6F3;
+  --tvp-ink:#111;--tvp-ink-2:#5B6472;--tvp-mute:#6B7280;--tvp-on-dark:#9CA3AF;--tvp-on-dark-hi:#B9BFC6;
+  --tvp-teal:#2ce4ad;--tvp-teal-deep:#1fb599;--tvp-teal-ink:#0E7A66;--tvp-teal-text:#08201a;
+  --tvp-gold:#C9A96E;--tvp-gold-deep:#B8975A;--tvp-gold-ink:#8A6A2F;--tvp-gold-text:#1A1408;
+  --tvp-line:rgba(17,17,17,.08);--tvp-line-dark:rgba(255,255,255,.08);
+  --tvp-line-strong:rgba(17,17,17,.2);--tvp-line-strong-dark:rgba(255,255,255,.24);
+  --tvp-ui:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --tvp-sec:56px;--tvp-sec-land:40px
+}
+
+/* Panel sticky bars: one dark bar on Ultimate, Advanced and Signature (Advanced was white) */
+html :is(.tu-sticky,.ta-sticky,.s-bar){background:rgba(8,8,8,.96);border-top:1px solid var(--tvp-line-dark);box-shadow:none;transition:transform .25s ease}
+html :is(.tu-sticky-price,.ta-sticky-price,.s-bar .pr){font-family:var(--tvp-ui);font-weight:700;color:#fff;font-variant-numeric:tabular-nums lining-nums}
+html :is(.tu-sticky-meta,.ta-sticky-meta,.s-bar .kl){font-family:var(--tvp-ui);font-weight:500;color:var(--tvp-on-dark)}
+/* Hook for JS J1: the bar slides away while the page's own Book button is on screen */
+html :is(.tu-sticky,.ta-sticky,.s-bar).tvp-off{transform:translateY(calc(100% + 1px));pointer-events:none}
+
+/* Footer clears the fixed Book / Pay bars so the clinical disclaimer can be read */
+@media (max-width:767px),(orientation:landscape) and (max-height:500px){
+  html .tv-footer{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+}
+
+@media (max-width:900px),(orientation:landscape) and (max-height:500px){
+
+  /* Trustpilot strip: white at the same height; stars in Trustpilot green, no second green band */
+  html .tv-tp-bar{background:#fff;box-shadow:inset 0 -1px 0 var(--tvp-line);min-height:35px}
+  html .tv-tp-bar a{color:var(--tvp-ink);font-family:var(--tvp-ui);font-weight:600;font-size:11px;letter-spacing:.01em}
+  html .tv-tp-bar svg,html .tv-tp-bar svg *{color:#00B67A;fill:#00B67A}
+
+  /* Nav: Panels pill and drawer in the UI face, sentence case */
+  html .tv-mob-quick{font:600 13px/1 var(--tvp-ui);letter-spacing:0;text-transform:none;color:var(--tvp-teal-text);min-height:36px;padding:0 16px}
+  html :is(.tv-nav-links a,.tv-nav-dd-toggle,.tv-nav-dd-menu a){font-family:var(--tvp-ui);letter-spacing:-.005em}
+  html .tv-mob-group-label{font:600 12px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:var(--tvp-mute)}
+  html .tv-drawer-close button{font:600 14px/1 var(--tvp-ui);letter-spacing:0;text-transform:none;color:var(--tvp-ink);background:var(--tvp-mist);border-color:var(--tvp-line)}
+
+  /* Footer: night, one hairline, calm grey links, readable small print */
+  html .tv-footer{background:var(--tvp-night);border-top:1px solid var(--tvp-line-dark);font-family:var(--tvp-ui)}
+  html :is(.tv-ft-col,.tv-ft-locs) h4{font:600 13px/1.3 var(--tvp-ui);letter-spacing:0;text-transform:none;color:#fff}
+  html .tv-ft-col a{font:500 14px/1.4 var(--tvp-ui);color:var(--tvp-on-dark-hi);padding:8px 0}
+  html .tv-ft-col a:hover{color:#fff;opacity:1}
+  html .tv-ft-col a.w--current{color:var(--tvp-teal)}
+  html .tv-ft-loc-list a{font:500 13px/1.3 var(--tvp-ui);color:var(--tvp-on-dark-hi);border-color:rgba(255,255,255,.12)}
+  html .tv-ft-brand p{color:var(--tvp-on-dark)}
+  html :is(.tv-ft-copy,.tv-ft-brand .tv-ft-co){color:#7A818A}
+  html .tv-ft-tp{color:var(--tvp-on-dark-hi)}
+  html .tv-ft-disclaimer{color:#8A9099;font-size:12px;line-height:1.6}
+
+  /* H1: Inter Tight 700 (the weight every page loads), sentence case */
+  html :is(.tv-hero-c,.tu-hero,.ta-hero,.s-hero) h1{font-family:var(--tvp-ui);font-weight:700;font-size:34px;line-height:1.06;letter-spacing:-.03em;text-transform:none}
+  /* Signature H1: the script word set like the rest of the headline */
+  html .tv-sig .s-hero h1 .script{font:inherit;color:inherit;letter-spacing:inherit;text-transform:none}
+  /* H2: one size and weight on home and the panel pages (Compare already matches) */
+  html :is(.tv-panels .tv-head,.tv-hp3 .tv-diff-hd,.tv-hp2 .tv-rpt,.tv-hp2 .tv-how,.tv-hp2 .tv-rev-hd,.tv-quiz,.tv-hp2 .tv-final,.tv-ult,.tv-adv,.tv-sig) h2,
+  html .tvtr h2.tvtr-h2,html .tv-hp3 .tv-cat-txt h3{font-family:var(--tvp-ui);font-weight:700;font-size:26px;line-height:1.15;letter-spacing:-.025em;text-transform:none}
+  /* No single coloured word inside a headline */
+  html :is(.tv-hero-c h1,.tv-hero-tag,.tv-rev-hd h2,.tv-final h2) span,html .tv-quiz h2 em{color:inherit}
+
+  /* Section labels: plain sentence-case text, no pill (light teal ink, dark teal, Signature gold) */
+  html :is(.tv-panels .tv-eyebrow,.tv-ult .tu-label,.tv-adv .ta-label,.tv-sig .su,.tv-hp2 .tv-rpt-lbl,.tv-hp3 .tv-cat-lbl){background:none;border:0;border-radius:0;padding:0;box-shadow:none;font:600 13px/1.3 var(--tvp-ui);letter-spacing:.01em;text-transform:none;color:var(--tvp-teal-ink)}
+  html :is(.tu-report,.tu-tc,.tu-guar-dark,.tu-final,.tu-cov:not(.tu-cov-light)) .tu-label,html .ta-up .ta-label,html .tv-hp2 .tv-rpt-lbl{color:var(--tvp-teal)}
+  html .tv-sig .su{color:var(--tvp-gold-ink)}
+  html :is(.s-gold,.s-guar,.s-final) .su{color:var(--tvp-gold)}
+
+  /* Badges: small sentence-case pills, no glow, no decorative star */
+  html :is(.tu-badge,.ta-badge,.s-badge,.tv-badge,.ta-up-badge){font:600 12px/1 var(--tvp-ui);letter-spacing:.01em;text-transform:none;box-shadow:none;padding:7px 11px}
+  html :is(.tu-badge,.ta-badge,.s-badge,.tv-badge,.ta-up-badge) svg{display:none}
+  html .ta-badge{color:var(--tvp-teal-ink)}
+  html .s-badge{color:var(--tvp-gold-text)}
+
+  /* Numbers: tabular figures; prices at 700 instead of 800/900 */
+  html :is(.tu-price-main,.ta-price-main,.tu-final-price,.ta-final-price,.tv-panels .tv-price,.tv-sig .s-price .big,.tv-sig .s-final .big){font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums lining-nums}
+  html :is(.tv-count-num,.tu-age-n,.tu-ring-n,.tu-cov-stats b,.tu-pb .pb-num,.s-sk .big,.s-st .k,.ta-up-card .up-price,.cpl-n,.cp-hn,.cp-gc){font-variant-numeric:tabular-nums lining-nums}
+
+  /* Klarna line: no capsule, muted text, Klarna's own logo kept at 14px (copy unchanged) */
+  html :is(.tv-ult .tu-klarna,.tv-adv .ta-klarna,.tv-sig .s-klarna){background:none;border:0;border-radius:0;padding:0;gap:8px;font:500 13px/1.4 var(--tvp-ui);color:var(--tvp-mute)}
+  html :is(.tv-ult .tu-klarna,.tv-adv .ta-klarna) span{font-size:13px;font-weight:500;color:inherit}
+  html :is(.tu-hero .tu-klarna,.tu-final .tu-klarna,.s-final .s-klarna){color:var(--tvp-on-dark)}
+  html :is(.tv-ult .tu-klarna,.tv-adv .ta-klarna,.tv-sig .s-klarna) img{height:14px}
+  html .tv-panels .tv-klarna{font-family:var(--tvp-ui)}
+
+  /* Buttons: one face, one case, pill radius, no lift or glow */
+  html :is(.tv-h-btn,.tv-cta,.tv-rpt-btn,.tv-f-btn,.tv-quiz-btn,.tv-ult .btn-p,.tv-ult .btn-s,.tv-adv .btn-p,.ta-up-cta .btn-t,.tv-sig .btn,.cp-btn,.cpl-b,.cp-nf-b,.cp-go,.tv-cmap .fc-search button,.tv-mob-cta a){font-family:var(--tvp-ui);font-weight:600;font-size:15px;letter-spacing:-.005em;text-transform:none;border-radius:999px;box-shadow:none}
+  /* Buttons: one 52px height (flex buttons by min-height, block buttons by padding) */
+  html :is(.tv-h-btn,.tv-cta,.tv-rpt-btn,.tv-f-btn,.tv-quiz-btn,.tv-ult .btn-p,.tv-ult .btn-s,.tv-adv .btn-p,.ta-up-cta .btn-t,.tv-sig .btn){min-height:52px;padding-top:0;padding-bottom:0}
+  html :is(.cp-btn,.cpl-b,.cp-nf-b,.cp-go){padding-top:15px;padding-bottom:15px;line-height:22px}
+  html .tv-hero-btns .tv-h-btn-p{min-height:60px;padding-top:10px;padding-bottom:10px}
+  /* Primary teal: one dark text colour; pressed deepens without turning the text white */
+  html :is(.tv-h-btn-p,.tv-rpt-btn-p,.tv-f-btn-p,.tv-quiz-btn,.tv-mob-cta .tv-mob-p){color:var(--tvp-teal-text)}
+  html :is(.tv-h-btn-p,.tv-rpt-btn-p,.tv-f-btn-p,.tv-quiz-btn,.tv-ult .btn-p,.tv-adv .btn-p,.tv-cmap .fc-search button):hover{background:var(--tvp-teal-deep);color:var(--tvp-teal-text);transform:none;box-shadow:none}
+  /* Secondary: 1px outline at 20% / 24% */
+  html :is(.tv-h-btn-s,.tv-rpt-btn-s,.tv-f-btn-s){border:1px solid var(--tvp-line-strong-dark)}
+  html .tv-ult .btn-s{border:1px solid var(--tvp-line-strong)}
+  html :is(.tu-report,.tu-cov:not(.tu-cov-light)) .btn-s,html .ta-up-cta .btn-t{border:1px solid var(--tvp-line-strong-dark)}
+  html .cp-btn-o{border:1px solid rgba(8,32,26,.28)}
+  html .tv-mob-cta .tv-mob-s{border:1px solid var(--tvp-line-strong);color:var(--tvp-ink)}
+  html :is(.tv-h-btn-s,.tv-rpt-btn-s,.tv-f-btn-s,.tv-ult .btn-s,.ta-up-cta .btn-t):hover{transform:none}
+  /* Signature buys in gold, wherever the action is "Book Signature" */
+  html :is(.tv-sig .btn,.tv-sig .s-bar a,.tv-panels .tv-cta--sig){background:var(--tvp-gold);color:var(--tvp-gold-text)}
+  html :is(.tv-sig .btn,.tv-sig .s-bar a,.tv-panels .tv-cta--sig):hover,html .tv-panels .tv-card:hover .tv-cta--sig{background:var(--tvp-gold-deep);color:var(--tvp-gold-text);transform:none;box-shadow:none}
+  /* Bar and small buttons */
+  html :is(.tu-sticky,.ta-sticky,.s-bar) a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border-radius:999px;font:600 14px/1 var(--tvp-ui);letter-spacing:-.005em;text-transform:none}
+  html :is(.tu-toggle-all,.s-tog){font:600 13px/1 var(--tvp-ui);letter-spacing:0;text-transform:none;min-height:36px}
+
+  /* Small text links and dots: larger hit areas without moving anything */
+  html :is(.tu-hero-alt,.ta-hero-alt,.tu-final-alt,.ta-final-alt,.s-alt) a,html :is(.tu-gal-dot,.ta-gal-dot,.s-gal-dot,.tvtr-dots button){position:relative}
+  html :is(.tu-hero-alt,.ta-hero-alt,.tu-final-alt,.ta-final-alt,.s-alt) a::after{content:"";position:absolute;inset:-12px -4px}
+  html :is(.tu-gal-dot,.ta-gal-dot,.s-gal-dot,.tvtr-dots button)::after{content:"";position:absolute;inset:-18px -4px}
+
+  /* #tvub: type only; its position, show/hide and landscape band stay with the script (JS J2). Doubled id beats its own #tvub rules without !important */
+  html #tvub#tvub,html #tvub#tvub *{font-family:var(--tvp-ui)}
+  html #tvub#tvub a{text-transform:none;letter-spacing:-.005em;font-weight:600}
+  html #tvub#tvub a:not(.tvub-q){font-size:13px;border-radius:999px}
+  html #tvub#tvub a.tvub-q{position:relative}
+  html #tvub#tvub a.tvub-q::after{content:"";position:absolute;inset:-14px -6px}
+
+  /* Clinic map band: Night (the band's background is an inline style, hence !important) */
+  html div[style*="background:#050607"]{background:var(--tvp-night)!important}
+  html .tv-cmap{--bg:var(--tvp-night)}
+  /* Clinic map controls: pills in sentence case */
+  html .tv-cmap .fc-zoom button{border-radius:999px}
+  html .tv-cmap .fc-zoom button.txt{font:600 12px/1 var(--tvp-ui);letter-spacing:0;text-transform:none;padding:0 12px}
+}
+
+@media (max-width:767px){
+  /* Panel-page section rhythm: 56px */
+  html :is(.tv-ult,.tv-adv,.tv-sig) section{padding-top:var(--tvp-sec);padding-bottom:var(--tvp-sec)}
+  /* Clinic map: legend below the map, zoom stack moved clear of it */
+  html .tv-cmap.compact .fc-legend{position:static;margin:14px 2px 0;gap:8px}
+  html .tv-cmap.compact .fc-zoom{top:64px;bottom:auto}
+}
+
+@media (max-width:500px){
+  /* Footer: two left-aligned link columns instead of one 2,000px centred column */
+  html .tv-ft-grid{grid-template-columns:1fr 1fr;gap:28px 16px;text-align:left}
+  html .tv-ft-brand{grid-column:1/-1}
+  html .tv-ft-brand img{margin:0 0 16px}
+  html :is(.tv-ft-locs,.tv-ft-bottom,.tv-ft-disclaimer){text-align:left}
+  html .tv-ft-locs p,html .tv-ft-disclaimer{margin-left:0;margin-right:0}
+  html .tv-ft-loc-list{justify-content:flex-start}
+  html .tv-ft-bottom{align-items:flex-start}
+}
+
+@media (orientation:landscape) and (max-height:500px){
+  /* Landscape type steps down one notch */
+  html :is(.tv-hero-c,.tu-hero,.ta-hero,.s-hero) h1{font-size:30px}
+  html :is(.tv-panels .tv-head,.tv-hp3 .tv-diff-hd,.tv-hp2 .tv-rpt,.tv-hp2 .tv-how,.tv-hp2 .tv-rev-hd,.tv-quiz,.tv-hp2 .tv-final,.tv-ult,.tv-adv,.tv-sig) h2,
+  html .tvtr h2.tvtr-h2,html .tv-hp3 .tv-cat-txt h3{font-size:24px}
+  /* Landscape section rhythm: 40px */
+  html :is(.tv-ult,.tv-adv,.tv-sig) section{padding-top:var(--tvp-sec-land);padding-bottom:var(--tvp-sec-land)}
+  /* Panel heroes in two columns so the product photo shares the first screen */
+  html :is(.tu-hero-grid,.ta-hero-grid,.s-hero-g){grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:32px;align-items:start}
+  /* One slim full-width Book band on the panel pages (they had none in landscape) */
+  html :is(.tu-sticky,.ta-sticky,.s-bar){display:flex;position:fixed;left:0;right:0;bottom:0;z-index:9999;align-items:center;justify-content:space-between;gap:16px;min-height:52px;padding:4px max(24px,env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  html :is(.tu-sticky-info,.ta-sticky-info){display:flex;flex-direction:row;align-items:baseline;gap:12px;min-width:0}
+  html :is(.tu-sticky-price,.ta-sticky-price,.s-bar .pr){font-size:17px;line-height:1}
+  html :is(.tu-sticky-meta,.ta-sticky-meta,.s-bar .kl){display:flex;align-items:center;gap:5px;font-size:12px;margin:0}
+  html :is(.tu-sticky-meta,.ta-sticky-meta,.s-bar .kl) img{height:11px;width:auto;display:block}
+  html :is(.tu-sticky,.ta-sticky,.s-bar) a{min-height:40px;white-space:nowrap;flex-shrink:0;text-decoration:none;background:var(--tvp-teal);color:var(--tvp-teal-text)}
+}
+
+@media (orientation:landscape) and (max-height:500px) and (max-width:900px){
+  /* Nav script writes --tvNavH inline (95px measured vs 88px fallback), so the 49px landscape header needs !important */
+  :root,body{--tvNavH:49px!important}
+  /* Landscape header: 48px nav, with the rating folded into the middle of the nav row instead of its own band */
+  html .tv-nav{height:48px}
+  html .tv-nav-logo img{height:30px}
+  html .tv-tp-bar{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10001;display:flex;align-items:center;height:48px;min-height:0;padding:0;background:transparent;box-shadow:none;white-space:nowrap}
+}
