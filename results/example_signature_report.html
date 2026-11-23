@@ -901,7 +901,7 @@ function printReport(){
 window.printReport=printReport;
 
 // scroll reveal + active nav
-const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.08});
+const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0,rootMargin:'0px 0px -5% 0px'});
 document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
 
 const navSections=['overview','body','findings','flags','results'];

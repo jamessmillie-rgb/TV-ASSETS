@@ -56,6 +56,8 @@ body{background:#0a0d12;color:#eef1f5;font-family:Outfit,system-ui,-apple-system
   var inp=document.getElementById('tg-dob'),btn=document.getElementById('tg-btn'),msg=document.getElementById('tg-msg');
   var KEY='tvr:'+file;
   function show(html){
+    // 23 Nov 2026: reports published before this date reveal sections at 8% visibility, so a summary taller than ~12 screens never appeared on phones. Show each section as soon as it reaches the screen.
+    html=String(html).replace(/\{threshold:0\.08\}/g,"{threshold:0,rootMargin:'0px 0px -5% 0px'}");
     try{sessionStorage.setItem(KEY+':ok','1');}catch(e){}
     document.open();document.write(html);document.close();
   }
